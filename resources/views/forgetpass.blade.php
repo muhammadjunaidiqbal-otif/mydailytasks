@@ -19,7 +19,7 @@ Reset Password
                 </div>
             @endif        
         </div>
-        <button type="submit" class="btn btn-primary w-100">Verify Email</button>
+        <button type="submit"    class="btn btn-primary w-100">Verify Email</button>
     </form>        
 @endsection
 @endsection
