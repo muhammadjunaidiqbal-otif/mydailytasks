@@ -1,0 +1,64 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController; 
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
+
+Route::get('/test', function () {
+    return "Hello";
+});
+
+
+
+Route::get('/', function () {
+    return view('login');
+})->name('login.page');
+Route::get('/register-page', function () {
+    return view('register');
+})->name('register.page');
+Route::get('/reset-page', function () {
+    return view('forgetpass');
+})->name('reset.page');
+Route::post('/register-user',[UserController::class,'register'])->name('newuser.register');
+
+
+Route::post('/login-user',[UserController::class,'login'])->name('login.user');
+Route::get('/logout',[UserController::class,'logout'])->name('logout');
+Route::get('/users-details',[UserController::class,'users'])->name('user.index');
+
+
+Route::post('/reset-page',[UserController::class,'resetpass'])->name('pass.reset');
+Route::get('/email',[UserController::class,'mail'])->name('send.email');
+Route::get('/reset-pass/{token}',[UserController::class,'resetpassform'])->name('reset.pass');
+Route::post('/submit-reset-pass',[UserController::class,'submitresetpassword'])->name('sumbit.resetpass');
+
+Route::get('/email-verification',function(){
+    return view('emailverification');
+})->name('verification.page');
+
+Route::get('/dashboard',[UserController::class,'dashboard'])->name('dashboard')->middleware('verified.user');
+
+Route::post('/send-mail',[UserController::class,'resendmail'])->name('mail.send');
+Route::get('/verify-email/{id}',[UserController::class,'verifyemail'])->name('verify.email');
+Route::post('/verified-email',[UserController::class,'verifiedemail'])->name('verified.mail');
+
+
+
+
+//The Email Verification Notice
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+//The Email Verification Handler
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+ 
+    return redirect('/dashboard')->route('dashboard');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+//Resending the Verification Email
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+ 
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
