@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 class State extends Model
 {
     protected $table = 'states';
-    protected $fillable = ['name','country_id'];
+    protected $fillable = ['name','country_id','state_code'];
+   
 
     public function cities(){
         return $this->hasMany(City::class);

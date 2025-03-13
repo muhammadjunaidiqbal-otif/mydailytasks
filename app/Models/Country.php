@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Country extends Model
 {
     protected $table = 'countries';
-    protected $fillable = ['name'];
+    protected $fillable = ['name','iso3','unicodeFlag'];
 
     public function cities(){
         return $this->hasManyThrough(City::class,State::class); 

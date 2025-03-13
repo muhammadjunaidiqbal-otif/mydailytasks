@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\StateController;
 use App\Http\Controllers\UserController; 
 use App\Http\Controllers\CountryController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -75,8 +76,10 @@ Route::post('/email/verification-notification', function (Request $request) {
 
 
 //fetch-cities
-Route::get('/fetch-states', [ApiController::class, 'fetchCountriesStates']);
+Route::get('/fetch-countries', [ApiController::class, 'fetchCountries']);
+Route::get('/fetch-states', [ApiController::class, 'fetchStates']);
 Route::get('/fetch-cities', [ApiController::class, 'fetchCities']);
 //test route
 Route::get('/countries-details',[CountryController::class,'GetCountries']);
 Route::get('/cities-details',[CityController::class,'GetCities']);
+Route::get('/states-details',[StateController::class,'GetStates']);

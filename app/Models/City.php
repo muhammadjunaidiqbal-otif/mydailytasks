@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class City extends Model
 {
     protected $table = 'cities';
-    protected $fillable = ['name','state_id'];
+    protected $fillable = ['name','state_id','country_id'];
 
     public function country(){
         return $this->belongsTo(State::class);

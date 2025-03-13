@@ -12,7 +12,9 @@ class CountryController extends Controller
         if($countriesDetails->isEmpty()){
             return "No Countries Data";
         }else{
-            return $countriesDetails;
+            foreach($countriesDetails as $country){
+                echo $country->name;
+            }
         }
         
     }
