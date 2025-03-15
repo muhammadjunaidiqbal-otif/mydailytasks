@@ -49,13 +49,13 @@ Register
                 </select>
             </div>
             <div class="col-md-4">
-                <select id="state" name="state_id" class="form-select">
+                <select id="state" name="state_id"  class="form-select">
                     <option value="">Select State</option>
                    
                 </select>
             </div>
             <div class="col-md-4">
-                <select id="city" name="city_id" class="form-select">
+                <select id="city" name="city_id"  statclass="form-select">
                     <option value="">Select City</option>
                     
                 </select>
