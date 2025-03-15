@@ -34,7 +34,7 @@ class UserController extends Controller
             if($user->email_verified_at===null){
                     return redirect()->route('verification.notice')->with('status','Verify Your Email First To Login !');
                 }else{
-                    return redirect()->route('dashboard')->with('status','Login Successfully ;)');
+                    return redirect()->route('test.dashboard')->with('status','Login Successfully ;)');
                 }
             
         }else{
@@ -43,7 +43,7 @@ class UserController extends Controller
     }
     public function dashboard(){
         if(Auth::check()){
-            return view('Admin.Dashboard');
+            return view('test.dashboard');
         }else{
             return redirect()->route('login.page');
         }  
@@ -92,10 +92,12 @@ class UserController extends Controller
     public function logout(Request $request){
         //return $request;
         $user=Auth::user();
+        if(isset($user->remember_token)){
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         $user->setRememberToken(null);
         $user->save();
+    }
         Auth::logout();
 
         return redirect()->route('login.page')->with('status','Logout Successfully . ');

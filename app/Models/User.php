@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\City;
+use App\Models\Role;
 use App\Models\State;
 use App\Models\Country;
 use Illuminate\Notifications\Notifiable;
@@ -28,6 +29,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'name',
         'email',
+        'role_id',
         'password',
         'email_verified_at',
         'country_id',
@@ -67,6 +69,9 @@ class User extends Authenticatable implements MustVerifyEmail
     }
     public function city(){
         return $this->belongsTo(City::class);     
+    }
+    public function role(){
+        return $this->belongsTo(Role::class);     
     }
 
 }

@@ -1,5 +1,4 @@
-<!-- Layout container -->
-<div class="layout-page">
+
     <!-- Navbar -->
 
     <nav
@@ -434,7 +433,7 @@
                 <div class="dropdown-divider my-1 mx-n2"></div>
               </li>
               <li>
-                <a class="dropdown-item" href="pages-profile-user.html">
+                <a class="dropdown-item" href="{{route('user.profile')}}">
                   <i class="ti ti-user me-3 ti-md"></i><span class="align-middle">My Profile</span>
                 </a>
               </li>
@@ -469,7 +468,7 @@
               </li>
               <li>
                 <div class="d-grid px-2 pt-2 pb-1">
-                  <a class="btn btn-sm btn-danger d-flex" href="auth-login-cover.html" target="_blank">
+                  <a class="btn btn-sm btn-danger d-flex" href="{{route('logout')}}" target="_blank">
                     <small class="align-middle">Logout</small>
                     <i class="ti ti-logout ms-2 ti-14px"></i>
                   </a>

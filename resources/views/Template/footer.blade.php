@@ -1,37 +1,36 @@
-<footer class="bg-dark text-white pt-4 pb-2">
-    <div class="container text-center text-md-start">
-        <div class="row">
-            <!-- About Section -->
-            <div class="col-md-4 mb-3">
-                <h5>About Us</h5>
-                <p>We are committed to delivering high-quality web solutions for your business. Connect with us to know more.</p>
-            </div>
-
-            <!-- Quick Links -->
-            <div class="col-md-4 mb-3">
-                <h5>Quick Links</h5>
-                <ul class="list-unstyled">
-                    <li><a href="#" class="text-white">Home</a></li>
-                    <li><a href="#" class="text-white">About</a></li>
-                    <li><a href="#" class="text-white">Services</a></li>
-                    <li><a href="#" class="text-white">Contact</a></li>
-                </ul>
-            </div>
-
-            <!-- Contact Info -->
-            <div class="col-md-4 mb-3">
-                <h5>Contact Us</h5>
-                <ul class="list-unstyled">
-                    <li><i class="bi bi-geo-alt-fill"></i> 123 Street, City, Country</li>
-                    <li><i class="bi bi-telephone-fill"></i> +123 456 7890</li>
-                    <li><i class="bi bi-envelope-fill"></i> info@example.com</li>
-                </ul>
-            </div>
+ <!-- Footer -->
+ <footer class="content-footer footer bg-footer-theme">
+    <div class="container-xxl">
+      <div
+        class="footer-container d-flex align-items-center justify-content-between py-4 flex-md-row flex-column">
+        <div class="text-body">
+          ©
+          <script>
+            document.write(new Date().getFullYear());
+          </script>
+          , made with ❤️ by <a href="https://pixinvent.com" target="_blank" class="footer-link">Pixinvent</a>
         </div>
+        <div class="d-none d-lg-inline-block">
+          <a href="https://themeforest.net/licenses/standard" class="footer-link me-4" target="_blank"
+            >License</a
+          >
+          <a href="https://1.envato.market/pixinvent_portfolio" target="_blank" class="footer-link me-4"
+            >More Themes</a
+          >
 
-        <!-- Copyright -->
-        <div class="text-center pt-3 border-top mt-3">
-            <p class="mb-0">&copy; 2025 YourCompany. All Rights Reserved.</p>
+          <a
+            href="https://demos.pixinvent.com/vuexy-html-admin-template/documentation/"
+            target="_blank"
+            class="footer-link me-4"
+            >Documentation</a
+          >
+
+          <a href="https://pixinvent.ticksy.com/" target="_blank" class="footer-link d-none d-sm-inline-block"
+            >Support</a
+          >
         </div>
+      </div>
     </div>
-</footer>
+  </footer>
+  
+  <!-- / Footer -->

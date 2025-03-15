@@ -4,9 +4,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\UserController; 
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\PartnerRoleController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::get('/test', function () {
@@ -67,12 +69,6 @@ Route::post('/email/verification-notification', function (Request $request) {
 
 
 
-
-
-
-
-
-
 //fetch-cities
 Route::get('/fetch-countries', [ApiController::class, 'fetchCountries']);
 Route::get('/fetch-states', [ApiController::class, 'fetchStates']);
@@ -81,7 +77,8 @@ Route::get('/fetch-cities', [ApiController::class, 'fetchCities']);
 Route::get('/countries-details',[CountryController::class,'GetCountries']);
 Route::get('/cities-details',[CityController::class,'GetCities']);
 
-//Route::get('/states-details',[StateController::class,'GetStates']);
+Route::get('/states-details',[StateController::class,'GetStates']);
+
 Route::get('/states-details',[StateController::class,'GetStates']);
 Route::get('/country-users',[CountryController::class,'users']);
 
@@ -93,5 +90,16 @@ Route::get('/get-cities/{state_id}',[CityController::class,'CitiesforState']);
 
 
 Route::get('/test-page',function(){
-    return view('Admin.testpage');
-});
+    return view('Admin.test-dashboard');
+})->name('test.dashboard')->middleware('verified.user');
+Route::get('/test-calender',function(){
+    return view('Admin.calender');
+})->name('calender.page')->middleware('verified.user');
+Route::get('/test-profile',function(){
+    return view('Admin.user-profile');
+})->name('user.profile')->middleware('verified.user');
+
+
+Route::resource('/roles',RoleController::class);
+
+Route::resource('/partners',PartnerRoleController::class);

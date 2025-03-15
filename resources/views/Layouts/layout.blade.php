@@ -44,9 +44,8 @@
 
      
     <!-- Bootstrap 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- jQuery CDN -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         setTimeout(function() {
@@ -56,6 +55,63 @@
             }
         }, 3000); 
     </script>
-
+    
+    <script>
+        $(document).ready(function(){
+            $('#country').on('change', function(){
+                var countryId = $(this).val();
+    
+                if(countryId){
+                    $.ajax({
+                        url: '/get-states/' + countryId, 
+                        type: 'GET',
+                        success: function(data){
+                            $('#state').empty().append('<option value="">Select State</option>');
+                            $('#city').empty().append('<option value="">Select City</option>'); 
+    
+                            $.each(data, function(key, value) {
+                                $('#state').append('<option value="'+ value.id +'">'+ value.name +'</option>');
+                            });
+                        },
+                        error: function() {
+                            alert('Unable to fetch states. Please try again.');
+                        }
+                    });
+                } else {
+                    $('#state').empty().append('<option value="">Select State</option>');
+                    $('#city').empty().append('<option value="">Select City</option>');
+                }
+            });
+    
+            $('#state').on('change',function(){
+                stateId = $(this).val();
+                if(stateId){
+                    $.ajax({
+                        url : '/get-cities/' + stateId ,
+                        type : 'GET' , 
+                        success : function(data){
+                          
+                            $('#city').empty().append('<option value="">Select City</option>'); 
+                            $.each(data,function(key , value){
+                                $('#city').append('<option value="'+ value.id +'">'+ value.name +'</option>');
+                            });
+                        },
+                        error: function() {
+                            alert('Unable to fetch cities. Please try again.');
+                        }
+                    });
+                }else{
+                    $('#state').empty().append('<option value="">Select State</option>');
+                    $('#city').empty().append('<option value="">Select City</option>');
+                }
+            });
+    
+        });
+    
+       
+    
+    </script>
+    
+    
 </body>
 </html>
