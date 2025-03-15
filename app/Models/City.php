@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use App\Models\State;
 use App\Models\Country;
 use Illuminate\Database\Eloquent\Model;
@@ -15,6 +16,8 @@ class City extends Model
         return $this->belongsTo(State::class);
     }
 
-    
+    public function users(){
+        return $this->hasMany(User::class);
+    }
 
 }

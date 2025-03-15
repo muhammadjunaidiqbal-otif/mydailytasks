@@ -18,9 +18,7 @@ Route::get('/test', function () {
 Route::get('/', function () {
     return view('login');
 })->name('login.page');
-Route::get('/register-page', function () {
-    return view('register');
-})->name('register.page');
+Route::get('/register-page', [UserController::class,'ShowRegisterPage'])->name('register.page');
 Route::get('/reset-page', function () {
     return view('forgetpass');
 })->name('reset.page');
@@ -82,4 +80,20 @@ Route::get('/fetch-cities', [ApiController::class, 'fetchCities']);
 //test route
 Route::get('/countries-details',[CountryController::class,'GetCountries']);
 Route::get('/cities-details',[CityController::class,'GetCities']);
+<<<<<<< HEAD
 Route::get('/states-details',[StateController::class,'GetStates']);
+=======
+Route::get('/states-details',[StateController::class,'GetStates']);
+Route::get('/country-users',[CountryController::class,'users']);
+
+Route::get('/country-states',[CountryController::class,'getstates']);
+
+
+Route::get('/get-states/{country_id}',[StateController::class,'StatesForCountry']);
+Route::get('/get-cities/{state_id}',[CityController::class,'CitiesforState']);
+
+
+Route::get('/test-page',function(){
+    return view('Admin.testpage');
+});
+>>>>>>> ebdd14d (Added Country/state/city select option on register page)

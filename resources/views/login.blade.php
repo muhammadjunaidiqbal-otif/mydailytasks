@@ -5,7 +5,7 @@ Login
 @endsection
 @section('card-body')
 
-                        
+                   
     <form action="{{ route('login.user') }}" method="POST">
     @csrf  
         <div class="mb-3">
@@ -36,5 +36,5 @@ Login
         </div>
         
             
-    @endsection 
+@endsection 
 @endsection
