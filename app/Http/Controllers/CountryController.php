@@ -12,8 +12,18 @@ class CountryController extends Controller
         if($countriesDetails->isEmpty()){
             return "No Countries Data";
         }else{
-            return $countriesDetails;
-        }
-        
+            foreach($countriesDetails as $country){
+                echo $country->name;
+            }
+        } 
+    }
+    public function getstates(){
+        $country_state = Country::where('name','pakistan')->with('states')->with('cities')->get();
+        return $country_state;
+    }
+
+    public function users(){
+        $users = Country::where('id',77)->with('users')->get();
+        return $users;
     }
 }

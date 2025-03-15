@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\StateController;
 use App\Http\Controllers\UserController; 
 use App\Http\Controllers\CountryController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -17,9 +18,7 @@ Route::get('/test', function () {
 Route::get('/', function () {
     return view('login');
 })->name('login.page');
-Route::get('/register-page', function () {
-    return view('register');
-})->name('register.page');
+Route::get('/register-page', [UserController::class,'ShowRegisterPage'])->name('register.page');
 Route::get('/reset-page', function () {
     return view('forgetpass');
 })->name('reset.page');
@@ -75,8 +74,22 @@ Route::post('/email/verification-notification', function (Request $request) {
 
 
 //fetch-cities
-Route::get('/fetch-states', [ApiController::class, 'fetchCountriesStates']);
+Route::get('/fetch-countries', [ApiController::class, 'fetchCountries']);
+Route::get('/fetch-states', [ApiController::class, 'fetchStates']);
 Route::get('/fetch-cities', [ApiController::class, 'fetchCities']);
 //test route
 Route::get('/countries-details',[CountryController::class,'GetCountries']);
 Route::get('/cities-details',[CityController::class,'GetCities']);
+Route::get('/states-details',[StateController::class,'GetStates']);
+Route::get('/country-users',[CountryController::class,'users']);
+
+Route::get('/country-states',[CountryController::class,'getstates']);
+
+
+Route::get('/get-states/{country_id}',[StateController::class,'StatesForCountry']);
+Route::get('/get-cities/{state_id}',[CityController::class,'CitiesforState']);
+
+
+Route::get('/test-page',function(){
+    return view('Admin.testpage');
+});

@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('states', function (Blueprint $table) {
+        Schema::create('countries',function(Blueprint $table){
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger('country_id');
+            $table->string('iso3', 3)->unique();
+            $table->string('unicodeFlag', 10);
             $table->timestamps();
-
-            $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
         });
     }
 
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('states');
+        Schema::dropIfExists('countries');
     }
 };

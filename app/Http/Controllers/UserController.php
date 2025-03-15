@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Mail\TestMail;
+use App\Models\Country;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Mail\EmailVerifyMail;
@@ -11,8 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Cookie;
 
 class UserController extends Controller
 {
@@ -45,12 +46,14 @@ class UserController extends Controller
             return view('Admin.Dashboard');
         }else{
             return redirect()->route('login.page');
-        }
-        
+        }  
     } 
-        
+    public function ShowRegisterPage(){
+        $countries = Country::orderBy('name','asc')->get();
+        return view('register',compact('countries'));
+    }
     public function register(Request $request){
-        
+        //return $request;
         $data = $request->validate([
             'name'=>'required|string',
             'email'=>'required|email',
@@ -59,7 +62,10 @@ class UserController extends Controller
         'min:8','confirmed',
         'regex:/[A-Z]/',       
         'regex:/[a-z]/',        
-        'regex:/[0-9]/']
+        'regex:/[0-9]/'],
+        'country_id'=>'required|int',
+        'state_id'=>'required|int',
+        'city_id'=>'required|int'
         ]);
 
 
@@ -71,7 +77,7 @@ class UserController extends Controller
         //         'id'=>$user->id,
         //         'success'=>"Email Sent"
         // ];
-        return $user_info;
+        //return $user_info;
 
         if(Auth::attempt($user_info)){
            // Mail::to($user->email)->send(new EmailVerifyMail($data));
