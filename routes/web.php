@@ -80,6 +80,8 @@ Route::get('/fetch-cities', [ApiController::class, 'fetchCities']);
 //test route
 Route::get('/countries-details',[CountryController::class,'GetCountries']);
 Route::get('/cities-details',[CityController::class,'GetCities']);
+
+//Route::get('/states-details',[StateController::class,'GetStates']);
 Route::get('/states-details',[StateController::class,'GetStates']);
 Route::get('/country-users',[CountryController::class,'users']);
 

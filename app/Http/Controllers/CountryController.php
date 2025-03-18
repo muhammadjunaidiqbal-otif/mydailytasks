@@ -17,6 +17,7 @@ class CountryController extends Controller
             }
         } 
     }
+
     public function getstates(){
         $country_state = Country::where('name','pakistan')->with('states')->with('cities')->get();
         return $country_state;
