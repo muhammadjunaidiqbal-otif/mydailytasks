@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use ajax;
 use App\Models\User;
 use App\Mail\TestMail;
 use App\Models\Country;
@@ -209,6 +210,14 @@ public function resendmail(Request $request){
                     return view('Admin.Dashboard');     
                 }
          }   
+         public function index(Request $request)
+    {
+        $partners =  User::with('role')->get();
+        return response()->json([
+            'data' => $partners
+        ]);
+          
+    }
     //return $data;
         
 }

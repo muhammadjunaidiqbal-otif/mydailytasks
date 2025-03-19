@@ -1,22 +1,25 @@
 @extends('Layouts.layout')
 @section('content')
 @section('card-title')
-Register
+Add Or Update Partner
 @endsection
 @section('card-body')
 
-    <form action="{{route('partners.store')}}" method="POST">
+    <form action="{{ isset($partner) ? route('partners.update', $partner->id) : route('partners.store') }}" method="POST">
     @csrf
+    @if(isset($partner))
+    @method('PUT')
+    @endif
         <div class="mb-3">
         <label for="name" class="form-label">Name : </label>
-        <input type="text" name="name" class="form-control" value="{{ old('name') }}" placeholder="Enter Your Name" required>
+        <input type="text" name="name" class="form-control" value="{{ old('name', $partner->name ?? '') }}" placeholder="Enter Your Name" required>
             @error('name')
                 <div class="text-danger mt-1">{{ $message }}</div>
             @enderror
         </div>    
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" name="email" id="email" value="{{ old('email') }}" placeholder="Enter Your Email" required>
+            <input type="email" class="form-control" name="email" id="email" value="{{ old('email', $partner->email ?? '') }}" placeholder="Enter Your Email" required>
             @error('email')
                 <div class="text-danger mt-1">{{ $message }}</div>
             @enderror
@@ -62,7 +65,7 @@ Register
             </div>
         </div>
         </div>
-        <button class="btn btn-primary w-100">Save</button>
+        <button class="btn btn-primary w-100">{{ isset($partner) ? 'Update' : 'Create' }}</button>
 </form>
 @if ($errors->any())
     <div>

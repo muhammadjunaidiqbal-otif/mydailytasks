@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Country;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class PartnerRoleController extends Controller
 {
@@ -17,6 +18,7 @@ class PartnerRoleController extends Controller
         return view('Partners.index',compact('users'));
     }
 
+    
     /**
      * Show the form for creating a new resource.
      */
@@ -46,13 +48,14 @@ class PartnerRoleController extends Controller
         ]);
 
         $user = User::create([
+            ['id' => $id],
             'name'=>$request->name,
             'email'=>$request->email,
             'password'=>$request->password,
             'role_id'=>'2'
         ]);
         //gi$users = User::where('role_id','2')->get();
-        return redirect('/partners')->with('status',"Record Saved");
+        return redirect('/partners')->with('status',  "Created");
     }
 
     /**
@@ -69,7 +72,10 @@ class PartnerRoleController extends Controller
      */
     public function edit(string $id)
     {
-        // $partner = Us
+        $partner = User::findOrFail($id);
+        $countries = Country::orderBy('name', 'asc')->get();
+        
+        return view('Partners.create', compact('countries', 'partner'));
     }
 
     /**
@@ -77,7 +83,29 @@ class PartnerRoleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+
+        $request->validate([
+            'name'=>'required|string',
+            'email'=>'required|email',
+            'password' => [
+        'required',
+        'min:8','confirmed',
+        'regex:/[A-Z]/',       
+        'regex:/[a-z]/',        
+        'regex:/[0-9]/'],
+        'country_id'=>'required|int',
+        'state_id'=>'required|int',
+        'city_id'=>'required|int'
+        ]);
+        $user = User::findOrFail($id); 
+        $user->update([
+            'name'=>$request->name,
+            'email'=>$request->email,
+            'password'=>$request->password,
+            'role_id'=>'2'
+        ]);
+        //gi$users = User::where('role_id','2')->get();
+        return redirect('/partners')->with('status',  "Updated");
     }
 
     /**

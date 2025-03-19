@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
@@ -103,3 +104,8 @@ Route::get('/test-profile',function(){
 Route::resource('/roles',RoleController::class);
 
 Route::resource('/partners',PartnerRoleController::class);
+
+Route::get('/data-table',function(){
+    return view('Partners.datatables');
+});
+Route::get('/users/data',[UserController::class,'index'])->name('users.data');
