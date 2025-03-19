@@ -51,7 +51,7 @@ class PartnerRoleController extends Controller
             'password'=>$request->password,
             'role_id'=>'2'
         ]);
-        $users = User::where('role_id','2')->get();
+        //gi$users = User::where('role_id','2')->get();
         return redirect('/partners')->with('status',"Record Saved");
     }
 
@@ -69,7 +69,7 @@ class PartnerRoleController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        // $partner = Us
     }
 
     /**
