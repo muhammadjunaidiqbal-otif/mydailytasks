@@ -136,20 +136,20 @@ class UserController extends Controller
     Mail::to('junaidiqbalmrar@gmail.com')->send(new TestMail($data));
 
     return redirect()->route('login.page');
-}
-public function resetpassform($token)
-{
-    $email = DB::table('password_reset_tokens')->where('token',$token)->first();
-    //return $email->email;
-    if($email){
-        return view('resetpass', ['token' => $token,
-                              'email'=>$email->email
-                            ]);
-    }else{
-        return "You Dont Have Any Password Reset Request";
     }
-    
-}
+    public function resetpassform($token)
+    {
+        $email = DB::table('password_reset_tokens')->where('token',$token)->first();
+        //return $email->email;
+        if($email){
+            return view('resetpass', ['token' => $token,
+                                  'email'=>$email->email
+                                ]);
+        }else{
+            return "You Dont Have Any Password Reset Request";
+        }
+
+    }
 
     public function submitresetpassword(Request $request){
     
@@ -177,7 +177,7 @@ public function resetpassform($token)
     }
     
 
-}
+    }
     public function verifyemail($id){
     //return $request->email;
     $user = User::where('id',$id)->first();
@@ -190,7 +190,7 @@ public function resetpassform($token)
 
         return view('Admin.Dashboard',['info'=>$data]);
 
-}
+    }
     public function resendmail(Request $request){
     $user = User::where('email',$request->email)->first();
     
@@ -231,8 +231,7 @@ public function resetpassform($token)
         return response()->json(['msg' => 'User deleted successfully!']); 
     
     } 
-    public function update(Request $request)
-{
+    public function update(Request $request){
     $user = User::find($request->id);
     if (!$user) {
         return response()->json(['error' => 'User not found'], 404);
@@ -244,7 +243,17 @@ public function resetpassform($token)
     $user->save();
 
     return response()->json(['success' => 'User updated successfully']);
-}
+    }   
+
+    public function deleteSelectedRows(Request $request){
+        $ids = $request->ids; 
+        if (!empty($ids)) {
+            User::whereIn('id', $ids)->delete();
+            return response()->json(['success' => 'Records deleted successfully']);
+        }
+        return response()->json(['error' => 'No records selected'], 400);
+    }
+
 }
 
 

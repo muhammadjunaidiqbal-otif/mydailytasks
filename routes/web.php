@@ -89,7 +89,7 @@ Route::get('/country-states',[CountryController::class,'getstates']);
 Route::get('/get-states/{country_id}',[StateController::class,'StatesForCountry']);
 Route::get('/get-cities/{state_id}',[CityController::class,'CitiesforState']);
 
-
+//tempalte routes
 Route::get('/test-page',function(){
     return view('Admin.test-dashboard');
 })->name('test.dashboard')->middleware('verified.user');
@@ -99,12 +99,18 @@ Route::get('/test-calender',function(){
 Route::get('/test-profile',function(){
     return view('Admin.user-profile');
 })->name('user.profile')->middleware('verified.user');
+Route::get('/users-datatable',function(){
+    return view('Admin.dataTable');
+})->name('users.datatable')->middleware('verified.user');
 
 
+//
 Route::resource('/roles',RoleController::class);
 
 Route::resource('/partners',PartnerRoleController::class);
 
+
+//simpledatatable routes
 Route::get('/data-table',function(){
     return view('Partners.datatables');
 });
@@ -114,3 +120,4 @@ Route::get('/advance-dt',function(){
 Route::get('/users/data',[UserController::class,'index'])->name('users.data');
 Route::delete('/user/delete/{id}',[UserController::class,'delete'])->name('user.delete');
 Route::post('/user/update',[UserController::class,'update'])->name('user.update');
+Route::post('/delete-selectedusers',[UserController::class,'deleteSelectedRows'])->name('delete-selected');

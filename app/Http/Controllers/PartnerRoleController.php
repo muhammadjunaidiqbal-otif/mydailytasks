@@ -48,11 +48,14 @@ class PartnerRoleController extends Controller
         ]);
 
         $user = User::create([
-            ['id' => $id],
             'name'=>$request->name,
             'email'=>$request->email,
             'password'=>$request->password,
-            'role_id'=>'2'
+            'role_id'=>'2',
+            'country_id'=>$request->country_id,
+            'state_id'=>$request->state_id,
+            'city_id'=>$request->city_id
+
         ]);
         //gi$users = User::where('role_id','2')->get();
         return redirect('/partners')->with('status',  "Created");

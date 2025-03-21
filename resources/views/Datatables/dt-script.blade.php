@@ -12,7 +12,7 @@
             text-align: center;
             margin: 20px 0;
         }
-
+        .selected { background-color: #ffcccc !important; }
         .divider::before,
         .divider::after {
             content: "";

@@ -15,13 +15,15 @@
         <div class="card">
           <div class="card-datatable table-responsive pt-0">
             <div class="divider">
-                <span class="divider-text">Partner List</span>
+                <span class="divider-text"><h1><strong>Partners DataTable</strong></h1></span>
             </div>
-        
+        <div class="mb-3">
+            <button id="deleteRows" style="display:none; background:red; color:white; padding:5px;">Delete Selected</button>
+        </div>
     <table id="myTable" class="display">
         <thead>
             <tr>
-                <th><input type="checkbox" id="select-all"></th> 
+                <th><input type="checkbox" id="select-all">Select All</th> 
                 <th>ID</th>
                 <th>Name</th>
                 <th>Email</th>
@@ -42,7 +44,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+          <h5 class="modal-title" id="editUserModalLabel">Edit Partner</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -91,7 +93,7 @@
                 "serverSide": false,
                 "searching": true,
                 "lengthMenu": [10, 20, 50],
-                 "dom": 'Bfrtip', 
+                 "dom": 'Blfrtip', 
                  buttons: [
                             'csv', 
                             'print',
@@ -132,20 +134,19 @@
                             ]
                
             });
-
             // checkboxes
             $('#select-all').on('click', function() {
                 var rows = $('#myTable').DataTable().rows({ search: 'applied' }).nodes();
                 $('input[type="checkbox"]', rows).prop('checked', this.checked);
+                var selectedCount = $('.select-checkbox:checked').length;
+                $('#deleteRows').toggle(selectedCount > 0);
+
             });
 
             $('#myTable tbody').on('change', 'input[type="checkbox"]', function() {
-                if (!this.checked) {
-                    var el = $('#select-all').get(0);
-                    if (el && el.checked && ('indeterminate' in el)) {
-                        el.indeterminate = true;
-                    }
-                }
+                var selectedCount = $('.select-checkbox:checked').length;
+                $('#deleteRows').toggle(selectedCount > 0);
+               
             });
             $(document).on('click', '.btn-delete', function() {
                 var id = $(this).data('id');
@@ -167,6 +168,7 @@
                     });
                 }
             });
+
             $(document).on('click', '.btn-edit', function() {
                 var id = $(this).data('id');
 
@@ -188,35 +190,61 @@
                     }
                 });
             });
+            //submit Edit Form Modal
             $(document).on('submit', '#editUserForm', function(e) {
-    e.preventDefault(); // Prevent page reload
-
-    var id = $('#editUserId').val();
-    var name = $('#editUserName').val();
-    var email = $('#editUserEmail').val();
-    var role = $('#editUserRole').val();
-
-    $.ajax({
-        url: "{{ route('user.update', ':id') }}".replace(':id', id), 
-        type: "POST",
-        data: {
-            _token: "{{ csrf_token() }}", 
-            id: id,
-            name: name,
-            email: email,
-            role: role
-        },
-        success: function(response) {
-            alert(response.success);
-            $('#editUserModal').modal('hide'); // Hide modal after update
-            $('#myTable').DataTable().ajax.reload(); // Refresh DataTable
-        },
-        error: function(xhr) {
-            alert("Error updating user.");
-        }
-    });
-});
+                e.preventDefault(); 
+                        
+                var id = $('#editUserId').val();
+                var name = $('#editUserName').val();
+                var email = $('#editUserEmail').val();
+                var role = $('#editUserRole').val();
+                        
+                $.ajax({
+                    url: "{{ route('user.update', ':id') }}".replace(':id', id), 
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}", 
+                        id: id,
+                        name: name,
+                        email: email,
+                        role: role
+                    },
+                    success: function(response) {
+                        alert(response.success);
+                        $('#editUserModal').modal('hide'); // Hide modal after update
+                        $('#myTable').DataTable().ajax.reload(); // Refresh DataTable
+                    },
+                    error: function(xhr) {
+                        alert("Error updating user.");
+                    }
+                });
         });
+        //delete selected rows
+        $('#deleteRows').on('click',function(){
+            var selectedIds = [];
+            $('.select-checkbox:checked').each(function() {
+                    selectedIds.push($(this).data('id'));
+                });
+                if(confirm("AreYou Sure You want to delete These Ids - " + selectedIds)){
+                    $.ajax({
+                        url : "{{route('delete-selected')}}",
+                        type : "POST",
+                        data : {ids : selectedIds , _token: "{{ csrf_token()}}"},
+                        success : function(data){
+                            alert(data.success);
+                            $('#myTable').DataTable().ajax.reload(); 
+                            $('#deleteRows').hide();
+                        },
+                        error : function(xhr){
+                            alert("Error deleting records.");
+                        }
+                    });
+                }
+           
+        });
+
+
+    });
     </script>
 
 </body>

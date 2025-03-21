@@ -63,7 +63,7 @@
     {
       "name": "Calendar",
       "icon": "ti-calendar",
-      "url": "app-calendar.html"
+      "url": "/test-calender"
     },
     {
       "name": "Kanban",
@@ -258,7 +258,7 @@
     {
       "name": "User Profile",
       "icon": "ti-user-circle",
-      "url": "pages-profile-user.html"
+      "url": "/test-profile"
     },
     {
       "name": "User Profile - Teams",
@@ -723,7 +723,7 @@
     {
       "name": "Datatable Basic",
       "icon": "ti-layout-grid",
-      "url": "tables-datatables-basic.html"
+      "url" : "/users-datatable"
     },
     {
       "name": "Datatable Advanced",
