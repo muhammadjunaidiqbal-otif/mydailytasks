@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laravel DataTables Without Yajra</title>
-    <link href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <title>Partners DataTable</title>
+@include('Datatables.dt-script')
 </head>
 <body>
 
@@ -28,10 +26,13 @@
 $(document).ready(function() {
     $('#usersTable').DataTable({
         "processing": true,
-        "serverSide": false, 
+        "serverSide": false,
+        "lengthMenu": false,
+        "paginate":false,
+        "searching":false,
         "ajax": {
             "url": "{{ route('users.data') }}",
-            "dataSrc": "data"
+            "dataSrc": "info"
         },
         "columns": [
             { "data": "id" },
@@ -40,9 +41,9 @@ $(document).ready(function() {
             { 
                 "data": "role",
                 "render": function(data, type, row) {
-                    return data ? data.name : 'No Role'; 
+                    return data ? data.name : 'user'; 
                 }
-            }
+            } 
         ]
     });
 });

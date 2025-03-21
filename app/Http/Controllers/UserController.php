@@ -151,7 +151,7 @@ public function resetpassform($token)
     
 }
 
-public function submitresetpassword(Request $request){
+    public function submitresetpassword(Request $request){
     
     $request->validate([
         'email' => 'required|email',
@@ -178,7 +178,7 @@ public function submitresetpassword(Request $request){
     
 
 }
-public function verifyemail($id){
+    public function verifyemail($id){
     //return $request->email;
     $user = User::where('id',$id)->first();
 
@@ -191,7 +191,7 @@ public function verifyemail($id){
         return view('Admin.Dashboard',['info'=>$data]);
 
 }
-public function resendmail(Request $request){
+    public function resendmail(Request $request){
     $user = User::where('email',$request->email)->first();
     
         $data=[ 'name'=>$user->name,
@@ -210,16 +210,41 @@ public function resendmail(Request $request){
                     return view('Admin.Dashboard');     
                 }
          }   
-         public function index(Request $request)
+    public function index(Request $request)
     {
         $partners =  User::with('role')->get();
         return response()->json([
-            'data' => $partners
+            'info' => $partners
         ]);
           
     }
     //return $data;
-        
+    public function delete($id){
+        $user = User::find($id); // Corrected query
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found!'], 404);
+        }
+    
+        $user->delete();
+    
+        return response()->json(['msg' => 'User deleted successfully!']); 
+    
+    } 
+    public function update(Request $request)
+{
+    $user = User::find($request->id);
+    if (!$user) {
+        return response()->json(['error' => 'User not found'], 404);
+    }
+
+    // Update user fields
+    $user->name = $request->name;
+    $user->email = $request->email;
+    $user->save();
+
+    return response()->json(['success' => 'User updated successfully']);
+}
 }
 
 

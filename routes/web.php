@@ -108,4 +108,9 @@ Route::resource('/partners',PartnerRoleController::class);
 Route::get('/data-table',function(){
     return view('Partners.datatables');
 });
+Route::get('/advance-dt',function(){
+    return view('Datatables.advance-dt');
+});
 Route::get('/users/data',[UserController::class,'index'])->name('users.data');
+Route::delete('/user/delete/{id}',[UserController::class,'delete'])->name('user.delete');
+Route::post('/user/update',[UserController::class,'update'])->name('user.update');
