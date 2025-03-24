@@ -54,7 +54,7 @@ class PartnerRoleController extends Controller
             'role_id'=>'2',
             'country_id'=>$request->country_id,
             'state_id'=>$request->state_id,
-            'city_id'=>$request->city_id
+'city_id'=>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     $request->city_id
 
         ]);
         //gi$users = User::where('role_id','2')->get();
