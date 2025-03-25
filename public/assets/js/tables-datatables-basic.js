@@ -3,7 +3,91 @@
  */
 
 'use strict';
+let fv, offCanvasEl;
+document.addEventListener('DOMContentLoaded', function (e) {
+  (function () {
+    const formAddNewRecord = document.getElementById('form-add-new-record');
 
+    setTimeout(() => {
+      const newRecord = document.querySelector('.create-new'),
+        offCanvasElement = document.querySelector('#add-new-record');
+
+      // To open offCanvas, to add new record
+      if (newRecord) {
+        newRecord.addEventListener('click', function () {
+          offCanvasEl = new bootstrap.Offcanvas(offCanvasElement);
+          // Empty fields on offCanvas open
+          (offCanvasElement.querySelector('.dt-name').value = ''),
+            (offCanvasElement.querySelector('.dt-email').value = ''),
+            (offCanvasElement.querySelector('.dt-password').value = ''),
+          // Open offCanvas with form
+          offCanvasEl.show();
+        });
+      }
+    }, 200);
+
+    // Form validation for Add new record
+    fv = FormValidation.formValidation(formAddNewRecord, {
+      fields: {
+        basicFullname: {
+          validators: {
+            notEmpty: {
+              message: 'The name is required'
+            }
+          }
+        },
+        email: {
+          validators: {
+            notEmpty: {
+              message: 'Email field is required'
+            }
+          }
+        },
+        basicPassword: {
+          validators: {
+            notEmpty: {
+              message: 'The Password is required'
+            },
+          }
+        }
+      },
+      plugins: {
+        trigger: new FormValidation.plugins.Trigger(),
+        bootstrap5: new FormValidation.plugins.Bootstrap5({
+          // Use this for enabling/changing valid/invalid class
+          // eleInvalidClass: '',
+          eleValidClass: '',
+          rowSelector: '.col-sm-12'
+        }),
+        submitButton: new FormValidation.plugins.SubmitButton(),
+        // defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
+        autoFocus: new FormValidation.plugins.AutoFocus()
+      },
+      init: instance => {
+        instance.on('plugins.message.placed', function (e) {
+          if (e.element.parentElement.classList.contains('input-group')) {
+            e.element.parentElement.insertAdjacentElement('afterend', e.messageElement);
+          }
+        });
+      }
+    });
+
+    // FlatPickr Initialization & Validation
+    const flatpickrDate = document.querySelector('[name="basicDate"]');
+
+    if (flatpickrDate) {
+      flatpickrDate.flatpickr({
+        enableTime: false,
+        // See https://flatpickr.js.org/formatting/
+        dateFormat: 'm/d/Y',
+        // After selecting a date, we need to revalidate the field
+        onChange: function () {
+          fv.revalidateField('basicDate');
+        }
+      });
+    }
+  })();
+});
 
 // datatable (jquery)
 $(function () {
@@ -21,21 +105,22 @@ $(function () {
               "dataSrc": 'info'
               },
         columns: [
-          { data: '' },
-          { data: 'id' },
-          { data: 'id' },
-          { data: 'name' },
-          { data: 'email' },
-          { 
-            "data": "role",//"visible":false,
-           "render": function(data, type, row) {
-               return data ? data.name : 'user'; 
-           }
-       },
-          { data: 'created_at' },
-          { data: 'updated_at' },
-          { data: '' }
-        ],
+            { data: '' },
+            { data: '' },
+            { data: '' },
+            { data: 'id',visible:false },
+            { data: 'name' },
+            { data: 'email' },
+            { 
+              "data": "role",//"visible":false,
+              "render": function(data, type, row) {
+                return data ? data.name : 'user'; 
+              }, 
+            },
+            { data: 'created_at' },
+            { data: 'updated_at' },
+            { data: '' }
+          ],
         columnDefs: [
             {
               // For Responsive
@@ -54,13 +139,10 @@ $(function () {
               orderable: false,
               searchable: false,
               responsivePriority: 3,
-              checkboxes: true,
-              render: function () {
-                return '<input type="checkbox" class="dt-checkboxes select-checkbox form-check-input" data-id="' + row.id + '">';
+              checkboxes: false,
+              render: function (data, type, row) {
+                return '<input type="checkbox" class="select-checkbox" data-id="' + row.id + '">';
               },
-              checkboxes: {
-                selectAllRender: '<input type="checkbox" class="form-check-input">'
-              }
             },
             {
               targets: 2,
@@ -245,10 +327,11 @@ $(function () {
               }
             ]
           },
-          // {
-          //   text: '<i class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Add New Record</span>',
-          //   className: 'create-new btn btn-primary waves-effect waves-light'
-          // }
+           {
+             text: '<i class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Add New Record</span>',
+             className: 'create-new btn btn-primary waves-effect waves-light'
+           }
+
         ],
         responsive: {
           details: {
@@ -405,9 +488,37 @@ $(function () {
                       alert("Error deleting records.");
                   }
               });
-          }
-    
+          } 
     });
+    //submit NewRecord Form
+    $(document).on('click','.data-submit',function(e){
+      e.preventDefault(); 
+      var name = $('.dt-name').val();
+      var email = $('.dt-email').val();
+      var password = $('.dt-password').val();
+
+      $.ajax({
+        url:createRecordUrl, 
+        type: "POST",
+        data: {
+            _token: csrfToken, 
+            name: name,
+            email: email,
+            password: password
+        },
+        success: function(response) {
+            alert(response.success);
+            $('#form-add-new-record').modal('hide'); // Hide modal after update
+            $('.datatables-basic').DataTable().ajax.reload(); // Refresh DataTable
+        },
+        error: function(xhr) {
+            alert("Error Creating user.");
+        }
+
+      });
+     // alert("Submit Button From add new record clicked"+name);
+    });
+
 
   }
 });

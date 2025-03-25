@@ -90,21 +90,25 @@
               <!-- DataTable with Buttons -->
               <div class="card">
                 <div class="card-datatable table-responsive pt-0">
+                     <div class=" d-flex">
+                <button id="deleteRows" style="display:none; background:red; color:white; padding:5px;">Delete Selected</button>
+                </div>
                   <table class="datatables-basic table" id="myTable">
                     <thead>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th>id</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Created_At</th>
-                            <th>Updated_At</th>
-                            <th>Action</th>
-                          
-                        </tr>
-                      </thead>
+                      <tr>
+                        
+                        <th></th>
+                        <th><input type="checkbox" id="select-all" title="Click To Select All Rows"></th>
+                        <th></th>
+                        <th></th> 
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Created At</th>
+                        <th>Updated_At</th>
+                        <th></th>
+                      </tr>
+                    </thead>
                   </table>
                 </div>
               </div>
@@ -128,7 +132,7 @@
                         <input
                           type="text"
                           id="basicFullname"
-                          class="form-control dt-full-name"
+                          class="form-control dt-name"
                           name="basicFullname"
                           placeholder="John Doe"
                           aria-label="John Doe"
@@ -136,61 +140,35 @@
                       </div>
                     </div>
                     <div class="col-sm-12">
-                      <label class="form-label" for="basicPost">Post</label>
+                      <label class="form-label" for="email">Email</label>
                       <div class="input-group input-group-merge">
                         <span id="basicPost2" class="input-group-text"><i class="ti ti-briefcase"></i></span>
                         <input
-                          type="text"
-                          id="basicPost"
-                          name="basicPost"
-                          class="form-control dt-post"
-                          placeholder="Web Developer"
-                          aria-label="Web Developer"
-                          aria-describedby="basicPost2" />
+                          type="email"
+                          id="email"
+                          name="email"
+                          class="form-control dt-email"
+                          placeholder="example@email.com"
+                          aria-label="example@email.com"
+                          aria-describedby="basicEmail2" />
                       </div>
                     </div>
                     <div class="col-sm-12">
-                      <label class="form-label" for="basicEmail">Email</label>
+                      <label class="form-label" for="basicPassword">Password</label>
                       <div class="input-group input-group-merge">
                         <span class="input-group-text"><i class="ti ti-mail"></i></span>
                         <input
-                          type="text"
-                          id="basicEmail"
-                          name="basicEmail"
-                          class="form-control dt-email"
-                          placeholder="john.doe@example.com"
-                          aria-label="john.doe@example.com" />
+                          type="password"
+                          id="basicPassword"
+                          name="basicPassword"
+                          class="form-control dt-password"
+                          placeholder="*********************"
+                          aria-label="********************" />
                       </div>
-                      <div class="form-text">You can use letters, numbers & periods</div>
+                      <div class="form-text">Password Must Contain A Capital , A Small And A Numeric Letter </div>
                     </div>
-                    <div class="col-sm-12">
-                      <label class="form-label" for="basicDate">Joining Date</label>
-                      <div class="input-group input-group-merge">
-                        <span id="basicDate2" class="input-group-text"><i class="ti ti-calendar"></i></span>
-                        <input
-                          type="text"
-                          class="form-control dt-date"
-                          id="basicDate"
-                          name="basicDate"
-                          aria-describedby="basicDate2"
-                          placeholder="MM/DD/YYYY"
-                          aria-label="MM/DD/YYYY" />
-                      </div>
-                    </div>
-                    <div class="col-sm-12">
-                      <label class="form-label" for="basicSalary">Salary</label>
-                      <div class="input-group input-group-merge">
-                        <span id="basicSalary2" class="input-group-text"><i class="ti ti-currency-dollar"></i></span>
-                        <input
-                          type="number"
-                          id="basicSalary"
-                          name="basicSalary"
-                          class="form-control dt-salary"
-                          placeholder="12000"
-                          aria-label="12000"
-                          aria-describedby="basicSalary2" />
-                      </div>
-                    </div>
+            
+                    
                     <div class="col-sm-12">
                       <button type="submit" class="btn btn-primary data-submit me-sm-4 me-1">Submit</button>
                       <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">Cancel</button>
@@ -224,9 +202,9 @@
                         <div class="mb-3">
                           <label for="editUserRole" class="form-label">Role</label>
                           <select class="form-control" id="editUserRole">
-                            <option value="admin">Admin</option>
-                            <option value="editor">Partner</option>
-                            <option value="user">Customer</option>
+                            <option value="1">Admin</option>
+                            <option value="2">Partner</option>
+                            <option value="3">Customer</option>
                           </select>
                         </div>
               
@@ -236,9 +214,7 @@
                   </div>
                 </div>
               </div>
-              <div class="mb-3">
-                <button id="deleteRows" style="display:none; background:red; color:white; padding:5px;">Delete Selected</button>
-            </div>
+             
               <!--/ DataTable with Buttons -->
                 <hr class="my-12" />
               
@@ -292,6 +268,7 @@
         var editUserUrl = "{{ route('partners.show', ':id') }}";
         var submitEditForm = "{{ route('user.update', ':id') }}";
         var selectDeleteUrl = "{{route('delete-selected')}}";
+        var createRecordUrl = "{{route('create-record')}}";
     </script>
     <script src="../../assets/js/tables-datatables-basic.js"></script>
   </body>

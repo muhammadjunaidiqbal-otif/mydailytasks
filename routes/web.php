@@ -121,3 +121,4 @@ Route::get('/users/data',[UserController::class,'index'])->name('users.data');
 Route::delete('/user/delete/{id}',[UserController::class,'delete'])->name('user.delete');
 Route::post('/user/update',[UserController::class,'update'])->name('user.update');
 Route::post('/delete-selectedusers',[UserController::class,'deleteSelectedRows'])->name('delete-selected');
+Route::post('/create-record',[UserController::class,'storeUser'])->name('create-record');

@@ -240,6 +240,7 @@ class UserController extends Controller
     // Update user fields
     $user->name = $request->name;
     $user->email = $request->email;
+    $user->role_id=$request->role;
     $user->save();
 
     return response()->json(['success' => 'User updated successfully']);
@@ -252,6 +253,24 @@ class UserController extends Controller
             return response()->json(['success' => 'Records deleted successfully']);
         }
         return response()->json(['error' => 'No records selected'], 400);
+    }
+
+    public function storeUser(Request $request){
+        $data = $request->validate([
+            'name'=>'required|string',
+            'email'=>'required|email',
+            'password' => [
+        'required',
+        'min:8',
+        'regex:/[A-Z]/',       
+        'regex:/[a-z]/',        
+        'regex:/[0-9]/'],
+        ]);
+        $user = User::create($data);
+        if($user){
+            return response()->json(['success' => 'Records Created successfully']);
+        }
+        return response()->json(['error' => 'Error Creating Record'], 400);
     }
 
 }
