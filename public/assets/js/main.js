@@ -2,6 +2,13 @@
  * Main
  */
 
+      // Show loader for 15 seconds, then show content
+      window.onload = function () {
+          setTimeout(function () {
+              document.getElementById("loader-overlay").style.display = "none";
+          }, 15000); // 15 seconds
+      };
+  
 'use strict';
 
 window.isRtl = window.Helpers.isRtl();

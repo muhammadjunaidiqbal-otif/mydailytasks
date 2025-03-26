@@ -58,7 +58,7 @@
     <link rel="stylesheet" href="../../assets/vendor/libs/@form-validation/form-validation.css" />
 
     <!-- Page CSS -->
-
+    @include('Template.loadercss')
     <!-- Helpers -->
     <script src="../../assets/vendor/js/helpers.js"></script>
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
@@ -69,6 +69,9 @@
   </head>
 
   <body>
+    <div id="loader-overlay">
+      <div class="loader"></div>
+    </div>
     <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
@@ -102,14 +105,18 @@
                         <th></th>
                         <th></th> 
                         <th>Name</th>
-                        <th>Email</th>
+                        {{-- <th>Email</th>
                         <th>Role</th>
                         <th>Created At</th>
-                        <th>Updated_At</th>
+                        <th>Updated_At</th> --}}
                         <th></th>
                       </tr>
                     </thead>
+                    <tbody>
+                       
+                    </tbody>
                   </table>
+
                 </div>
               </div>
               
@@ -259,7 +266,7 @@
 
     <!-- Main JS -->
     <script src="../../assets/js/main.js"></script>
-
+    
     <!-- Page JS -->
     <script>
         var usersDataUrl = "{{ route('users.data') }}";

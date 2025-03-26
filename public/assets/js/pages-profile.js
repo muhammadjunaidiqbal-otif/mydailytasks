@@ -228,6 +228,7 @@ $(function () {
     $('div.head-label').html('<h5 class="card-title mb-0">Project List</h5>');
   }
 
+  
   // Filter form control to default size
   // ? setTimeout used for multilingual table initialization
   setTimeout(() => {

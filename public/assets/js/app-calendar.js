@@ -568,4 +568,10 @@ document.addEventListener('DOMContentLoaded', function () {
       appOverlay.classList.remove('show');
     });
   })();
+  window.onload = function () {
+    setTimeout(function () {
+        document.getElementById("loader-overlay").style.display = "none";
+        document.getElementById("content").style.display = "block";
+    }, 30000); // 30 seconds
+};
 });

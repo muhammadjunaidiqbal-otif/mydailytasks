@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use ajax;
+use App\Models\City;
 use App\Models\User;
 use App\Mail\TestMail;
 use App\Models\Country;
@@ -212,7 +213,8 @@ class UserController extends Controller
          }   
     public function index(Request $request)
     {
-        $partners =  User::with('role')->get();
+       // sleep(60);
+        $partners =  City::where('country_id','77')->orderBy('name','asc')->get();
         return response()->json([
             'info' => $partners
         ]);
@@ -249,10 +251,16 @@ class UserController extends Controller
     public function deleteSelectedRows(Request $request){
         $ids = $request->ids; 
         if (!empty($ids)) {
-            User::whereIn('id', $ids)->delete();
-            return response()->json(['success' => 'Records deleted successfully']);
+            City::whereIn('id', $ids)->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Records deleted successfully!'
+            ]);
         }
-        return response()->json(['error' => 'No records selected'], 400);
+        return response()->json([
+            'success' => false,
+            'message' => 'No records selected.'
+        ], 400);
     }
 
     public function storeUser(Request $request){

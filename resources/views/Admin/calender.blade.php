@@ -52,7 +52,7 @@
     <link rel="stylesheet" href="../../assets/vendor/libs/@form-validation/form-validation.css" />
 
     <!-- Page CSS -->
-
+    @include('Template.loadercss')
     <link rel="stylesheet" href="../../assets/vendor/css/pages/app-calendar.css" />
 
     <!-- Helpers -->
@@ -64,6 +64,9 @@
   </head>
 
   <body>
+    <div id="loader-overlay">
+      <div class="loader"></div>
+    </div>
     <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">

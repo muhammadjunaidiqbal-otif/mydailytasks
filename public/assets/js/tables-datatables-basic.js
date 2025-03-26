@@ -91,6 +91,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
 
 // datatable (jquery)
 $(function () {
+  var selectedRows = {};
   var dt_basic_table = $('.datatables-basic'),dt_basic;
 
   // DataTable with buttons
@@ -104,22 +105,28 @@ $(function () {
               "url": usersDataUrl,
               "dataSrc": 'info'
               },
+              "beforeSend": function () {
+                        $('#loader').fadeIn();  // Show loader before request
+                        },
+                    "complete": function () {
+                        $('#loader').fadeOut(); // Hide loader after data is fetched
+                    },
         columns: [
-            { data: '' },
-            { data: '' },
-            { data: '' },
+            { data:null , defaultContent : '' },
+            { data:null, defaultContent :'' },
+            { data:null, defaultContent :'' },
             { data: 'id',visible:false },
             { data: 'name' },
-            { data: 'email' },
-            { 
-              "data": "role",//"visible":false,
-              "render": function(data, type, row) {
-                return data ? data.name : 'user'; 
-              }, 
-            },
-            { data: 'created_at' },
-            { data: 'updated_at' },
-            { data: '' }
+            //{ data: 'email' },
+            //{ 
+            //  "data": "role",//"visible":false,
+            //  "render": function(data, type, row) {
+            //    return data ? data.name : 'user'; 
+            //  }, 
+            //},
+            //{ data: 'created_at' },
+            //{ data: 'updated_at' },
+            { data:null, defaultContent :'' }
           ],
         columnDefs: [
             {
@@ -175,6 +182,13 @@ $(function () {
               }
             }
           ],
+          order: [[2, 'desc']],
+          language: {
+              processing: "<span class='text-primary'>Loading...</span>"
+          },
+          initComplete: function (settings, json) {
+              $('.card-header').after('<hr class="my-0">');
+          },
         order: [[2, 'desc']],
         dom: '<"card-header flex-column flex-md-row"<"head-label text-center"><"dt-action-buttons text-end pt-6 pt-md-0"B>><"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end mt-n6 mt-md-0"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
         displayLength: 7,
@@ -330,6 +344,7 @@ $(function () {
            {
              text: '<i class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Add New Record</span>',
              className: 'create-new btn btn-primary waves-effect waves-light'
+   
            }
 
         ],
@@ -454,42 +469,101 @@ $(function () {
     });
 
     //CHECK BOXES
-    $('#select-all').on('click', function() {
-      var rows = $('#myTable').DataTable().rows({ search: 'applied' }).nodes();
-      $('input[type="checkbox"]', rows).prop('checked', this.checked);
-      var selectedCount = $('.select-checkbox:checked').length;
-      $('#deleteRows').toggle(selectedCount > 0);
+    // $('#select-all').on('click', function() {
+    //   var rows = $('#myTable').DataTable().rows({ search: 'applied' }).nodes();
+    //   $('input[type="checkbox"]', rows).prop('checked', this.checked);
+    //   var selectedCount = $('.select-checkbox:checked').length;
+    //   $('#deleteRows').toggle(selectedCount > 0);
 
-    });
+    // });
 
-    $('#myTable tbody').on('change', 'input[type="checkbox"]', function() {
-      var selectedCount = $('.select-checkbox:checked').length;
-      $('#deleteRows').toggle(selectedCount > 0);
+    // $('#myTable tbody').on('change', 'input[type="checkbox"]', function() {
+    //   var selectedCount = $('.select-checkbox:checked').length;
+    //   $('#deleteRows').toggle(selectedCount > 0);
     
-    });
+    // });
+    $('#select-all').on('change', function () {
+      var isChecked = this.checked;
+  
+      // Select all checkboxes, including those not in the current page
+      $('.select-checkbox').prop('checked', isChecked);
+  
+      $('#myTable').DataTable().rows().every(function () {
+          var row = this.node();
+          var rowId = $(row).find('.select-checkbox').data('id');
+  
+          if (isChecked) {
+              selectedRows[rowId] = true;
+          } else {
+              delete selectedRows[rowId];
+          }
+      });
+  
+      updateDeleteButtonVisibility();
+  });
+  
+  $('#myTable tbody').on('change', '.select-checkbox', function () {
+          var rowId = $(this).data('id');
+          if (this.checked) {
+              selectedRows[rowId] = true;
+          } else {
+              delete selectedRows[rowId];
+              $('#select-all').prop('checked', false);
+          }
+          if ($('.select-checkbox:checked').length === $('.select-checkbox').length) {
+          $('#select-all').prop('checked', true);
+      }
+  
+          updateDeleteButtonVisibility();
+      });
+      dt_basic.on('draw', function () {
+          $('.select-checkbox').each(function () {
+              var rowId = $(this).data('id');
+              $(this).prop('checked', selectedRows[rowId] === true);
+          });
+  
+          $('#select-all').prop('checked', Object.keys(selectedRows).length === dt_basic.rows().count());
+  
+          updateDeleteButtonVisibility();
+      });
+      function updateDeleteButtonVisibility() {
+          var selectedCount = Object.keys(selectedRows).length;
+          $('#deleteRows').toggle(selectedCount > 0);
+      }
 
     //DELETE SELECTED ROWS WITH CHECKBOXES
-    $('#deleteRows').on('click',function(){
-      var selectedIds = [];
-      $('.select-checkbox:checked').each(function() {
-              selectedIds.push($(this).data('id'));
-          });
-          if(confirm("AreYou Sure You want to delete These Ids - " + selectedIds)){
-              $.ajax({
-                  url : selectDeleteUrl,
-                  type : "POST",
-                  data : {ids : selectedIds , _token:csrfToken} ,
-                  success : function(data){
-                      alert(data.success);
-                      $('#myTable').DataTable().ajax.reload(); 
-                      $('#deleteRows').hide();
-                  },
-                  error : function(xhr){
-                      alert("Error deleting records.");
-                  }
-              });
-          } 
-    });
+    $('#deleteRows').on('click', function () {
+      var selectedIds = Object.keys(selectedRows);
+      if (selectedIds.length === 0) {
+          alert("No users selected.");
+          return;
+      }
+
+      if (!confirm("Are you sure you want to delete selected users?")) return;
+
+      $.ajax({
+          url: selectDeleteUrl,
+          type: "POST",
+          data: {
+              _token: csrfToken,
+              ids: selectedIds
+          },
+          success: function (response) {
+              if (response.success) {
+                  alert(response.message); 
+              } else {
+                  alert("Error: " + response.message); 
+              }
+              selectedRows = {}; 
+              dt.ajax.reload();
+              updateDeleteButtonVisibility();
+          },
+          error: function (xhr) {
+              console.error(xhr.responseText);
+              alert("Error: " + xhr.responseText);
+          }
+      });
+  });
     //submit NewRecord Form
     $(document).on('click','.data-submit',function(e){
       e.preventDefault(); 
@@ -519,6 +593,6 @@ $(function () {
      // alert("Submit Button From add new record clicked"+name);
     });
 
-
   }
+ 
 });
