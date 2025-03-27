@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 <style>
     /* Loader Overlay */
     #loader-overlay {
@@ -23,5 +24,8 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+        #toast-container {
+        z-index: 99999 !important;
         }
     </style>

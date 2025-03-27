@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Advanced DataTable</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Toastr CSS (for notifications) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+
+    <!-- Custom CSS (if needed) -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
     @include('Datatables.dt-script')
     
 </head>
@@ -16,15 +25,16 @@
         <div class="card">
           <div class="card-datatable table-responsive pt-0">
             <div class="divider">
-                <span class="divider-text"><h1><strong>Partners DataTable</strong></h1></span>
+                <span class="divider-text"><h1><strong>User DataTable</strong></h1></span>
             </div>
+            
         <div class="mb-3">
             <button id="deleteRows" style="display:none; background:red; color:white; padding:5px;">Delete Selected</button>
         </div>
     <table id="myTable" class="display">
         <thead>
             <tr>
-                <th><input type="checkbox" id="select-all">Select All</th> 
+                <th><input type="checkbox" id="select-all"></th> 
                 <th>ID</th>
                 <th>Name</th>
                 {{-- <th>Email</th>
@@ -86,11 +96,26 @@
 
 <!-- Bootstrap CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- Bootstrap JS (Popper.js included) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+         function confirmAction() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire("Deleted!", "Your file has been deleted.", "success");
+            }
+        });
+    }
         var selectedRows = {};
         $(document).ready(function() {
             //Datatable
@@ -133,24 +158,23 @@
                                 //         return data ? data.name : 'user'; 
                                 //     }
                                 // },
-                                { 
-                                    "data": "id",
-                                    "render": function(data) {
+                                {
+                                    "render": function(data , type , full) {
                                     return `
-                                        <button class="btn-edit" data-id="${data}">Edit</button>
-                                        <button class="btn-delete" data-id="${data}">Delete</button>
+                                        <button class="btn-edit" data-id="${full.id}" >Edit</button>
+                                        <button class="btn-delete" data-id="${full.id}" data-name = "${full.name}">Delete</button>
                                     `;
-                        }
-                       
-                    } 
-                            ],
-                            order: [[2, 'desc']],
-    language: {
-        processing: "<span class='text-primary'>Loading...</span>"
-    },
-    initComplete: function (settings, json) {
-        $('.card-header').after('<hr class="my-0">');
-    }
+                                    },
+                                "orderable":false
+                                } 
+                                ],
+                            order: [[2, 'asc']],
+                            language: {
+                                processing: "<span class='text-primary'>Loading...</span>"
+                            },
+                            initComplete: function (settings, json) {
+                             $('.card-header').after('<hr class="my-0">');
+                             }
                
             });
             // Select All Checkboxes
@@ -202,26 +226,48 @@ $('#myTable tbody').on('change', '.select-checkbox', function () {
         var selectedCount = Object.keys(selectedRows).length;
         $('#deleteRows').toggle(selectedCount > 0);
     }
-            $(document).on('click', '.btn-delete', function() {
-                var id = $(this).data('id');
-
-                if (confirm("Are you sure you want to delete User " + id + "?")) {
-                    $.ajax({
-                        url: "{{ route('user.delete', ':id') }}".replace(':id', id), 
-                        type: "DELETE",
-                        data: {
-                            _token: "{{ csrf_token() }}" 
-                        },
-                        success: function(response) {
-                            alert(response.msg); 
-                            $('#myTable').DataTable().ajax.reload(); 
-                        },
-                        error: function(xhr) {
-                            alert("Error deleting user.");
-                        }
-                    });
-                }
-            });
+    $(document).on('click', '.btn-delete', function() {
+        var id = $(this).data('id');
+        var name = $(this).data('name');
+        console.log(name);
+        
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You Want To Delete : " + name,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('user.delete', ':id') }}".replace(':id', id),
+                    type: "DELETE",
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Deleted!",
+                            text: response.msg,
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        });
+                        $('#myTable').DataTable().ajax.reload();
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            title: "Error!",
+                            text: "Error deleting user.",
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        });
+                    }
+                });
+            }
+        });
+    });
 
             $(document).on('click', '.btn-edit', function() {
                 var id = $(this).data('id');

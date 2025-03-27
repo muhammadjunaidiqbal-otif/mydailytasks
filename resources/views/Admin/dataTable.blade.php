@@ -58,6 +58,7 @@
     <link rel="stylesheet" href="../../assets/vendor/libs/@form-validation/form-validation.css" />
 
     <!-- Page CSS -->
+
     @include('Template.loadercss')
     <!-- Helpers -->
     <script src="../../assets/vendor/js/helpers.js"></script>
@@ -276,7 +277,11 @@
         var submitEditForm = "{{ route('user.update', ':id') }}";
         var selectDeleteUrl = "{{route('delete-selected')}}";
         var createRecordUrl = "{{route('create-record')}}";
-    </script>
+        
+        var isAuthenticated = @json(Auth::check());
+        var userName = @json(Auth::user()->name ?? '');
+  </script>
+
     <script src="../../assets/js/tables-datatables-basic.js"></script>
   </body>
 </html>

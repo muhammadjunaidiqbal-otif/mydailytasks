@@ -208,13 +208,13 @@ class UserController extends Controller
             if($user->email_verified_at===null){
                 return view('auth.verify-email')->with('status','Sorry! You Are Not Verified');
                 }else{
-                    return view('Admin.Dashboard');     
+                    return view('Admin.test-dashboard');     
                 }
          }   
     public function index(Request $request)
     {
        // sleep(60);
-        $partners =  City::where('country_id','77')->orderBy('name','asc')->get();
+        $partners =  User::orderBy('name','asc')->get();
         return response()->json([
             'info' => $partners
         ]);

@@ -5,9 +5,24 @@
       // Show loader for 15 seconds, then show content
       window.onload = function () {
           setTimeout(function () {
+            
               document.getElementById("loader-overlay").style.display = "none";
-          }, 15000); // 15 seconds
+              if(isAuthenticated){
+                toastr.success("Page Loaded Successfully!", "Welcome "+ userName);
+              }else{
+                toastr.success("Page Loaded Successfully!", "Welcome ");
+              }
+               
+              
+          
+            }, 5000); // 15 seconds
       };
+
+    //   $(document).ready(function () {
+    //     toastr.success("Page Loaded Successfully!", "Success", {
+    //         timeOut: 5000 // 5 seconds
+    //     });
+    // });
   
 'use strict';
 

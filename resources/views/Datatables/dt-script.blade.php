@@ -6,6 +6,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script><style>
+    
         .divider {
             display: flex;
             align-items: center;
@@ -35,11 +36,15 @@
       width: 100%;
       height: 100%;
       background: rgba(255, 255, 255, 0.7);
-      display: flex;
+      display: none;
       justify-content: center;
       align-items: center;
       z-index: 1050;
       display: none; /* Initially hidden */
   }
+  #toast-container {
+    z-index: 99999 !important;
+}
+
 </style>
     </style>

@@ -18,8 +18,8 @@ class AdminSeeder extends Seeder
        $adminUser = Role::firstOrCreate(['name'=>'Admin']);
 
             User::firstOrCreate([
-             'name' => 'Super Admin',
-             'email' => 'admin@example.com',
+             'name' => 'Second Admin',
+             'email' => 'secondadmin@example.com',
              'password' => Hash::make('password123'),
              'role_id' => $adminUser->id
             ]);

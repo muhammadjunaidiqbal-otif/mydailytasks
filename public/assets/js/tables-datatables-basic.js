@@ -163,21 +163,22 @@ $(function () {
 
           {
               // Actions
+              
               targets: -1,
               title: 'Actions',
               orderable: false,
               searchable: false,
-              render: function (data, type, full, meta) {
+              render: function (data, type, full) {
                 return (
                 '<div class="d-inline-block">' +
                 '<a href="javascript:;" class="btn btn-sm btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical ti-md"></i></a>' +
                 '<ul class="dropdown-menu dropdown-menu-end m-0">' +
                 '<li><a href="javascript:;" class="dropdown-item">Details</a></li>' +
                 '<div class="dropdown-divider"></div>' +
-                '<li><a href="javascript:;" class="dropdown-item text-danger delete-record"  data-id="'+full.id+'" >Delete</a></li>' +
+                '<li><a href="javascript:;" class="dropdown-item text-danger delete-record"  data-id="' + full.id + '" data-name="' + full.name + '">Delete</a></li>' +
                 '</ul>' +
                 '</div>' +
-                '<a href="javascript:;" class="btn btn-sm btn-text-secondary rounded-pill btn-icon btn-edit"data-id="'+full.id+'"><i class="ti ti-pencil ti-md"></i></a>'
+                '<a href="javascript:;" class="btn btn-sm btn-text-secondary rounded-pill btn-icon btn-edit" data-id="'+full.id+'"><i class="ti ti-pencil ti-md"></i></a>'
                 );
               }
             }
@@ -387,16 +388,27 @@ $(function () {
 
       //DELETE RECORD
       $(document).on('click', '.delete-record', function () {
-        var id = $(this).attr('data-id'); // Get ID properly
-    
-        console.log("Deleting user with ID:", id); // Debugging
+        
+        var id = $(this).data('id');
+        var name = $(this).data('name');
+
+        //console.log("Deleting user with ID:", id); // Debugging
     
         if (!id || id === 'undefined' || id === 'null') {
             alert("User ID not found.");
             return;
         }
     
-        if (confirm("Are you sure you want to delete User " + id + "?")) {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You are about to delete: " + name,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!"
+        }).then((result=>{
+          if(result.isConfirmed){ 
             $.ajax({
                 url: deleteUserUrl.replace(':id', id),
                 type: "DELETE",
@@ -404,14 +416,15 @@ $(function () {
                     "X-CSRF-TOKEN": csrfToken
                 },
                 success: function (response) {
-                    alert(response.message || "User deleted successfully!");
+                    toastr.success(name + " has been deleted successfully!",'SUCCESS' );
                     $('.datatables-basic').DataTable().ajax.reload();
                 },
                 error: function (xhr) {
-                    alert("Error deleting user: " + xhr.responseText);
+                  toastr.error("Failed To Delete"+ name , 'ERROR!');
                 }
-            });
-        }
+              });
+            }
+        }))    
     });
 
     //OPEN EDIT MODAL
@@ -458,12 +471,12 @@ $(function () {
               role: role
           },
           success: function(response) {
-              alert(response.success);
+              toastr.success(name + " Edited Successfully","SUCCESS");
               $('#editUserModal').modal('hide'); // Hide modal after update
               $('.datatables-basic').DataTable().ajax.reload(); // Refresh DataTable
           },
           error: function(xhr) {
-              alert("Error updating user.");
+            toastr.success("Unable To Edit " + name ,"ERROR")
           }
       });
     });

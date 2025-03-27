@@ -301,6 +301,9 @@
                 </div>
               </div>
             </div>
+            <button onclick="showToast()">Show Toastr</button>
+            
+      
             <!-- / Content -->
 
             <!-- Footer -->
@@ -346,5 +349,26 @@
     <!-- Page JS -->
     <script src="../../assets/js/app-calendar-events.js"></script>
     <script src="../../assets/js/app-calendar.js"></script>
+    <script>
+
+
+var isAuthenticated = @json(Auth::check());
+var userName = @json(Auth::user()->name ?? '');
+              function showToast() {
+                //toastr.clear();
+                  toastr.info("Toastr is working!", "Success", {
+                      timeOut: 5000,  // 5 seconds
+                      progressBar: false,
+                      closeButton: false,
+                      positionClass: "toast-top-right",
+                  });
+              }
+      
+              // Auto show toast after page loads
+              
+          </script>
+    {{-- @if ()
+        var errors = "{{}}"
+    @endif --}}
   </body>
 </html>
