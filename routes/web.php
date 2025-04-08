@@ -16,24 +16,29 @@ Route::get('/test', function () {
     return "Hello";
 });
 
-
-
 Route::get('/', function () {
-    return view('login');
-})->name('login.page');
-Route::get('/register-page', [UserController::class,'ShowRegisterPage'])->name('register.page');
+    return view('auth.auth-login');
+})->name('login-page');
+
+Route::post('/login',[UserController::class,'login'])->name('user-login');
+Route::get('/register-page',function(){
+    return view('auth.auth-register');
+});
 Route::get('/reset-page', function () {
     return view('forgetpass');
 })->name('reset.page');
-Route::post('/register-user',[UserController::class,'register'])->name('newuser.register');
+Route::post('/register',[UserController::class,'register'])->name('user-register');
 
 
 Route::post('/login-user',[UserController::class,'login'])->name('login.user');
-Route::get('/logout',[UserController::class,'logout'])->name('logout');
+Route::get('/logout',[UserController::class,'logout'])->name('user-logout');
+Route::get('/forget-pass',function(){
+    return view('auth.auth-forgetpass');
+})->name('forget-pass');
 Route::get('/users-details',[UserController::class,'users'])->name('user.index');
 
 
-Route::post('/reset-page',[UserController::class,'resetpass'])->name('pass.reset');
+Route::post('/verify-email',[UserController::class,'verify_Email'])->name('verifyemail');
 Route::get('/email',[UserController::class,'mail'])->name('send.email');
 Route::get('/reset-pass/{token}',[UserController::class,'resetpassform'])->name('reset.pass');
 Route::post('/submit-reset-pass',[UserController::class,'submitresetpassword'])->name('sumbit.resetpass');
@@ -42,7 +47,9 @@ Route::get('/email-verification',function(){
     return view('emailverification');
 })->name('verification.page');
 
-Route::get('/dashboard',[UserController::class,'dashboard'])->name('dashboard')->middleware('verified.user');
+Route::get('/index.html',function(){
+    return view('Dashboards.index');
+})->name('user-Dashboard');
 
 Route::post('/send-mail',[UserController::class,'resendmail'])->name('mail.send');
 Route::get('/verify-email/{id}',[UserController::class,'verifyemail'])->name('verify.email');
@@ -53,19 +60,20 @@ Route::post('/verified-email',[UserController::class,'verifiedemail'])->name('ve
 
 //The Email Verification Notice
 Route::get('/email/verify', function () {
-    return view('auth.verify-email');
+    return view('auth.auth-emailverification');
 })->middleware('auth')->name('verification.notice');
 //The Email Verification Handler
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
  
-    return redirect('/dashboard')->route('dashboard');
+    return redirect()->route('user-Dashboard');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 //Resending the Verification Email
 Route::post('/email/verification-notification', function (Request $request) {
+    //dd(123);
     $request->user()->sendEmailVerificationNotification();
  
-    return back()->with('message', 'Verification link sent!');
+    return back()->with('status', 'Verification link sent again!');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 
@@ -122,3 +130,11 @@ Route::delete('/user/delete/{id}',[UserController::class,'delete'])->name('user.
 Route::post('/user/update',[UserController::class,'update'])->name('user.update');
 Route::post('/delete-selectedusers',[UserController::class,'deleteSelectedRows'])->name('delete-selected');
 Route::post('/create-record',[UserController::class,'storeUser'])->name('create-record');
+
+//Products Routes
+
+Route::get('/products-category',function(){
+    return view('Products-view.products-categories');
+});
+
+

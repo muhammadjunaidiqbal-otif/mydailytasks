@@ -652,5 +652,7 @@
 
     <!-- Page JS -->
     <script src="../../assets/js/pages-profile.js"></script>
+    <script>  var isAuthenticated = @json(Auth::check());
+    var userName = @json(Auth::user()->name ?? '');</script>
   </body>
 </html>

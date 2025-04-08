@@ -2,6 +2,10 @@
 @section('content')
 @section('card-title')
 Register
+
+<link rel="stylesheet" href="h
+ttps://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
 @endsection
 @section('card-body')
 
@@ -81,3 +85,25 @@ Register
 
 @endsection
 @endsection
+<!-- jQuery CDN -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> --}}
+<!-- Toastr CSS -->
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+
+    @if ($errors->any())  
+        @foreach ($errors->all() as $error)
+            console.log("{{ $error }}");
+            setTimeout(() => {
+                toastr.error('{{ $error }}');
+            }, 3000);
+        @endforeach
+    @endif
+
+    @if (session('success'))
+        toastr.success('{{ session('success') }}');
+    @endif
+</script>

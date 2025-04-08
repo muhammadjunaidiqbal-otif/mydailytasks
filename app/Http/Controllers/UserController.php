@@ -13,6 +13,7 @@ use App\Mail\EmailVerifyMail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Cookie;
@@ -34,13 +35,13 @@ class UserController extends Controller
         if(Auth::attempt($data,$remember)){
             $request->session()->regenerate();
             if($user->email_verified_at===null){
-                    return redirect()->route('verification.notice')->with('status','Verify Your Email First To Login !');
+                    return redirect()->route('verification.notice')->with('error','Verify Your Email First To Login !');
                 }else{
-                    return redirect()->route('test.dashboard')->with('status','Login Successfully ;)');
+                    return redirect()->route('user-Dashboard')->with('status','Login Successfully ;)');
                 }
             
         }else{
-            return back()->with('status','Invalid Username or Password');
+            return back()->with('error','Invalid Username or Password');
         }
     }
     public function dashboard(){
@@ -65,9 +66,9 @@ class UserController extends Controller
         'regex:/[A-Z]/',       
         'regex:/[a-z]/',        
         'regex:/[0-9]/'],
-        'country_id'=>'required|int',
-        'state_id'=>'required|int',
-        'city_id'=>'required|int'
+        //'country_id'=>'required|int',
+        //'state_id'=>'required|int',
+        //'city_id'=>'required|int'
         ]);
 
 
@@ -102,18 +103,17 @@ class UserController extends Controller
     }
         Auth::logout();
 
-        return redirect()->route('login.page')->with('status','Logout Successfully . ');
+        return redirect()->route('login-page')->with('status','Logout Successfully . ');
     }
 
-    public function resetpass(Request $request){
-        $email = $request->validate([
-            'email' =>'required|exists:users,email'
-        ]);
-       
-        if($email){
-            return view('sendemail',['email'=>$request->email]);
+    public function verify_Email(Request $request){
+        //return $request;
+        $user = User::where('email', $request->email)->first();
+        //return $user;
+        if($user){
+            return view('auth.auth-forgetpass',['email'=>$user->email]);
         }else{
-            return back()->with('status','Not A Valid Email');
+            return back()->with('error','Not A Valid Email');
         }
     }
 
@@ -136,14 +136,14 @@ class UserController extends Controller
     
     Mail::to('junaidiqbalmrar@gmail.com')->send(new TestMail($data));
 
-    return redirect()->route('login.page');
+    return redirect()->route('login-page')->with('status','Reset Pass Mail Send Successfully');
     }
     public function resetpassform($token)
     {
         $email = DB::table('password_reset_tokens')->where('token',$token)->first();
         //return $email->email;
         if($email){
-            return view('resetpass', ['token' => $token,
+            return view('auth.auth-resetpass', ['token' => $token,
                                   'email'=>$email->email
                                 ]);
         }else{
@@ -155,7 +155,7 @@ class UserController extends Controller
     public function submitresetpassword(Request $request){
     
     $request->validate([
-        'email' => 'required|email',
+        
         'password' => [
         'required',
         'min:8',
@@ -167,14 +167,15 @@ class UserController extends Controller
     ]);
     //return $request;
     $updatepassword = DB::table('password_reset_tokens')->where(['email'=>$request->email,'token'=>$request->token])->first();
+    //return $updatepassword;
     if(!$updatepassword){
-        return back()->withInput('status','Invalid Token');
+        return back()->with('status','Invalid Token');
     }else{
         User::where('email',$request->email)->update([
-            'password'=>$request->password
+            'password'=>Hash::make($request->password)
         ]);
         DB::table('password_reset_tokens')->where(['email'=>$request->email,'token'=>$request->token])->delete();
-        return redirect()->route('login.page')->with('status','Password Updated Successfully!');
+        return redirect()->route('login-page')->with('status','Password Updated Successfully!');
     }
     
 
@@ -208,7 +209,7 @@ class UserController extends Controller
             if($user->email_verified_at===null){
                 return view('auth.verify-email')->with('status','Sorry! You Are Not Verified');
                 }else{
-                    return view('Admin.test-dashboard');     
+                    return view('Dashboards.index')->with('status','Email Verified Successfully');     
                 }
          }   
     public function index(Request $request)
@@ -236,7 +237,7 @@ class UserController extends Controller
     public function update(Request $request){
     $user = User::find($request->id);
     if (!$user) {
-        return response()->json(['error' => 'User not found'], 404);
+        return response()->json(['error' => 'User not found']);
     }
 
     // Update user fields
@@ -251,16 +252,10 @@ class UserController extends Controller
     public function deleteSelectedRows(Request $request){
         $ids = $request->ids; 
         if (!empty($ids)) {
-            City::whereIn('id', $ids)->delete();
-            return response()->json([
-                'success' => true,
-                'message' => 'Records deleted successfully!'
-            ]);
+            User::whereIn('id', $ids)->delete();
+            return response()->json(['success' => 'Records deleted successfully!']);
         }
-        return response()->json([
-            'success' => false,
-            'message' => 'No records selected.'
-        ], 400);
+        return response()->json(['error'=> 'No records selected.'], 400);
     }
 
     public function storeUser(Request $request){

@@ -416,11 +416,12 @@ $(function () {
                     "X-CSRF-TOKEN": csrfToken
                 },
                 success: function (response) {
-                    toastr.success(name + " has been deleted successfully!",'SUCCESS' );
+                    toastr.success(response.success);
                     $('.datatables-basic').DataTable().ajax.reload();
                 },
                 error: function (xhr) {
-                  toastr.error("Failed To Delete"+ name , 'ERROR!');
+                  var err = JSON.parse(xhr.responseText);
+                  toastr.error(err.error);
                 }
               });
             }
@@ -471,12 +472,13 @@ $(function () {
               role: role
           },
           success: function(response) {
-              toastr.success(name + " Edited Successfully","SUCCESS");
+              toastr.success(response.success);
               $('#editUserModal').modal('hide'); // Hide modal after update
               $('.datatables-basic').DataTable().ajax.reload(); // Refresh DataTable
           },
           error: function(xhr) {
-            toastr.success("Unable To Edit " + name ,"ERROR")
+            var err = JSON.parse(xhr.responseText);
+            toastr.error(err.error);
           }
       });
     });
@@ -562,18 +564,14 @@ $(function () {
               ids: selectedIds
           },
           success: function (response) {
-              if (response.success) {
-                  alert(response.message); 
-              } else {
-                  alert("Error: " + response.message); 
-              }
+              toastr.success(response.success); 
               selectedRows = {}; 
               dt.ajax.reload();
               updateDeleteButtonVisibility();
           },
           error: function (xhr) {
-              console.error(xhr.responseText);
-              alert("Error: " + xhr.responseText);
+            var err = JSON.parse(xhr.responseText);
+            toastr.error(err.error);
           }
       });
   });
@@ -594,12 +592,12 @@ $(function () {
             password: password
         },
         success: function(response) {
-            alert(response.success);
+            toastr.success(response.success);
             $('#form-add-new-record').modal('hide'); // Hide modal after update
             $('.datatables-basic').DataTable().ajax.reload(); // Refresh DataTable
         },
         error: function(xhr) {
-            alert("Error Creating user.");
+            toastr.error("Error Creating user.");
         }
 
       });

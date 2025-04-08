@@ -352,8 +352,7 @@
     <script>
 
 
-var isAuthenticated = @json(Auth::check());
-var userName = @json(Auth::user()->name ?? '');
+
               function showToast() {
                 //toastr.clear();
                   toastr.info("Toastr is working!", "Success", {

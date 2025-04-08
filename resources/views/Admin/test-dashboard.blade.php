@@ -952,6 +952,9 @@
 
     <!-- Main JS -->
     <script src="../../assets/js/main.js"></script>
+    <script>  var isAuthenticated = @json(Auth::check());
+    var userName = @json(Auth::user()->name ?? '');</script>
+    
 
     <!-- Page JS -->
     <script src="../../assets/js/app-ecommerce-dashboard.js"></script>

@@ -250,7 +250,12 @@
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
-
+    @if(session('success'))
+    <p>Success: {{ session('success') }}</p>
+@endif
+@if(session('error'))
+    <p>Error: {{ session('error') }}</p>
+@endif
     @include('Template.script')
 
     <!-- endbuild -->
@@ -278,8 +283,10 @@
         var selectDeleteUrl = "{{route('delete-selected')}}";
         var createRecordUrl = "{{route('create-record')}}";
         
-        var isAuthenticated = @json(Auth::check());
-        var userName = @json(Auth::user()->name ?? '');
+          var isAuthenticated = @json(Auth::check());
+          var userName = @json(Auth::user()->name ?? '');
+         
+
   </script>
 
     <script src="../../assets/js/tables-datatables-basic.js"></script>

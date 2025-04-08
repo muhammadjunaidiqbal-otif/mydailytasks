@@ -22,7 +22,7 @@ class verifyusers
             return $next($request);
         }else{
             echo "Login to Accesss";
-            return redirect()->route('login.page')->with('alert','Login To Access The Dashboard Page');
+            return redirect()->route('login-page')->with('alert','Login To Access The Dashboard Page');
         }
         
     }
