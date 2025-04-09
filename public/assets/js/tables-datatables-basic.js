@@ -105,27 +105,21 @@ $(function () {
               "url": usersDataUrl,
               "dataSrc": 'info'
               },
-              "beforeSend": function () {
-                        $('#loader').fadeIn();  // Show loader before request
-                        },
-                    "complete": function () {
-                        $('#loader').fadeOut(); // Hide loader after data is fetched
-                    },
         columns: [
             { data:null , defaultContent : '' },
             { data:null, defaultContent :'' },
             { data:null, defaultContent :'' },
             { data: 'id',visible:false },
             { data: 'name' },
-            //{ data: 'email' },
-            //{ 
-            //  "data": "role",//"visible":false,
-            //  "render": function(data, type, row) {
-            //    return data ? data.name : 'user'; 
-            //  }, 
-            //},
-            //{ data: 'created_at' },
-            //{ data: 'updated_at' },
+            { data: 'email' },
+            { 
+              data: "role",//"visible":false,
+              render: function(data, type, row) {
+                return data ? data.name : 'user'; 
+              }, 
+            },
+            { data: 'created_at' },
+            { data: 'updated_at' },
             { data:null, defaultContent :'' }
           ],
         columnDefs: [
@@ -472,13 +466,13 @@ $(function () {
               role: role
           },
           success: function(response) {
-              toastr.success(response.success);
+              alert(response.success);
               $('#editUserModal').modal('hide'); // Hide modal after update
               $('.datatables-basic').DataTable().ajax.reload(); // Refresh DataTable
           },
           error: function(xhr) {
             var err = JSON.parse(xhr.responseText);
-            toastr.error(err.error);
+           alert(err.error);
           }
       });
     });
@@ -564,14 +558,15 @@ $(function () {
               ids: selectedIds
           },
           success: function (response) {
-              toastr.success(response.success); 
+               
               selectedRows = {}; 
-              dt.ajax.reload();
+              $('.datatables-basic').DataTable().ajax.reload();;
+              alert(response.success);
               updateDeleteButtonVisibility();
           },
           error: function (xhr) {
             var err = JSON.parse(xhr.responseText);
-            toastr.error(err.error);
+            alert(err.error);
           }
       });
   });
@@ -592,12 +587,12 @@ $(function () {
             password: password
         },
         success: function(response) {
-            toastr.success(response.success);
+            alert(response.success);
             $('#form-add-new-record').modal('hide'); // Hide modal after update
             $('.datatables-basic').DataTable().ajax.reload(); // Refresh DataTable
         },
         error: function(xhr) {
-            toastr.error("Error Creating user.");
+            alert("Error Creating user.");
         }
 
       });

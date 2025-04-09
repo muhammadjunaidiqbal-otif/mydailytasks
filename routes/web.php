@@ -9,11 +9,12 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\UserController; 
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PartnerRoleController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::get('/test', function () {
-    return "Hello";
+    return view('welcome');
 });
 
 Route::get('/', function () {
@@ -102,13 +103,13 @@ Route::get('/test-page',function(){
     return view('Admin.test-dashboard');
 })->name('test.dashboard')->middleware('verified.user');
 Route::get('/test-calender',function(){
-    return view('Admin.calender');
+    return view('Dashboards.calender');
 })->name('calender.page')->middleware('verified.user');
 Route::get('/test-profile',function(){
-    return view('Admin.user-profile');
+    return view('Dashboards.user-profile');
 })->name('user.profile')->middleware('verified.user');
 Route::get('/users-datatable',function(){
-    return view('Admin.dataTable');
+    return view('Dashboards.dataTable');
 })->name('users.datatable')->middleware('verified.user');
 
 
@@ -135,6 +136,8 @@ Route::post('/create-record',[UserController::class,'storeUser'])->name('create-
 
 Route::get('/products-category',function(){
     return view('Products-view.products-categories');
-});
-
+})->name('products-category-list');
+Route::get('/categories/data',[CategoryController::class,'index'])->name('categories.data');
+Route::post('/categories/submit',[CategoryController::class,'store'])->name('categories-store');
+Route::resource('/categories',CategoryController::class);
 

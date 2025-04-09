@@ -215,7 +215,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
        // sleep(60);
-        $partners =  User::orderBy('name','asc')->get();
+        $partners =  User::with('role')->get();
         return response()->json([
             'info' => $partners
         ]);

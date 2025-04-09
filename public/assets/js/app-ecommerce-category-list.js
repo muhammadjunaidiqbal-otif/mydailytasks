@@ -7,9 +7,9 @@
 // Comment editor
 
 const commentEditor = document.querySelector('.comment-editor');
-
+let quill = null;
 if (commentEditor) {
-  new Quill(commentEditor, {
+  quill = new Quill(commentEditor, {
     modules: {
       toolbar: '.comment-toolbar'
     },
@@ -275,6 +275,13 @@ $(function () {
             message: 'Please enter slug'
           }
         }
+      },
+      description:{
+        validators:{
+          notEmpty:{
+            message:'Please enter description'
+          }
+        }
       }
     },
     plugins: {
@@ -287,10 +294,70 @@ $(function () {
           return '.mb-6';
         }
       }),
-      submitButton: new FormValidation.plugins.SubmitButton(),
+    //  submitButton: new FormValidation.plugins.SubmitButton(),
       // Submit the form when all fields are valid
       // defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
-      autoFocus: new FormValidation.plugins.AutoFocus()
+      //autoFocus: new FormValidation.plugins.AutoFocus()
     }
   });
+  fv.on('core.form.validating', function () {
+    const quillContent = quill.root.innerHTML.trim();
+    $('#description').val(quillContent);
+  });
+
+// Category Form Submission
+
+$('#eCommerceCategoryListForm').on('submit', function (e) {
+  e.preventDefault();
+
+  // Set description value from Quill editor
+  const descriptionHtml = quill.root.innerHTML.trim();
+  $('#description').val(descriptionHtml);
+
+  // Validate form fields
+  fv.validate().then(function (status) {
+    if (status === 'Valid') {
+      const form = document.getElementById('eCommerceCategoryListForm');
+      const formData = new FormData(form);
+
+      // Append manually selected values (Select2 dropdowns)
+      formData.append('parent_category', $('#ecommerce-category-parent-category').val());
+      formData.append('status', $('#ecommerce-category-status').val());
+      console.log('Full FormData content:');
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
+      
+      // Optional: Disable the submit button to prevent multiple clicks
+      const submitBtn = $('.data-submit');
+      submitBtn.prop('disabled', true).text('Submitting...');
+
+      $.ajax({
+        url: categoriesFormSubmit, // Replace with your actual route
+        type: "POST",
+        data: formData,
+        contentType: false, // Important for FormData
+        processData: false, // Important for FormData
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Proper header
+        },
+        success: function (response) {
+          // Reload DataTable and reset form
+          $('.datatables-category-list').DataTable().ajax.reload();
+          toastr.success('Category added successfully!');
+          $('#offcanvasEcommerceCategoryList').offcanvas('hide');
+          form.reset();
+          quill.root.innerHTML = '';
+        },
+        error: function (xhr) {
+          toastr.error('Something went wrong. Please try again.');
+        },
+        complete: function () {
+          // Re-enable submit button
+          submitBtn.prop('disabled', false).text('Add');
+        }
+      });
+    }
+  });
+});
 })();

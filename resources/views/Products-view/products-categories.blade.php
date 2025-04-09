@@ -16,9 +16,44 @@
 <link rel="stylesheet" href="../../assets/vendor/libs/quill/katex.css" />
 <link rel="stylesheet" href="../../assets/vendor/libs/quill/editor.css" />
 @endsection
+
 @section('Page-CSS')
 <link rel="stylesheet" href="../../assets/vendor/css/pages/app-ecommerce.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<style>
+  /* Loader Overlay */
+  #loader-overlay {
+          position: fixed;
+          top: 0; left: 0;
+          width: 100%; height: 100%;
+          background: rgba(255, 255, 255, 0.8);
+          display: flex; /* Initially visible */
+          justify-content: center;
+          align-items: center;
+          z-index: 9999;
+      }
+
+      .loader {
+          border: 5px solid #f3f3f3;
+          border-top: 5px solid #3498db;
+          border-radius: 50%;
+          width: 50px;
+          height: 50px;
+          animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+      }
+      #toast-container {
+      z-index: 99999 !important;
+      }
+  </style>
 @endsection
+<div id="loader-overlay">
+  <div class="loader"></div>
+</div>
 @section('content')
   <!-- Content -->
 
@@ -84,7 +119,7 @@
             <!-- Image -->
             <div class="mb-6">
               <label class="form-label" for="ecommerce-category-image">Attachment</label>
-              <input class="form-control" type="file" id="ecommerce-category-image" />
+              <input class="form-control" type="file" id="ecommerce-category-image" name="attachment" />
             </div>
             <!-- Parent category -->
             <div class="mb-6 ecommerce-select2-dropdown">
@@ -105,7 +140,7 @@
             <div class="mb-6">
               <label class="form-label">Description</label>
               <div class="form-control p-0 py-1">
-                <div class="comment-editor border-0" id="ecommerce-category-description"></div>
+                <div class="comment-editor border-0" id="ecommerce-category-description" style="height: 100px"></div>
                 <div class="comment-toolbar border-0 rounded">
                   <div class="d-flex justify-content-end">
                     <span class="ql-formats me-0">
@@ -120,6 +155,8 @@
                   </div>
                 </div>
               </div>
+              <!-- 👇 Hidden input that will hold Quill content -->
+              <input type="hidden" name="description" id="description">
             </div>
             <!-- Status -->
             <div class="mb-6 ecommerce-select2-dropdown">
@@ -145,7 +182,7 @@
     </div>
   </div>
   <!-- / Content -->
-
+@endsection
 @section('Build-JS')
 <script src="../../assets/vendor/libs/jquery/jquery.js"></script>
 <script src="../../assets/vendor/libs/popper/popper.js"></script>
@@ -167,7 +204,30 @@
 <script src="../../assets/vendor/libs/quill/katex.js"></script>
 <script src="../../assets/vendor/libs/quill/quill.js"></script>
 @endsection
+<!-- Toastr CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+
+<!-- jQuery (Toastr depends on it) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script>
+    @if (session('status'))
+        toastr.success("{{ session('status') }}");
+    @endif
+
+    @if (session('error'))
+        toastr.error("{{ session('error') }}");
+    @endif
+</script>
+
 @section('Page-JS')
 <script src="../../assets/js/app-ecommerce-category-list.js"></script>
-@endsection
+<script>
+  var categoriesDataURL = "{{route('categories.data')}}"
+  var csrfToken = $('meta[name="csrf-token"]').attr('content');
+  var categoriesFormSubmit = "{{route('categories.submit')}}"
+  
+</script>
 @endsection

@@ -2,7 +2,7 @@
  * Main
  */
 
-      // Show loader for 15 seconds, then show content
+      // Show loader for 1.5 seconds, then show content
       window.onload = function () {
           setTimeout(function () {
             
@@ -15,7 +15,7 @@
                
               
           
-            }, 5000); // 15 seconds
+            }, 1500); // 1.5 seconds
       };
 
     //   $(document).ready(function () {

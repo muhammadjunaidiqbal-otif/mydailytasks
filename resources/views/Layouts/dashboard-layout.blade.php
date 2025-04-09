@@ -17,7 +17,7 @@
     <title>@yield('title')</title>
 
     <meta name="description" content="" />
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="../../assets/img/favicon/favicon.ico" />
 
@@ -131,7 +131,7 @@
           <div class="menu-inner-shadow"></div>
 
           <ul class="menu-inner py-1">
-            <!-- Dashboards -->
+            <!-- Dashboards 
             <li class="menu-item active open">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-smart-home"></i>
@@ -166,8 +166,8 @@
                 </li>
               </ul>
             </li>
-
-            <!-- Layouts -->
+            -->
+            <!-- Layouts 
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-layout-sidebar"></i>
@@ -222,8 +222,8 @@
                 </li>
               </ul>
             </li>
-
-            <!-- Front Pages -->
+            -->
+            <!-- Front Pages 
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-files"></i>
@@ -257,12 +257,12 @@
                 </li>
               </ul>
             </li>
-
+            -->
             <!-- Apps & Pages -->
             <li class="menu-header small">
               <span class="menu-header-text" data-i18n="Apps & Pages">Apps &amp; Pages</span>
             </li>
-            <li class="menu-item">
+            {{-- <li class="menu-item">
               <a href="app-email.html" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-mail"></i>
                 <div data-i18n="Email">Email</div>
@@ -273,19 +273,19 @@
                 <i class="menu-icon tf-icons ti ti-messages"></i>
                 <div data-i18n="Chat">Chat</div>
               </a>
-            </li>
+            </li> --}}
             <li class="menu-item">
-              <a href="app-calendar.html" class="menu-link">
+              <a href="{{route('calender.page')}}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-calendar"></i>
                 <div data-i18n="Calendar">Calendar</div>
               </a>
             </li>
-            <li class="menu-item">
+            {{-- <li class="menu-item">
               <a href="app-kanban.html" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-layout-kanban"></i>
                 <div data-i18n="Kanban">Kanban</div>
               </a>
-            </li>
+            </li> --}}
             <!-- e-commerce-app menu start -->
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -314,13 +314,13 @@
                       </a>
                     </li>
                     <li class="menu-item">
-                      <a href="app-ecommerce-category-list.html" class="menu-link">
+                      <a href="{{route('products-category-list')}}" class="menu-link">
                         <div data-i18n="Category List">Category List</div>
                       </a>
                     </li>
                   </ul>
                 </li>
-                <li class="menu-item">
+                {{-- <li class="menu-item">
                   <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <div data-i18n="Order">Order</div>
                   </a>
@@ -422,11 +422,11 @@
                       </a>
                     </li>
                   </ul>
-                </li>
+                </li> --}}
               </ul>
             </li>
             <!-- e-commerce-app menu end -->
-            <!-- Academy menu start -->
+            <!-- Academy menu start 
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-book"></i>
@@ -450,7 +450,7 @@
                 </li>
               </ul>
             </li>
-            <!-- Academy menu end -->
+             Academy menu end 
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-truck"></i>
@@ -560,7 +560,7 @@
                   </a>
                 </li>
               </ul>
-            </li>
+            </li> -->
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-file"></i>
@@ -573,7 +573,7 @@
                   </a>
                   <ul class="menu-sub">
                     <li class="menu-item">
-                      <a href="pages-profile-user.html" class="menu-link">
+                      <a href="{{route('user.profile')}}" class="menu-link">
                         <div data-i18n="Profile">Profile</div>
                       </a>
                     </li>
@@ -594,7 +594,7 @@
                     </li>
                   </ul>
                 </li>
-                <li class="menu-item">
+                <!-- <li class="menu-item">
                   <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <div data-i18n="Account Settings">Account Settings</div>
                   </a>
@@ -662,10 +662,10 @@
                       </a>
                     </li>
                   </ul>
-                </li>
+                </li> -->
               </ul>
             </li>
-            <li class="menu-item">
+            {{-- <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-lock"></i>
                 <div data-i18n="Authentications">Authentications</div>
@@ -808,10 +808,10 @@
                 <i class="menu-icon tf-icons ti ti-square"></i>
                 <div data-i18n="Modal Examples">Modal Examples</div>
               </a>
-            </li>
+            </li> --}}
 
             <!-- Components -->
-            <li class="menu-header small">
+            {{-- <li class="menu-header small">
               <span class="menu-header-text" data-i18n="Components">Components</span>
             </li>
             <!-- Cards -->
@@ -1054,14 +1054,14 @@
                   </a>
                 </li>
               </ul>
-            </li>
+            </li> --}}
 
             <!-- Forms & Tables -->
             <li class="menu-header small">
               <span class="menu-header-text" data-i18n="Forms & Tables">Forms &amp; Tables</span>
             </li>
             <!-- Forms -->
-            <li class="menu-item">
+            {{-- <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-toggle-left"></i>
                 <div data-i18n="Form Elements">Form Elements</div>
@@ -1172,7 +1172,7 @@
                 <i class="menu-icon tf-icons ti ti-table"></i>
                 <div data-i18n="Tables">Tables</div>
               </a>
-            </li>
+            </li> --}}
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-layout-grid"></i>
@@ -1180,11 +1180,11 @@
               </a>
               <ul class="menu-sub">
                 <li class="menu-item">
-                  <a href="tables-datatables-basic.html" class="menu-link">
+                  <a href="{{route('users.datatable')}}" class="menu-link">
                     <div data-i18n="Basic">Basic</div>
                   </a>
                 </li>
-                <li class="menu-item">
+                {{-- <li class="menu-item">
                   <a href="tables-datatables-advanced.html" class="menu-link">
                     <div data-i18n="Advanced">Advanced</div>
                   </a>
@@ -1193,11 +1193,11 @@
                   <a href="tables-datatables-extensions.html" class="menu-link">
                     <div data-i18n="Extensions">Extensions</div>
                   </a>
-                </li>
+                </li> --}}
               </ul>
             </li>
 
-            <!-- Charts & Maps -->
+            {{-- <!-- Charts & Maps -->
             <li class="menu-header small">
               <span class="menu-header-text" data-i18n="Charts & Maps">Charts &amp; Maps</span>
             </li>
@@ -1244,7 +1244,7 @@
                 <i class="menu-icon tf-icons ti ti-file-description"></i>
                 <div data-i18n="Documentation">Documentation</div>
               </a>
-            </li>
+            </li> --}}
           </ul>
         </aside>
         <!-- / Menu -->
