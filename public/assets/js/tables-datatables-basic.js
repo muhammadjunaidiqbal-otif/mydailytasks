@@ -439,9 +439,9 @@ $(function () {
             // Open Modal - Bootstrap 5 Syntax
             var myModal = new bootstrap.Modal(document.getElementById('editUserModal'));
             myModal.show();
-            },
-            error: function(xhr) {
-            alert("Error fetching user data.");
+          },
+        error: function(xhr) {
+          alert("Error fetching user data.");
             }
         });
     });

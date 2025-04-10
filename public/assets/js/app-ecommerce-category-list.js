@@ -21,6 +21,7 @@ if (commentEditor) {
 // Datatable (jquery)
 
 $(function () {
+  var selectedRows = {};
   let borderColor, bodyBg, headingColor;
 
   if (isDarkStyle) {
@@ -53,14 +54,23 @@ $(function () {
 
   if (dt_category_list_table.length) {
     var dt_category = dt_category_list_table.DataTable({
-      ajax: assetsPath + 'json/ecommerce-category-list.json', // JSON file to add data
+     processing: true,
+        serverSide: false,
+        ajax:{
+              "url": categoriesDataURL,
+              "dataSrc": 'info'
+              }, // JSON file to add data
       columns: [
         // columns according to JSON
         { data: '' },
-        { data: 'id' },
-        { data: 'categories' },
-        { data: 'total_products' },
-        { data: 'total_earnings' },
+        { data :null ,defaultContent:''},
+        { data: 'id' ,visible:false },
+        { data: 'title' },
+        { data: 'slug' },
+        { data: 'image' },
+        { data: 'parent_id' },
+        { data : 'description'},
+        { data : 'status'},
         { data: '' }
       ],
       columnDefs: [
@@ -80,82 +90,87 @@ $(function () {
           targets: 1,
           orderable: false,
           searchable: false,
-          responsivePriority: 4,
-          checkboxes: true,
-          render: function () {
-            return '<input type="checkbox" class="dt-checkboxes form-check-input">';
-          },
-          checkboxes: {
-            selectAllRender: '<input type="checkbox" class="form-check-input">'
-          }
-        },
-        {
-          // Categories and Category Detail
-          targets: 2,
-          responsivePriority: 2,
-          render: function (data, type, full, meta) {
-            var $name = full['categories'],
-              $category_detail = full['category_detail'],
-              $image = full['cat_image'],
-              $id = full['id'];
-            if ($image) {
-              // For Product image
-              var $output =
-                '<img src="' +
-                assetsPath +
-                'img/ecommerce-images/' +
-                $image +
-                '" alt="Product-' +
-                $id +
-                '" class="rounded-2">';
-            } else {
-              // For Product badge
-              var stateNum = Math.floor(Math.random() * 6);
-              var states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'];
-              var $state = states[stateNum],
-                $name = full['category_detail'],
-                $initials = $name.match(/\b\w/g) || [];
-              $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
-              $output = '<span class="avatar-initial rounded-2 bg-label-' + $state + '">' + $initials + '</span>';
-            }
-            // Creates full output for Categories and Category Detail
-            var $row_output =
-              '<div class="d-flex align-items-center">' +
-              '<div class="avatar-wrapper me-3 rounded-2 bg-label-secondary">' +
-              '<div class="avatar">' +
-              $output +
-              '</div>' +
-              '</div>' +
-              '<div class="d-flex flex-column justify-content-center">' +
-              '<span class="text-heading text-wrap fw-medium">' +
-              $name +
-              '</span>' +
-              '<span class="text-truncate mb-0 d-none d-sm-block"><small>' +
-              $category_detail +
-              '</small></span>' +
-              '</div>' +
-              '</div>';
-            return $row_output;
-          }
-        },
-        {
-          // Total products
-          targets: 3,
           responsivePriority: 3,
-          render: function (data, type, full, meta) {
-            var $total_products = full['total_products'];
-            return '<div class="text-sm-end">' + $total_products + '</div>';
-          }
+          checkboxes: false,
+          render: function (data, type, row) {
+            return '<input type="checkbox" class="select-checkbox" data-id="' + row.id + '">';
+          },
         },
         {
-          // Total Earnings
-          targets: 4,
-          orderable: false,
+          targets: 4, // Adjust target index to match the column
           render: function (data, type, full, meta) {
-            var $total_earnings = full['total_earnings'];
-            return "<div class='mb-0 text-sm-end'>" + $total_earnings + '</div';
+            const text = full['image']; // or whatever your field is
+            const shortText = text.length > 6 ? text.substring(0, 6) + '...' : text;
+            return shortText;
           }
         },
+        // {
+        //   // Categories and Category Detail
+        //   targets: 2,
+        //   responsivePriority: 2,
+        //   render: function (data, type, full, meta) {
+        //     var $name = full['categories'],
+        //       $category_detail = full['category_detail'],
+        //       $image = full['cat_image'],
+        //       $id = full['id'];
+        //     if ($image) {
+        //       // For Product image
+        //       var $output =
+        //         '<img src="' +
+        //         assetsPath +
+        //         'img/ecommerce-images/' +
+        //         $image +
+        //         '" alt="Product-' +
+        //         $id +
+        //         '" class="rounded-2">';
+        //     } else {
+        //       // For Product badge
+        //       var stateNum = Math.floor(Math.random() * 6);
+        //       var states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'];
+        //       var $state = states[stateNum],
+        //         $name = full['category_detail'],
+        //         $initials = $name.match(/\b\w/g) || [];
+        //       $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
+        //       $output = '<span class="avatar-initial rounded-2 bg-label-' + $state + '">' + $initials + '</span>';
+        //     }
+        //     // Creates full output for Categories and Category Detail
+        //     var $row_output =
+        //       '<div class="d-flex align-items-center">' +
+        //       '<div class="avatar-wrapper me-3 rounded-2 bg-label-secondary">' +
+        //       '<div class="avatar">' +
+        //       $output +
+        //       '</div>' +
+        //       '</div>' +
+        //       '<div class="d-flex flex-column justify-content-center">' +
+        //       '<span class="text-heading text-wrap fw-medium">' +
+        //       $name +
+        //       '</span>' +
+        //       '<span class="text-truncate mb-0 d-none d-sm-block"><small>' +
+        //       $category_detail +
+        //       '</small></span>' +
+        //       '</div>' +
+        //       '</div>';
+        //     return $row_output;
+        //   }
+        // },
+        // {
+        //   // Total products
+        //   targets: 3,
+        //   responsivePriority: 3,
+        //   render: function (data, type, full, meta) {
+        //     var $total_products = full['total_products'];
+        //     return '<div class="text-sm-end">' + $total_products + '</div>';
+        //   }
+        // },
+        // {
+        //   // Total Earnings
+        //   targets: 4,
+        //   orderable: false,
+        //   render: function (data, type, full, meta) {
+        //     var $total_earnings = full['total_earnings'];
+        //     return "<div class='mb-0 text-sm-end'>" + $total_earnings + '</div';
+        //   }
+        // },
         {
           // Actions
           targets: -1,
@@ -164,14 +179,15 @@ $(function () {
           orderable: false,
           render: function (data, type, full, meta) {
             return (
-              '<div class="d-flex align-items-sm-center justify-content-sm-center">' +
-              '<button class="btn btn-icon btn-text-secondary rounded-pill waves-effect waves-light"><i class="ti ti-edit"></i></button>' +
-              '<button class="btn btn-icon btn-text-secondary rounded-pill waves-effect waves-light dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical ti-md"></i></button>' +
-              '<div class="dropdown-menu dropdown-menu-end m-0">' +
-              '<a href="javascript:0;" class="dropdown-item">View</a>' +
-              '<a href="javascript:0;" class="dropdown-item">Suspend</a>' +
-              '</div>' +
-              '</div>'
+              '<div class="d-inline-block">' +
+                '<a href="javascript:;" class="btn btn-sm btn-text-secondary rounded-pill btn-icon dropdown-toggle " data-bs-toggle="dropdown"><i class="ti ti-dots-vertical ti-md"></i></a>' +
+                '<ul class="dropdown-menu dropdown-menu-end m-0">' +
+                '<li><a href="javascript:;" class="dropdown-item">Details</a></li>' +
+                '<div class="dropdown-divider"></div>' +
+                '<li><a href="javascript:;" class="dropdown-item text-danger delete-record"  data-id="' + full.id + '" data-name="' + full.name + '">Delete</a></li>' +
+                '</ul>' +
+                '</div>' +
+                '<a href="javascript:;" class="btn btn-sm btn-text-secondary rounded-pill btn-icon edit-btn" data-id="'+full.id+'"><i class="ti ti-pencil ti-md"></i></a>'
             );
           }
         }
@@ -213,7 +229,7 @@ $(function () {
           display: $.fn.dataTable.Responsive.display.modal({
             header: function (row) {
               var data = row.data();
-              return 'Details of ' + data['categories'];
+              return 'Details of ' + data.title;
             }
           }),
           type: 'column',
@@ -239,8 +255,23 @@ $(function () {
             return data ? $('<table class="table"/><tbody />').append(data) : false;
           }
         }
+      },
+      drawCallback: function () {
+        //Attach checkbox click after each draw
+        $('.select-checkbox').on('click', function () {
+          var rowId = $(this).data('id');
+          alert('Checkbox checked! ' + rowId);
+        });
+
+        $('#select-all').on('change', function () {
+          var isChecked = this.checked;
+          // Select all checkboxes, including those not in the current page
+          $('.select-checkbox').prop('checked', isChecked);
+          updateDeleteButtonVisibility();
+      });
       }
     });
+
     $('.dt-action-buttons').addClass('pt-0');
     $('.dataTables_filter').addClass('me-3 mb-sm-6 mb-0 ps-0');
   }
@@ -253,7 +284,74 @@ $(function () {
     $('.dataTables_length .form-select').removeClass('form-select-sm');
     $('.dataTables_length .form-select').addClass('ms-0');
   }, 300);
+  
 });
+
+//Open Modal For Edit Btn Clicked
+
+$(document).on('click', '.edit-btn', function () {
+  var id = $(this).data('id');
+  $.ajax({
+    url:editCategoryURL.replace(':id', id),
+    type:"GET",
+    success:function(response){
+      console.log("Selected Category Data:", response);
+      
+      $('#ecommerce-category-id').val(response.id);
+      $('#ecommerce-category-title').val(response.title);
+      $('#ecommerce-category-slug').val(response.slug);
+      $('#ecommerce-category-description').val(response.description);
+     // $('#ecommerce-category-image').val(response.image);
+      $('#ecommerce-category-status').val(response.status).trigger('change');
+      var parent_id = response.parent_id , parent_category;
+      
+      if(parent_id==1){
+        parent_category = "Household";
+      }else if(parent_id==2){
+        parent_category = "Management";
+      }else if(parent_id==3){
+        parent_category = "Electronics"
+      }else if(parent_id==4){
+        parent_category = "Office"
+      }
+
+      $('#ecommerce-category-parent-category').val(parent_category).trigger('change');
+
+      const offcanvas = new bootstrap.Offcanvas('#offcanvasEcommerceCategoryList');
+      offcanvas.show();
+
+     
+
+      $('#offcanvasEcommerceCategoryListLabel').text('Update Category');
+      $('.data-submit').text('Update');
+
+    },
+    error:function(){
+      alert("Error fetching user data.");
+    },
+  });
+});
+$(document).on('click','.delete-record',function(){
+  var id = $(this).data('id');
+  $('.dtr-bs-modal').hide();
+  console.log(id);
+  alert("Hello")
+});
+
+//Reset The Form
+
+$(document).on('click', '.add-new', function () {
+  $('#eCommerceCategoryListForm')[0].reset();
+  $('#ecommerce-category-id').val('');
+  quill.root.innerHTML = '';
+  $('#ecommerce-category-parent-category').val(null).trigger('change');
+  $('#ecommerce-category-status').val(null).trigger('change');
+
+  $('#offcanvasEcommerceCategoryListLabel').text('Add Category');
+  $('.data-submit').text('Add');
+});
+
+
 
 //For form validation
 (function () {
@@ -307,6 +405,62 @@ $(function () {
 
 // Category Form Submission
 
+$('#eCommerceCategoryListForm').on('click','.data-update',function(e){
+  e.preventDefault();
+  //alert("Button Clicked");
+  const updateBtn = $('.data-update');
+  updateBtn.prop('disabled', true).text('Updating...');
+
+    var id = $('#ecommerce-category-id').val();
+    var title = $('#ecommerce-category-title').val();
+    var slug = $('#ecommerce-category-slug').val();
+    var description = $('#ecommerce-category-description').val();
+    var image = $('#ecommerce-category-image').val();
+    var status = $('#ecommerce-category-status').val();
+    var parent_category = $('#ecommerce-category-parent-category').val();
+    var parent_id;
+    //alert("ID "+id+"title" + title + "Status "+ slug +"Description "+ description +"Status"+ status +"Parent "+ parent_category + "image "+image);
+    if(parent_category=="Household"){
+      parent_id =1 ;
+    }else if(parent_category=="Management"){
+      parent_id = 2;
+    }else if(parent_category=="Electronics"){
+      parent_id = 3;
+    }else if(parent_category=="Office"){
+      parent_id = 4;
+    }
+    $.ajax({
+      url : submitEditCategoryFormURL,
+      type : "POST",
+      data: { 
+        id: id,
+        title: title,
+        slug: slug,
+        description: description,
+        parent_category:parent_id,
+        image:image,
+        status:status
+    },
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Proper header
+    },
+      success : function(response){
+        $('.datatables-category-list').DataTable().ajax.reload();
+          toastr.success('Category Updated successfully!');
+          $('#offcanvasEcommerceCategoryList').offcanvas('hide');
+          quill.root.innerHTML = '';
+      },
+      error : function(xhr){
+        toastr.error('Something went wrong. Please try again.');
+      },
+      complete: function () {
+        // Re-enable submit button
+        updateBtn.prop('disabled', false).text('Add');
+      }
+
+    });
+});
+
 $('#eCommerceCategoryListForm').on('submit', function (e) {
   e.preventDefault();
 
@@ -333,11 +487,11 @@ $('#eCommerceCategoryListForm').on('submit', function (e) {
       submitBtn.prop('disabled', true).text('Submitting...');
 
       $.ajax({
-        url: categoriesFormSubmit, // Replace with your actual route
+        url: categoriesFormSubmit, 
         type: "POST",
         data: formData,
-        contentType: false, // Important for FormData
-        processData: false, // Important for FormData
+        contentType: false, 
+        processData: false, 
         headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Proper header
         },
@@ -361,3 +515,4 @@ $('#eCommerceCategoryListForm').on('submit', function (e) {
   });
 });
 })();
+

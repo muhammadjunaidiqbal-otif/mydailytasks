@@ -28,7 +28,7 @@
     <!-- DataTable with Buttons -->
     <div class="card">
       <div class="card-datatable table-responsive pt-0">
-           <div class=" d-flex">
+      <div class=" d-flex">
       <button id="deleteRows" style="display:none; background:red; color:white; padding:5px;">Delete Selected</button>
       </div>
         <table class="datatables-basic table" id="myTable">

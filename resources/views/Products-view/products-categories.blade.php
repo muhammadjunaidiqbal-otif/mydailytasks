@@ -62,14 +62,22 @@
       <!-- Category List Table -->
       <div class="card">
         <div class="card-datatable table-responsive">
-          <table class="datatables-category-list table border-top">
+          <div class=" d-flex">
+            <button id="deleteRows" style="display:none; background:red; color:white; padding:5px;">Delete Selected</button>
+            </div>
+          <table class="datatables-category-list table border-top" id="myTable">
             <thead>
               <tr>
+                <th>Actions</th>
+                <th><input type="checkbox" id="select-all" title="Click To Select All Rows"></th>
                 <th></th>
-                <th></th>
-                <th>Categories</th>
-                <th class="text-nowrap text-sm-end">Total Products &nbsp;</th>
-                <th class="text-nowrap text-sm-end">Total Earning</th>
+                <th>title</th>
+                <th class="text-nowrap text-sm-end">slug &nbsp;</th>
+                <th>Image</th>
+                <th>Parent ID</th>
+                <th>Description</th>
+                <th>Status</th>
+                {{-- <th class="text-nowrap text-sm-end"></th> --}}
                 <th class="text-lg-center">Actions</th>
               </tr>
             </thead>
@@ -95,6 +103,7 @@
         <div class="offcanvas-body border-top">
           <form class="pt-0" id="eCommerceCategoryListForm" onsubmit="return true">
             <!-- Title -->
+            <input type="hidden" name="id" id="ecommerce-category-id" >
             <div class="mb-6">
               <label class="form-label" for="ecommerce-category-title">Title</label>
               <input
@@ -119,7 +128,7 @@
             <!-- Image -->
             <div class="mb-6">
               <label class="form-label" for="ecommerce-category-image">Attachment</label>
-              <input class="form-control" type="file" id="ecommerce-category-image" name="attachment" />
+              <input class="form-control" type="file" id="ecommerce-category-image" name="attachment" accept="image/png, image/gif, image/jpeg"  />
             </div>
             <!-- Parent category -->
             <div class="mb-6 ecommerce-select2-dropdown">
@@ -173,7 +182,7 @@
             </div>
             <!-- Submit and reset -->
             <div class="mb-6">
-              <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">Add</button>
+              <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit data-update">Add</button>
               <button type="reset" class="btn btn-label-danger" data-bs-dismiss="offcanvas">Discard</button>
             </div>
           </form>
@@ -225,9 +234,11 @@
 @section('Page-JS')
 <script src="../../assets/js/app-ecommerce-category-list.js"></script>
 <script>
+  var usersDataUrl = "{{ route('users.data') }}";
   var categoriesDataURL = "{{route('categories.data')}}"
-  var csrfToken = $('meta[name="csrf-token"]').attr('content');
-  var categoriesFormSubmit = "{{route('categories.submit')}}"
-  
+  var csrfToken = $('meta[name="csrf-token"]').attr('content')
+  var categoriesFormSubmit = "{{route('categories-store')}}"
+  var editCategoryURL = "{{route('categories-update',':id')}}"
+  var submitEditCategoryFormURL = "{{route('category.edit')}}" 
 </script>
 @endsection

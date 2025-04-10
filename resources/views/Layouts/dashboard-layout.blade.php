@@ -1818,7 +1818,26 @@
     <script>  
       var isAuthenticated = @json(Auth::check());
       var userName = @json(Auth::user()->name ?? '');
+      document.addEventListener('DOMContentLoaded', function () {
+  const currentUrl = window.location.href;
+
+  document.querySelectorAll('.menu-item a').forEach(link => {
+    if (link.href === currentUrl) {
+      const menuItem = link.closest('.menu-item');
+      menuItem.classList.add('active');
+
+      // Also add 'open' to all parent menu items
+      let parent = menuItem.parentElement.closest('.menu-item');
+      while (parent) {
+        parent.classList.add('open', 'active');
+        parent = parent.parentElement.closest('.menu-item');
+      }
+    }
+  });
+});
+
     </script>
     @yield('Page-JS')
+    
   </body>
 </html>

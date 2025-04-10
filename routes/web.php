@@ -140,4 +140,7 @@ Route::get('/products-category',function(){
 Route::get('/categories/data',[CategoryController::class,'index'])->name('categories.data');
 Route::post('/categories/submit',[CategoryController::class,'store'])->name('categories-store');
 Route::resource('/categories',CategoryController::class);
+Route::get('/category-update/{id}',[CategoryController::class,'show'])->name('categories-update');
+Route::post('/category/edit',[CategoryController::class,'edit'])->name('category.edit');
+
 

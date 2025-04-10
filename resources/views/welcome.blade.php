@@ -42,7 +42,7 @@
 
     <h2>Create New Category</h2>
 
-    <form action="{{ route('categories.submit') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('categories-store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <!-- Title -->

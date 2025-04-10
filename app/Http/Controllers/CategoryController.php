@@ -35,14 +35,14 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         //return $request;
-        // $request->validate([
-        //     'categoryTitle' => 'required|string|max:255',
-        //     'slug' => 'required|string|max:255|unique:categories',
-        //     'description' => 'nullable|string',
-        //     'status' => 'required|string',
-        //     'parent_category' => 'nullable|integer',
-        //     'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf', // adjust types as needed
-        // ]);
+         $request->validate([
+             'categoryTitle' => 'required|string|max:255',
+             'slug' => 'required|string|max:255|unique:categories',
+             'description' => 'nullable|string',
+             'status' => 'required|string',
+             'parent_category' => 'nullable|integer',
+             'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf', // adjust types as needed
+         ]);
         $filePath = null;
     if ($request->hasFile('attachment')) {
         $file = $request->file('attachment');
@@ -72,17 +72,54 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Category $category)
+    public function show($id)
     {
-        //
+        $category = Category::findOrFail($id);
+        return response()->json($category);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Category $category)
+    public function edit(Request $request)
     {
-        //
+        $category = Category::find($request->id);
+        if (!$category) {
+            return response()->json(["error" => "Category not found"], 404);
+        }
+    
+        // Validate inputs
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:categories,slug,' . $category->id,
+            'description' => 'nullable|string',
+            'status' => 'required|string',
+            'parent_category' => 'nullable|integer',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png'
+        ]);
+    
+        // File upload
+        $filePath = $category->image; // Keep existing if not replaced
+        if ($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $filePath = $file->store('categories', 'public');
+        }
+    
+        // Update category
+        $category->update([
+            'title' => $request->title,
+            'slug' => $request->slug,
+            'image' => $filePath,
+            'parent_id' => $request->parent_category,
+            'description' => $request->description,
+            'status' => $request->status,
+        ]);
+    
+        return response()->json([
+            'success' => true,
+            'info' => $category,
+            'path' => $filePath
+        ]);
     }
 
     /**
