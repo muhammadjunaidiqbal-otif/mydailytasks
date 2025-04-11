@@ -133,8 +133,24 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy($id)
     {
-        //
+        $category = Category::find($id); // Corrected query
+
+        if (!$category) {
+            return response()->json(['error' => 'Category not found!'], 404);
+        }
+    
+        $category->delete();
+    
+        return response()->json(['success' => 'Category deleted successfully!']); 
+    }
+    public function deleteSelectedRows(Request $request){
+        $ids = $request->ids; 
+        if (!empty($ids)) {
+            Category::whereIn('id', $ids)->delete();
+            return response()->json(['success' => 'Records deleted successfully!']);
+        }
+        return response()->json(['error'=> 'No records selected.'], 400);
     }
 }

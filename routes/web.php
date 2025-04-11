@@ -133,7 +133,7 @@ Route::post('/delete-selectedusers',[UserController::class,'deleteSelectedRows']
 Route::post('/create-record',[UserController::class,'storeUser'])->name('create-record');
 
 //Products Routes
-
+//->category-list page
 Route::get('/products-category',function(){
     return view('Products-view.products-categories');
 })->name('products-category-list');
@@ -142,5 +142,15 @@ Route::post('/categories/submit',[CategoryController::class,'store'])->name('cat
 Route::resource('/categories',CategoryController::class);
 Route::get('/category-update/{id}',[CategoryController::class,'show'])->name('categories-update');
 Route::post('/category/edit',[CategoryController::class,'edit'])->name('category.edit');
+Route::post('/delete-selectedcategories',[CategoryController::class,'deleteSelectedRows'])->name('delete-selected-categories');
 
+//->product-list page
+Route::get('/products',function(){
+   return view('Products-view.products-productslist');
+})->name('products-list');
 
+//->products-add page
+Route::get('/products/add',function(){
+    return view('Products-view.products-addproducts');
+ })->name('add-products');
+ 

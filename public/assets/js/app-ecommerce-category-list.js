@@ -5,6 +5,7 @@
 'use strict';
 
 // Comment editor
+let modal_title , btn_name ;
 
 const commentEditor = document.querySelector('.comment-editor');
 let quill = null;
@@ -62,7 +63,6 @@ $(function () {
               }, // JSON file to add data
       columns: [
         // columns according to JSON
-        { data: '' },
         { data :null ,defaultContent:''},
         { data: 'id' ,visible:false },
         { data: 'title' },
@@ -74,20 +74,20 @@ $(function () {
         { data: '' }
       ],
       columnDefs: [
-        {
-          // For Responsive
-          className: 'control',
-          searchable: false,
-          orderable: false,
-          responsivePriority: 1,
-          targets: 0,
-          render: function (data, type, full, meta) {
-            return '';
-          }
-        },
+        // {
+        //   // For Responsive
+        //   className: 'control',
+        //   searchable: false,
+        //   orderable: false,
+        //   responsivePriority: 1,
+        //   targets: 0,
+        //   render: function (data, type, full, meta) {
+        //     return '';
+        //   }
+        // },
         {
           // For Checkboxes
-          targets: 1,
+          targets: 0,
           orderable: false,
           searchable: false,
           responsivePriority: 3,
@@ -180,13 +180,7 @@ $(function () {
           render: function (data, type, full, meta) {
             return (
               '<div class="d-inline-block">' +
-                '<a href="javascript:;" class="btn btn-sm btn-text-secondary rounded-pill btn-icon dropdown-toggle " data-bs-toggle="dropdown"><i class="ti ti-dots-vertical ti-md"></i></a>' +
-                '<ul class="dropdown-menu dropdown-menu-end m-0">' +
-                '<li><a href="javascript:;" class="dropdown-item">Details</a></li>' +
-                '<div class="dropdown-divider"></div>' +
-                '<li><a href="javascript:;" class="dropdown-item text-danger delete-record"  data-id="' + full.id + '" data-name="' + full.name + '">Delete</a></li>' +
-                '</ul>' +
-                '</div>' +
+                '<a href="javascript:;" class=" text-danger delete-record" data-id="'+full.id+'"><i class="ti ti-trash me-1"></i></a>' +
                 '<a href="javascript:;" class="btn btn-sm btn-text-secondary rounded-pill btn-icon edit-btn" data-id="'+full.id+'"><i class="ti ti-pencil ti-md"></i></a>'
             );
           }
@@ -259,18 +253,43 @@ $(function () {
       drawCallback: function () {
         //Attach checkbox click after each draw
         $('.select-checkbox').on('click', function () {
-          var rowId = $(this).data('id');
-          alert('Checkbox checked! ' + rowId);
+        var rowId = $(this).data('id');
+        if (this.checked) {
+            selectedRows[rowId] = true;
+        } else {
+            delete selectedRows[rowId];
+            $('#select-all').prop('checked', false);
+        }
+        if ($('.select-checkbox:checked').length === $('.select-checkbox').length) {
+        $('#select-all').prop('checked', true);
+        }
+        console.log('Selected Rows:', selectedRows);
+          $('#deleteRows').show();
         });
-
-        $('#select-all').on('change', function () {
-          var isChecked = this.checked;
-          // Select all checkboxes, including those not in the current page
-          $('.select-checkbox').prop('checked', isChecked);
-          updateDeleteButtonVisibility();
-      });
+        
+//select-all
+    $('#select-all').on('change', function () {
+      var isChecked = this.checked;
+      $('.select-checkbox').prop('checked', isChecked);
+      if (isChecked) {
+        $('.select-checkbox').each(function () {
+          const rowId = $(this).data('id');
+          if (rowId !== undefined) {
+            selectedRows[rowId] = true;
+          }
+        });
+      } else {
+        selectedRows = {};
+      }
+      console.log('Selected Rows:', selectedRows);
+      if (Object.keys(selectedRows).length > 0) {
+        $('#deleteRows').show();
+      } else {
+        $('#deleteRows').hide();
       }
     });
+  }
+});
 
     $('.dt-action-buttons').addClass('pt-0');
     $('.dataTables_filter').addClass('me-3 mb-sm-6 mb-0 ps-0');
@@ -284,11 +303,40 @@ $(function () {
     $('.dataTables_length .form-select').removeClass('form-select-sm');
     $('.dataTables_length .form-select').addClass('ms-0');
   }, 300);
+  $('#deleteRows').on('click', function () {
+    var selectedIds = Object.keys(selectedRows);
+    console.log(selectedIds);
+    if (selectedIds.length === 0) {
+        alert("No users selected.");
+        return;
+    }
+    if (confirm("Are you sure you want to delete selected users?")){
+    $.ajax({
+        url: selectDeleteUrl,
+        type: "POST",
+        data: {
+            ids: selectedIds
+        },
+        headers: {
+          "X-CSRF-TOKEN": csrfToken
+        },
+        success: function (response) {
+            selectedRows = {}; 
+            $('.datatables-category-list').DataTable().ajax.reload();
+            alert(response.success);
+            $('#deleteRows').hide();
+        },
+        error: function (xhr) {
+          var err = JSON.parse(xhr.responseText);
+          alert(err.error);
+        }
+    });
+  }
+  });
   
 });
 
 //Open Modal For Edit Btn Clicked
-
 $(document).on('click', '.edit-btn', function () {
   var id = $(this).data('id');
   $.ajax({
@@ -316,30 +364,22 @@ $(document).on('click', '.edit-btn', function () {
       }
 
       $('#ecommerce-category-parent-category').val(parent_category).trigger('change');
-
       const offcanvas = new bootstrap.Offcanvas('#offcanvasEcommerceCategoryList');
       offcanvas.show();
+      modal_title = $('#offcanvasEcommerceCategoryListLabel').text('Update Category');
+      btn_name = $('.data-submit').text('Update');
+      const a = $('#addBtn');
+      a.removeClass('data-submit');
+      a.addClass('data-update');
 
-     
-
-      $('#offcanvasEcommerceCategoryListLabel').text('Update Category');
-      $('.data-submit').text('Update');
-
+      console.log("Edit-Btn clicked-Text",btn_name.text());
     },
     error:function(){
       alert("Error fetching user data.");
     },
   });
 });
-$(document).on('click','.delete-record',function(){
-  var id = $(this).data('id');
-  $('.dtr-bs-modal').hide();
-  console.log(id);
-  alert("Hello")
-});
-
 //Reset The Form
-
 $(document).on('click', '.add-new', function () {
   $('#eCommerceCategoryListForm')[0].reset();
   $('#ecommerce-category-id').val('');
@@ -347,65 +387,43 @@ $(document).on('click', '.add-new', function () {
   $('#ecommerce-category-parent-category').val(null).trigger('change');
   $('#ecommerce-category-status').val(null).trigger('change');
 
-  $('#offcanvasEcommerceCategoryListLabel').text('Add Category');
-  $('.data-submit').text('Add');
+  const a = $('#addBtn');
+  a.removeClass('data-update');
+  a.addClass('data-submit');
+
+  modal_title = $('#offcanvasEcommerceCategoryListLabel');
+  modal_title.text('Add Category');
+
+  btn_name = $('.data-submit');
+  btn_name.text('Add');
+
+  console.log("Reset Form Btn Text : ", btn_name.text());
 });
-
-
-
-//For form validation
-(function () {
-  const eCommerceCategoryListForm = document.getElementById('eCommerceCategoryListForm');
-
-  //Add New customer Form Validation
-  const fv = FormValidation.formValidation(eCommerceCategoryListForm, {
-    fields: {
-      categoryTitle: {
-        validators: {
-          notEmpty: {
-            message: 'Please enter category title'
-          }
-        }
-      },
-      slug: {
-        validators: {
-          notEmpty: {
-            message: 'Please enter slug'
-          }
-        }
-      },
-      description:{
-        validators:{
-          notEmpty:{
-            message:'Please enter description'
-          }
-        }
-      }
+//delete record
+$(document).on('click','.delete-record',function(){
+  var id = $(this).data('id');
+  if (confirm('Are you sure you want to delete this item?')) {
+  $.ajax({
+    url : deleteCategoryURL.replace(':id', id),
+    type : "DELETE",
+    headers: {
+      "X-CSRF-TOKEN": csrfToken
     },
-    plugins: {
-      trigger: new FormValidation.plugins.Trigger(),
-      bootstrap5: new FormValidation.plugins.Bootstrap5({
-        // Use this for enabling/changing valid/invalid class
-        eleValidClass: 'is-valid',
-        rowSelector: function (field, ele) {
-          // field is the field name & ele is the field element
-          return '.mb-6';
-        }
-      }),
-    //  submitButton: new FormValidation.plugins.SubmitButton(),
-      // Submit the form when all fields are valid
-      // defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
-      //autoFocus: new FormValidation.plugins.AutoFocus()
+    success : function(response){
+      toastr.success(response.success);
+      $('.datatables-category-list').DataTable().ajax.reload();
+    },
+    error : function(xhr){
+      var err = JSON.parse(xhr.responseText);
+      toastr.error(err.error);
     }
   });
-  fv.on('core.form.validating', function () {
-    const quillContent = quill.root.innerHTML.trim();
-    $('#description').val(quillContent);
-  });
-
-// Category Form Submission
-
+}
+});
+// Category-Update Form Submission
 $('#eCommerceCategoryListForm').on('click','.data-update',function(e){
+  
+  console.log('update conso',btn_name.text());
   e.preventDefault();
   //alert("Button Clicked");
   const updateBtn = $('.data-update');
@@ -454,16 +472,69 @@ $('#eCommerceCategoryListForm').on('click','.data-update',function(e){
         toastr.error('Something went wrong. Please try again.');
       },
       complete: function () {
-        // Re-enable submit button
-        updateBtn.prop('disabled', false).text('Add');
+        btn_name = updateBtn.prop('disabled', false).text('Add');
+        //console.log(btn_name.text());
       }
-
     });
 });
+//For form validation
+(function () {
+  const eCommerceCategoryListForm = document.getElementById('eCommerceCategoryListForm');
+  //Add New customer Form Validation
+  const fv = FormValidation.formValidation(eCommerceCategoryListForm, {
+    fields: {
+      categoryTitle: {
+        validators: {
+          notEmpty: {
+            message: 'Please enter category title'
+          }
+        }
+      },
+      slug: {
+        validators: {
+          notEmpty: {
+            message: 'Please enter slug'
+          }
+        }
+      },
+      description:{
+        validators:{
+          notEmpty:{
+            message:'Please enter description'
+          }
+        }
+      }
+    },
+    plugins: {
+      trigger: new FormValidation.plugins.Trigger(),
+      bootstrap5: new FormValidation.plugins.Bootstrap5({
+        // Use this for enabling/changing valid/invalid class
+        eleValidClass: 'is-valid',
+        rowSelector: function (field, ele) {
+          // field is the field name & ele is the field element
+          return '.mb-6';
+        }
+      }),
+    //  submitButton: new FormValidation.plugins.SubmitButton(),
+      // Submit the form when all fields are valid
+      // defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
+      //autoFocus: new FormValidation.plugins.AutoFocus()
+    }
+  });
+  fv.on('core.form.validating', function () {
+    const quillContent = quill.root.innerHTML.trim();
+    $('#description').val(quillContent);
+  });
+
+  //Category-Add Form Submission
 
 $('#eCommerceCategoryListForm').on('submit', function (e) {
   e.preventDefault();
-
+  console.log('Add-Btn : ',btn_name);
+  if(btn_name.text()==='Add')
+  {
+    console.log('enter',btn_name.text());
+  }
   // Set description value from Quill editor
   const descriptionHtml = quill.root.innerHTML.trim();
   $('#description').val(descriptionHtml);
@@ -480,8 +551,7 @@ $('#eCommerceCategoryListForm').on('submit', function (e) {
       console.log('Full FormData content:');
       for (let [key, value] of formData.entries()) {
         console.log(key, value);
-      }
-      
+      } 
       // Optional: Disable the submit button to prevent multiple clicks
       const submitBtn = $('.data-submit');
       submitBtn.prop('disabled', true).text('Submitting...');
@@ -514,5 +584,9 @@ $('#eCommerceCategoryListForm').on('submit', function (e) {
     }
   });
 });
+
 })();
+
+
+
 

@@ -68,17 +68,16 @@
           <table class="datatables-category-list table border-top" id="myTable">
             <thead>
               <tr>
-                <th>Actions</th>
                 <th><input type="checkbox" id="select-all" title="Click To Select All Rows"></th>
                 <th></th>
                 <th>title</th>
-                <th class="text-nowrap text-sm-end">slug &nbsp;</th>
+                <th class="text-nowrap">slug &nbsp;</th>
                 <th>Image</th>
                 <th>Parent ID</th>
                 <th>Description</th>
                 <th>Status</th>
                 {{-- <th class="text-nowrap text-sm-end"></th> --}}
-                <th class="text-lg-center">Actions</th>
+                <th class="text-nowrap">Actions</th>
               </tr>
             </thead>
           </table>
@@ -182,7 +181,7 @@
             </div>
             <!-- Submit and reset -->
             <div class="mb-6">
-              <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit data-update">Add</button>
+              <button type="submit" class="btn btn-primary me-sm-3 me-1" id="addBtn">Add</button>
               <button type="reset" class="btn btn-label-danger" data-bs-dismiss="offcanvas">Discard</button>
             </div>
           </form>
@@ -239,6 +238,8 @@
   var csrfToken = $('meta[name="csrf-token"]').attr('content')
   var categoriesFormSubmit = "{{route('categories-store')}}"
   var editCategoryURL = "{{route('categories-update',':id')}}"
-  var submitEditCategoryFormURL = "{{route('category.edit')}}" 
+  var submitEditCategoryFormURL = "{{route('category.edit')}}"
+  var deleteCategoryURL = "{{route('categories.destroy' , ':id')}}" 
+  var selectDeleteUrl = "{{route('delete-selected-categories')}}"
 </script>
 @endsection

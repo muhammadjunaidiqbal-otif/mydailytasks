@@ -2,22 +2,7 @@
  * Main
  */
 
-      // Show loader for 1.5 seconds, then show content
-      window.onload = function () {
-          setTimeout(function () {
-            
-              document.getElementById("loader-overlay").style.display = "none";
-              if(isAuthenticated){
-                toastr.success("Page Loaded Successfully!", "Welcome "+ userName);
-              }else{
-                toastr.success("Page Loaded Successfully!", "Welcome ");
-              }
-               
-              
-          
-            }, 1500); // 1.5 seconds
-      };
-
+     
     //   $(document).ready(function () {
     //     toastr.success("Page Loaded Successfully!", "Success", {
     //         timeOut: 5000 // 5 seconds
@@ -25,6 +10,21 @@
     // });
   
 'use strict';
+ // Show loader for 1.5 seconds, then show content
+ window.onload = function () {
+  setTimeout(function () {
+    
+      document.getElementById("loader-overlay").style.display = "none";
+      if(isAuthenticated){
+        toastr.success("Page Loaded Successfully!", "Welcome "+ userName);
+      }else{
+        toastr.success("Page Loaded Successfully!", "Welcome ");
+      }
+       
+      
+  
+    }, 1500); // 1.5 seconds
+};
 
 window.isRtl = window.Helpers.isRtl();
 window.isDarkStyle = window.Helpers.isDarkStyle();

@@ -304,12 +304,12 @@
                   </a>
                   <ul class="menu-sub">
                     <li class="menu-item">
-                      <a href="app-ecommerce-product-list.html" class="menu-link">
+                      <a href="{{route('products-list')}}" class="menu-link">
                         <div data-i18n="Product List">Product List</div>
                       </a>
                     </li>
                     <li class="menu-item">
-                      <a href="app-ecommerce-product-add.html" class="menu-link">
+                      <a href="{{route('add-products')}}" class="menu-link">
                         <div data-i18n="Add Product">Add Product</div>
                       </a>
                     </li>
