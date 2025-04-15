@@ -1,6 +1,6 @@
 @extends('Layouts.dashboard-layout')
 @section('title')
-    Add Product
+   {{isset($products)?"Update Product" : "Add Product"}}
 @endsection
 @section('Vendor-CSS')
     <link rel="stylesheet" href="../../assets/vendor/libs/node-waves/node-waves.css" />
@@ -49,6 +49,9 @@
         }
     </style>
 @endsection
+<div id="loader-overlay">
+  <div class="loader"></div>
+</div>
 @section('content')
     <!-- Content -->
 
@@ -58,15 +61,15 @@
           <div
             class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
             <div class="d-flex flex-column justify-content-center">
-              <h4 class="mb-1">Add a new Product</h4>
+              <h4 class="mb-1">{{isset($products)?"Update Product":"Add A New Product"}}</h4>
               <p class="mb-0">Orders placed across your store</p>
             </div>
             <div class="d-flex align-content-center flex-wrap gap-4">
               <div class="d-flex gap-4">
-                <button class="btn btn-label-secondary">Discard</button>
-                <button class="btn btn-label-primary">Save draft</button>
+                <button class="btn btn-label-secondary ">Discard</button>
+                {{-- <button class="btn btn-label-primary">Save draft</button> --}}
               </div>
-              <button type="submit" class="btn btn-primary">Publish product</button>
+              <button type="button" class="btn btn-primary {{isset($products)? 'updateBtn':'publishBtn'}} ">{{isset($products)?"Update":"Publish"}}</button>
             </div>
           </div>
 
@@ -79,6 +82,7 @@
                   <h5 class="card-tile mb-0">Product information</h5>
                 </div>
                 <div class="card-body">
+                  <input type="hidden"value="{{isset($products)?$products->id:''}}" id="ecommerce-product-id">
                   <div class="mb-6">
                     <label class="form-label" for="ecommerce-product-name">Name</label>
                     <input
@@ -86,8 +90,9 @@
                       class="form-control"
                       id="ecommerce-product-name"
                       placeholder="Product title"
-                      name="productTitle"
-                      aria-label="Product title" />
+                      name="name"
+                      aria-label="Product title"
+                      value="{{isset($products)?$products->name:''}}" />
                   </div>
                   <div class="row mb-6">
                     <div class="col">
@@ -97,8 +102,9 @@
                         class="form-control"
                         id="ecommerce-product-sku"
                         placeholder="SKU"
-                        name="productSku"
-                        aria-label="Product SKU" />
+                        name="sku"
+                        aria-label="Product SKU"
+                        value="{{isset($products)?$products->sku:''}}" />
                     </div>
                     <div class="col">
                       <label class="form-label" for="ecommerce-product-barcode">Barcode</label>
@@ -107,8 +113,9 @@
                         class="form-control"
                         id="ecommerce-product-barcode"
                         placeholder="0123-4567"
-                        name="productBarcode"
-                        aria-label="Product barcode" />
+                        name="barcode"
+                        aria-label="Product barcode"
+                        value="{{isset($products)?$products->barcode:''}}" />
                     </div>
                   </div>
                   <!-- Description -->
@@ -128,7 +135,7 @@
                           </span>
                         </div>
                       </div>
-                      <div class="comment-editor border-0 pb-6" id="ecommerce-category-description"></div>
+                      <div class="comment-editor border-0 pb-6" id="ecommerce-category-description">  {!! isset($products) && $products->description ? $products->description : '' !!}</div>
                     </div>
                   </div>
                 </div>
@@ -142,6 +149,18 @@
                 </div>
                 <div class="card-body">
                   <form action="/upload" class="dropzone needsclick p-0" id="dropzone-basic">
+                    @if(!empty($products) && $products->image && $products->image !== 'No File Uploaded')
+                    <div class="mb-4 position-relative" id="existing-image-wrapper">
+                      <img src="{{ asset('storage/' . $products->image) }}" 
+                           alt="Product Image" 
+                           class="img-fluid rounded" 
+                           style="max-height: 200px;">
+                      <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2" id="remove-image">
+                        Remove
+                      </button>
+                      <input type="hidden" name="remove_image" id="remove_image" value="0">
+                    </div>
+                  @endif
                     <div class="dz-message needsclick">
                       <p class="h4 needsclick pt-3 mb-2">Drag and drop your image here</p>
                       <p class="h6 text-muted d-block fw-normal mb-2">or</p>
@@ -150,14 +169,14 @@
                       >
                     </div>
                     <div class="fallback">
-                      <input name="file" type="file" />
+                      <input id="ecommerce-category-image" name="image" type="file" />
                     </div>
                   </form>
                 </div>
               </div>
               <!-- /Media -->
               <!-- Variants -->
-              <div class="card mb-6">
+              {{-- <div class="card mb-6">
                 <div class="card-header">
                   <h5 class="card-title mb-0">Variants</h5>
                 </div>
@@ -196,10 +215,10 @@
                     </div>
                   </form>
                 </div>
-              </div>
+              </div> --}}
               <!-- /Variants -->
               <!-- Inventory -->
-              <div class="card mb-6">
+              {{-- <div class="card mb-6">
                 <div class="card-header">
                   <h5 class="card-title mb-0">Inventory</h5>
                 </div>
@@ -436,13 +455,79 @@
                     <!-- /Options-->
                   </div>
                 </div>
-              </div>
+              </div> --}}
               <!-- /Inventory -->
             </div>
             <!-- /Second column -->
 
             <!-- Second column -->
             <div class="col-12 col-lg-4">
+               <!-- Organize Card -->
+               <div class="card mb-6">
+                <div class="card-header">
+                  <h5 class="card-title mb-0">Organize</h5>
+                </div>
+                <div class="card-body">
+                  <!-- Vendor -->
+                  {{-- <div class="mb-6 col ecommerce-select2-dropdown">
+                    <label class="form-label mb-1" for="vendor"> Vendor </label>
+                    <select id="vendor" class="select2 form-select" data-placeholder="Select Vendor">
+                      <option value="">Select Vendor</option>
+                      <option value="men-clothing">Men's Clothing</option>
+                      <option value="women-clothing">Women's-clothing</option>
+                      <option value="kid-clothing">Kid's-clothing</option>
+                    </select>
+                  </div> --}}
+                  <!-- Category -->
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="mb-6 col ecommerce-select2-dropdown">
+                      <label class="form-label mb-1" for="category-org">
+                        <span>Category</span>
+                      </label>
+                      <select id="category-org" class="select2 form-select" data-placeholder="Select Category" name="category_id">
+                        <option value="{{isset($products)?$products->category_id:''}}">{{isset($products)?$products->category->title : "Select A Category"}}</option>
+                        @foreach ($categories as $category)
+                        <option value="{{ $category->id }}">{{ $category->title }}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                    {{-- <a href="javascript:void(0);" class="fw-medium btn btn-icon btn-label-primary ms-4"
+                      ><i class="ti ti-plus ti-md"></i
+                    ></a> --}}
+                  </div>
+                  <!-- Collection -->
+                  {{-- <div class="mb-6 col ecommerce-select2-dropdown">
+                    <label class="form-label mb-1" for="collection">Collection </label>
+                    <select id="collection" class="select2 form-select" data-placeholder="Collection">
+                      <option value="">Collection</option>
+                      <option value="men-clothing">Men's Clothing</option>
+                      <option value="women-clothing">Women's-clothing</option>
+                      <option value="kid-clothing">Kid's-clothing</option>
+                    </select>
+                  </div> --}}
+                  <!-- Status -->
+                  <div class="mb-6 col ecommerce-select2-dropdown">
+                    <label class="form-label mb-1" for="status-org">Status </label>
+                    <select id="status-org" class="select2 form-select" data-placeholder="Published">
+                      <option value="{{isset($products)?$products->status:'Publis'}}">{{isset($products)?$products->status:'Publis'}}</option>
+                      <option value="Publish">Publish</option>
+                      <option value="Scheduled">Scheduled</option>
+                      <option value="Inactive">Inactive</option>
+                    </select>
+                  </div>
+                  <!-- Tags -->
+                  {{-- <div>
+                    <label for="ecommerce-product-tags" class="form-label mb-1">Tags</label>
+                    <input
+                      id="ecommerce-product-tags"
+                      class="form-control"
+                      name="ecommerce-product-tags"
+                      value="Normal,Standard,Premium"
+                      aria-label="Product Tags" />
+                  </div> --}}
+                </div>
+              </div>
+              <!-- /Organize Card -->
               <!-- Pricing Card -->
               <div class="card mb-6">
                 <div class="card-header">
@@ -453,12 +538,16 @@
                   <div class="mb-6">
                     <label class="form-label" for="ecommerce-product-price">Base Price</label>
                     <input
-                      type="number"
+                      type="number" 
                       class="form-control"
                       id="ecommerce-product-price"
-                      placeholder="Price"
-                      name="productPrice"
-                      aria-label="Product price" />
+                      @if(isset($products))
+                      value="{{$products->base_price}}"
+                      @endif
+                      placeholder="Enter Basic Price"
+                      aria-label="Product price"
+                      name="base_price"
+                       />
                   </div>
                   <!-- Discounted Price -->
                   <div class="mb-6">
@@ -467,13 +556,17 @@
                       type="number"
                       class="form-control"
                       id="ecommerce-product-discount-price"
+                      @if(isset($products))
+                      value="{{$products->discounted_price}}"
+                      @endif
                       placeholder="Discounted Price"
-                      name="productDiscountedPrice"
-                      aria-label="Product discounted price" />
+                      aria-label="Product discounted price"
+                      name="discounted_price"
+                      value="{{isset($products)?$products->discounted_price:''}} />
                   </div>
                   <!-- Charge tax check box -->
                   <div class="form-check ms-2 mt-2 mb-4">
-                    <input class="form-check-input" type="checkbox" value="" id="price-charge-tax" checked />
+                    <input class="form-check-input" type="checkbox" value="" id="price-charge-tax" @if(isset($products) && $products->charge_tax) checked @endif />
                     <label class="switch-label" for="price-charge-tax"> Charge tax on this product </label>
                   </div>
                   <!-- Instock switch -->
@@ -481,81 +574,13 @@
                     <span class="mb-0">In stock</span>
                     <div class="w-25 d-flex justify-content-end">
                       <div class="form-check form-switch me-n3">
-                        <input type="checkbox" class="form-check-input" />
+                        <input type="checkbox" class="form-check-input" id="product-instock" @if(isset($products) && $products->in_stock) checked @endif />
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <!-- /Pricing Card -->
-              <!-- Organize Card -->
-              <div class="card mb-6">
-                <div class="card-header">
-                  <h5 class="card-title mb-0">Organize</h5>
-                </div>
-                <div class="card-body">
-                  <!-- Vendor -->
-                  <div class="mb-6 col ecommerce-select2-dropdown">
-                    <label class="form-label mb-1" for="vendor"> Vendor </label>
-                    <select id="vendor" class="select2 form-select" data-placeholder="Select Vendor">
-                      <option value="">Select Vendor</option>
-                      <option value="men-clothing">Men's Clothing</option>
-                      <option value="women-clothing">Women's-clothing</option>
-                      <option value="kid-clothing">Kid's-clothing</option>
-                    </select>
-                  </div>
-                  <!-- Category -->
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div class="mb-6 col ecommerce-select2-dropdown">
-                      <label class="form-label mb-1" for="category-org">
-                        <span>Category</span>
-                      </label>
-                      <select id="category-org" class="select2 form-select" data-placeholder="Select Category">
-                        <option value="">Select Category</option>
-                        <option value="Household">Household</option>
-                        <option value="Management">Management</option>
-                        <option value="Electronics">Electronics</option>
-                        <option value="Office">Office</option>
-                        <option value="Automotive">Automotive</option>
-                      </select>
-                    </div>
-                    <a href="javascript:void(0);" class="fw-medium btn btn-icon btn-label-primary ms-4"
-                      ><i class="ti ti-plus ti-md"></i
-                    ></a>
-                  </div>
-                  <!-- Collection -->
-                  <div class="mb-6 col ecommerce-select2-dropdown">
-                    <label class="form-label mb-1" for="collection">Collection </label>
-                    <select id="collection" class="select2 form-select" data-placeholder="Collection">
-                      <option value="">Collection</option>
-                      <option value="men-clothing">Men's Clothing</option>
-                      <option value="women-clothing">Women's-clothing</option>
-                      <option value="kid-clothing">Kid's-clothing</option>
-                    </select>
-                  </div>
-                  <!-- Status -->
-                  <div class="mb-6 col ecommerce-select2-dropdown">
-                    <label class="form-label mb-1" for="status-org">Status </label>
-                    <select id="status-org" class="select2 form-select" data-placeholder="Published">
-                      <option value="">Published</option>
-                      <option value="Published">Published</option>
-                      <option value="Scheduled">Scheduled</option>
-                      <option value="Inactive">Inactive</option>
-                    </select>
-                  </div>
-                  <!-- Tags -->
-                  <div>
-                    <label for="ecommerce-product-tags" class="form-label mb-1">Tags</label>
-                    <input
-                      id="ecommerce-product-tags"
-                      class="form-control"
-                      name="ecommerce-product-tags"
-                      value="Normal,Standard,Premium"
-                      aria-label="Product Tags" />
-                  </div>
-                </div>
-              </div>
-              <!-- /Organize Card -->
             </div>
             <!-- /Second column -->
           </div>
@@ -602,4 +627,19 @@
 </script>
 @section('Page-JS')
     <script src="../../assets/js/app-ecommerce-product-add.js"></script>
+    <script>
+      var storeProductURL = "{{route('store-products')}}";
+      var updateProductURL = "{{route('update-product',':id')}}";
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const removeBtn = document.getElementById('remove-image');
+        if (removeBtn) {
+          removeBtn.addEventListener('click', function () {
+            document.getElementById('existing-image-wrapper').remove();
+            document.getElementById('remove_image').value = 1;
+          });
+        }
+      });
+    </script>
 @endsection

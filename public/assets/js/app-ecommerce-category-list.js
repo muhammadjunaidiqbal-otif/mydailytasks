@@ -367,11 +367,10 @@ $(document).on('click', '.edit-btn', function () {
       const offcanvas = new bootstrap.Offcanvas('#offcanvasEcommerceCategoryList');
       offcanvas.show();
       modal_title = $('#offcanvasEcommerceCategoryListLabel').text('Update Category');
-      btn_name = $('.data-submit').text('Update');
       const a = $('#addBtn');
       a.removeClass('data-submit');
       a.addClass('data-update');
-
+      btn_name = a.text('Update');
       console.log("Edit-Btn clicked-Text",btn_name.text());
     },
     error:function(){
@@ -390,12 +389,9 @@ $(document).on('click', '.add-new', function () {
   const a = $('#addBtn');
   a.removeClass('data-update');
   a.addClass('data-submit');
-
+  btn_name = a.text('Add');
   modal_title = $('#offcanvasEcommerceCategoryListLabel');
   modal_title.text('Add Category');
-
-  btn_name = $('.data-submit');
-  btn_name.text('Add');
 
   console.log("Reset Form Btn Text : ", btn_name.text());
 });

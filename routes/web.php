@@ -9,6 +9,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\UserController; 
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PartnerRoleController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -150,7 +151,10 @@ Route::get('/products',function(){
 })->name('products-list');
 
 //->products-add page
-Route::get('/products/add',function(){
-    return view('Products-view.products-addproducts');
- })->name('add-products');
- 
+Route::get('/products/add',[ProductController::class,'create'])->name('add-products');
+Route::post('/product/store',[ProductController::class,'store'])->name('store-products');
+Route::get('/products/list',[ProductController::class,'index'])->name('list-products');
+Route::delete('/product/delete/{id}',[ProductController::class,'destroy'])->name('delete-product');
+Route::get('/product/edit/{id}',[ProductController::class,'edit'])->name('edit-product');
+Route::post('/product/update/{id}',[ProductController::class,'update'])->name('update-product');
+Route::post('/delete-selectedproducts',[ProductController::class,'deleteSelectedRows'])->name('delete-selected-products'); 

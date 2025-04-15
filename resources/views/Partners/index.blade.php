@@ -81,7 +81,7 @@
                     $('#modalUserEmail').text(response.email);
                     $('#modalUserRole').text(response.role.name); 
 
-                    $('#userDetailsModal').modal('show');
+                    $('#userDetailsModal').('show');
                 },
                 error: function(xhr, status, error) {
                     console.error("AJAX Error:", error);

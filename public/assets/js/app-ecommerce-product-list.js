@@ -7,7 +7,7 @@
 // Datatable (jquery)
 $(function () {
   let borderColor, bodyBg, headingColor;
-
+  var selectedRows = {};
   if (isDarkStyle) {
     borderColor = config.colors_dark.borderColor;
     bodyBg = config.colors_dark.bodyBg;
@@ -47,17 +47,26 @@ $(function () {
 
   if (dt_product_table.length) {
     var dt_products = dt_product_table.DataTable({
-      ajax: assetsPath + 'json/ecommerce-product-list.json', // JSON file to add data
+      processing: true,
+      serverSide: false,
+      ajax:{
+            "url": productsListURL,
+            "dataSrc": 'info'
+            }, // JSON file to add data
       columns: [
         // columns according to JSON
         { data: 'id' },
         { data: 'id' },
-        { data: 'product_name' },
-        { data: 'category' },
-        { data: 'stock' },
-        { data: 'sku' },
-        { data: 'price' },
-        { data: 'quantity' },
+        { data: 'name' },
+        { data: 'category' ,
+          render : function(data , type , row){
+            return data && data.title ? data.title : 'Default';
+          }
+        },
+        { data: 'in_stock' },
+        { data: 'description' },
+        { data: 'base_price' },
+        { data: 'discounted_price' },
         { data: 'status' },
         { data: '' }
       ],
@@ -77,103 +86,102 @@ $(function () {
           // For Checkboxes
           targets: 1,
           orderable: false,
-          checkboxes: {
-            selectAllRender: '<input type="checkbox" class="form-check-input">'
+          searchable: false,
+          responsivePriority: 3,
+          checkboxes: false,
+          render: function (data, type, row) {
+            return '<input type="checkbox" class="select-checkbox" data-id="' + row.id + '">';
           },
-          render: function () {
-            return '<input type="checkbox" class="dt-checkboxes form-check-input" >';
-          },
-          searchable: false
         },
-        {
-          // Product name and product_brand
-          targets: 2,
-          responsivePriority: 1,
-          render: function (data, type, full, meta) {
-            var $name = full['product_name'],
-              $id = full['id'],
-              $product_brand = full['product_brand'],
-              $image = full['image'];
-            if ($image) {
-              // For Product image
+        // {
+        //   // Product name and product_brand
+        //   targets: 2,
+        //   responsivePriority: 1,
+        //   render: function (data, type, full, meta) {
+        //     var $name = full['name'],
+        //       $id = full['id'],
+        //       //$product_brand = full['product_brand'],
+        //       $image = full['image'];
+        //     if ($image) {
+        //       // For Product image
 
-              var $output =
-                '<img src="' +
-                assetsPath +
-                'img/ecommerce-images/' +
-                $image +
-                '" alt="Product-' +
-                $id +
-                '" class="rounded-2">';
-            } else {
-              // For Product badge
-              var stateNum = Math.floor(Math.random() * 6);
-              var states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'];
-              var $state = states[stateNum],
-                $name = full['product_brand'],
-                $initials = $name.match(/\b\w/g) || [];
-              $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
-              $output = '<span class="avatar-initial rounded-2 bg-label-' + $state + '">' + $initials + '</span>';
-            }
-            // Creates full output for Product name and product_brand
-            var $row_output =
-              '<div class="d-flex justify-content-start align-items-center product-name">' +
-              '<div class="avatar-wrapper">' +
-              '<div class="avatar avatar me-4 rounded-2 bg-label-secondary">' +
-              $output +
-              '</div>' +
-              '</div>' +
-              '<div class="d-flex flex-column">' +
-              '<h6 class="text-nowrap mb-0">' +
-              $name +
-              '</h6>' +
-              '<small class="text-truncate d-none d-sm-block">' +
-              $product_brand +
-              '</small>' +
-              '</div>' +
-              '</div>';
-            return $row_output;
-          }
-        },
-        {
-          // Product Category
+        //       var $output =
+        //         '<img src="' +
+        //         assetsPath +
+        //         'img/ecommerce-images/' +
+        //         $image +
+        //         '" alt="Product-' +
+        //         $id +
+        //         '" class="rounded-2">';
+        //     } else {
+        //       // For Product badge
+        //       var stateNum = Math.floor(Math.random() * 6);
+        //       var states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'];
+        //       var $state = states[stateNum],
+        //         $name = full['product_brand'],
+        //         $initials = $name.match(/\b\w/g) || [];
+        //       $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
+        //       $output = '<span class="avatar-initial rounded-2 bg-label-' + $state + '">' + $initials + '</span>';
+        //     }
+        //     // Creates full output for Product name and product_brand
+        //     var $row_output =
+        //       '<div class="d-flex justify-content-start align-items-center product-name">' +
+        //       '<div class="avatar-wrapper">' +
+        //       '<div class="avatar avatar me-4 rounded-2 bg-label-secondary">' +
+        //       $output +
+        //       '</div>' +
+        //       '</div>' +
+        //       '<div class="d-flex flex-column">' +
+        //       '<h6 class="text-nowrap mb-0">' +
+        //       $name +
+        //       '</h6>' +
+        //       '<small class="text-truncate d-none d-sm-block">' +
+        //       $product_brand +
+        //       '</small>' +
+        //       '</div>' +
+        //       '</div>';
+        //     return $row_output;
+        //   }
+        // },
+        // {
+        //   // Product Category
 
-          targets: 3,
-          responsivePriority: 5,
-          render: function (data, type, full, meta) {
-            var $category = categoryObj[full['category']].title;
-            var categoryBadgeObj = {
-              Household:
-                '<span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-warning me-4 p-3"><i class="ti ti-home-2 ti-sm"></i></span>',
-              Office:
-                '<span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-info me-4 p-3"><i class="ti ti-briefcase ti-sm"></i></span>',
-              Electronics:
-                '<span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-danger me-4 p-3"><i class="ti ti-device-mobile ti-sm"></i></span>',
-              Shoes:
-                '<span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-success me-4"><i class="ti ti-shoe ti-sm"></i></span>',
-              Accessories:
-                '<span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-secondary me-4"><i class="ti ti-device-watch ti-sm"></i></span>',
-              Game: '<span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-primary me-4"><i class="ti ti-device-gamepad-2 ti-sm"></i></span>'
-            };
-            return (
-              "<span class='text-truncate d-flex align-items-center text-heading'>" +
-              categoryBadgeObj[$category] +
-              $category +
-              '</span>'
-            );
-          }
-        },
+        //   targets: 3,
+        //   responsivePriority: 5,
+        //   render: function (data, type, full, meta) {
+        //     var $category = categoryObj[full['category']].title;
+        //     var categoryBadgeObj = {
+        //       Household:
+        //         '<span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-warning me-4 p-3"><i class="ti ti-home-2 ti-sm"></i></span>',
+        //       Office:
+        //         '<span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-info me-4 p-3"><i class="ti ti-briefcase ti-sm"></i></span>',
+        //       Electronics:
+        //         '<span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-danger me-4 p-3"><i class="ti ti-device-mobile ti-sm"></i></span>',
+        //       Shoes:
+        //         '<span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-success me-4"><i class="ti ti-shoe ti-sm"></i></span>',
+        //       Accessories:
+        //         '<span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-secondary me-4"><i class="ti ti-device-watch ti-sm"></i></span>',
+        //       Game: '<span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-primary me-4"><i class="ti ti-device-gamepad-2 ti-sm"></i></span>'
+        //     };
+        //     return (
+        //       "<span class='text-truncate d-flex align-items-center text-heading'>" +
+        //       categoryBadgeObj[$category] +
+        //       $category +
+        //       '</span>'
+        //     );
+        //   }
+        // },
         {
           // Stock
           targets: 4,
           orderable: false,
           responsivePriority: 3,
           render: function (data, type, full, meta) {
-            var $stock = full['stock'];
+            var $stock = full['in_stock'];
             var stockSwitchObj = {
               Out_of_Stock:
                 '<label class="switch switch-primary switch-sm">' +
-                '<input type="checkbox" class="switch-input" id="switch">' +
+                '<input type="checkbox" class="switch-input" id="switch"disabled >' +
                 '<span class="switch-toggle-slider">' +
                 '<span class="switch-off">' +
                 '</span>' +
@@ -181,7 +189,7 @@ $(function () {
                 '</label>',
               In_Stock:
                 '<label class="switch switch-primary switch-sm">' +
-                '<input type="checkbox" class="switch-input" checked="">' +
+                '<input type="checkbox" class="switch-input" checked="" disabled >' +
                 '<span class="switch-toggle-slider">' +
                 '<span class="switch-on">' +
                 '</span>' +
@@ -202,7 +210,7 @@ $(function () {
           // Sku
           targets: 5,
           render: function (data, type, full, meta) {
-            var $sku = full['sku'];
+            var $sku = full['description'];
 
             return '<span>' + $sku + '</span>';
           }
@@ -211,36 +219,36 @@ $(function () {
           // price
           targets: 6,
           render: function (data, type, full, meta) {
-            var $price = full['price'];
+            var $price = full['base_price'];
 
             return '<span>' + $price + '</span>';
           }
         },
-        {
-          // qty
-          targets: 7,
-          responsivePriority: 4,
-          render: function (data, type, full, meta) {
-            var $qty = full['qty'];
+        // {
+        //   // qty
+        //   targets: 7,
+        //   responsivePriority: 4,
+        //   render: function (data, type, full, meta) {
+        //     var $qty = full['qty'];
 
-            return '<span>' + $qty + '</span>';
-          }
-        },
-        {
-          // Status
-          targets: -2,
-          render: function (data, type, full, meta) {
-            var $status = full['status'];
+        //     return '<span>' + $qty + '</span>';
+        //   }
+        // },
+        // {
+        //   // Status
+        //   targets: -2,
+        //   render: function (data, type, full, meta) {
+        //     var $status = full['status'];
 
-            return (
-              '<span class="badge ' +
-              statusObj[$status].class +
-              '" text-capitalized>' +
-              statusObj[$status].title +
-              '</span>'
-            );
-          }
-        },
+        //     return (
+        //       '<span class="badge ' +
+        //       statusObj[$status].class +
+        //       '" text-capitalized>' +
+        //       statusObj[$status].title +
+        //       '</span>'
+        //     );
+        //   }
+        // },
         {
           // Actions
           targets: -1,
@@ -249,14 +257,9 @@ $(function () {
           orderable: false,
           render: function (data, type, full, meta) {
             return (
-              '<div class="d-inline-block text-nowrap">' +
-              '<button class="btn btn-sm btn-icon btn-text-secondary rounded-pill waves-effect waves-light"><i class="ti ti-edit ti-md"></i></button>' +
-              '<button class="btn btn-sm btn-icon btn-text-secondary rounded-pill waves-effect waves-light dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical ti-md"></i></button>' +
-              '<div class="dropdown-menu dropdown-menu-end m-0">' +
-              '<a href="javascript:0;" class="dropdown-item">View</a>' +
-              '<a href="javascript:0;" class="dropdown-item">Suspend</a>' +
-              '</div>' +
-              '</div>'
+             '<div class="d-inline-block">' +
+                '<a href="javascript:;" class=" text-danger delete-record" data-id="'+full.id+'"><i class="ti ti-trash me-1"></i></a>' +
+                '<a href="javascript:;" class="btn btn-sm btn-text-secondary rounded-pill btn-icon edit-btn" data-id="'+full.id+'"><i class="ti ti-pencil ti-md"></i></a>'
             );
           }
         }
@@ -423,7 +426,7 @@ $(function () {
           text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Add Product</span>',
           className: 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
           action: function () {
-            window.location.href = productAdd;
+            window.location.href = addProductURL;
           }
         }
       ],
@@ -433,7 +436,7 @@ $(function () {
           display: $.fn.dataTable.Responsive.display.modal({
             header: function (row) {
               var data = row.data();
-              return 'Details of ' + data['product_name'];
+              return 'Details of ' + data['name'];
             }
           }),
           type: 'column',
@@ -534,9 +537,110 @@ $(function () {
   }
 
   // Delete Record
-  $('.datatables-products tbody').on('click', '.delete-record', function () {
-    dt_products.row($(this).parents('tr')).remove().draw();
+  $(document).on('click', '.delete-record', function () {
+    var id = $(this).data('id');
+
+    if (confirm('Are you sure you want to delete this item?')) {
+      $.ajax({
+        url : deleteCategoryURL.replace(':id', id),
+        type : "DELETE",
+        headers: {
+          "X-CSRF-TOKEN": csrfToken
+        },
+        success : function(response){
+          toastr.success(response.success);
+          $('.datatables-products').DataTable().ajax.reload();
+        },
+        error : function(xhr){
+          var err = JSON.parse(xhr.responseText);
+          toastr.error(err.error);
+        }
+      });
+    }
   });
+$(document).on('click','.edit-btn',function(){
+  
+  var id = $(this).data('id');
+  window.location.href = editProductURL.replace(':id',id);
+});
+//select-all
+$('#select-all').on('change', function () {
+  var isChecked = this.checked;
+
+  // Select all checkboxes, including those not in the current page
+  $('.select-checkbox').prop('checked', isChecked);
+
+  $('.datatables-products').DataTable().rows().every(function () {
+      var row = this.node();
+      var rowId = $(row).find('.select-checkbox').data('id');
+
+      if (isChecked) {
+          selectedRows[rowId] = true;
+      } else {
+          delete selectedRows[rowId];
+      }
+  });
+
+  updateDeleteButtonVisibility();
+});
+$(document).on('change', '.select-checkbox', function () {
+  var rowId = $(this).data('id');
+  if (this.checked) {
+      selectedRows[rowId] = true;
+  } else {
+      delete selectedRows[rowId];
+      $('#select-all').prop('checked', false);
+  }
+  if ($('.select-checkbox:checked').length === $('.select-checkbox').length) {
+  $('#select-all').prop('checked', true);
+}
+
+  updateDeleteButtonVisibility();
+});
+dt_products.on('draw', function () {
+  $('.select-checkbox').each(function () {
+      var rowId = $(this).data('id');
+      $(this).prop('checked', selectedRows[rowId] === true);
+  });
+
+  $('#select-all').prop('checked', Object.keys(selectedRows).length === dt_products.rows().count());
+
+  updateDeleteButtonVisibility();
+});
+function updateDeleteButtonVisibility() {
+  var selectedCount = Object.keys(selectedRows).length;
+  $('#deleteRows').toggle(selectedCount > 0);
+}
+//DELETE SELECTED ROWS WITH CHECKBOXES
+$('#deleteRows').on('click', function () {
+  var selectedIds = Object.keys(selectedRows);
+  if (selectedIds.length === 0) {
+      alert("No users selected.");
+      return;
+  }
+
+  if (!confirm("Are you sure you want to delete selected users?")) return;
+
+  $.ajax({
+      url: selectDeleteUrl,
+      type: "POST",
+      data: {
+          _token: csrfToken,
+          ids: selectedIds
+      },
+      success: function (response) {
+           
+          selectedRows = {}; 
+          $('.datatables-products').DataTable().ajax.reload();;
+          alert(response.success);
+          updateDeleteButtonVisibility();
+      },
+      error: function (xhr) {
+        var err = JSON.parse(xhr.responseText);
+        alert(err.error);
+      }
+  });
+});
 
   // Filter form control to default size
   // ? setTimeout used for multilingual table initialization

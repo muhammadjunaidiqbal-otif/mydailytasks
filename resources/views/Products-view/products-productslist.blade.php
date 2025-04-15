@@ -45,6 +45,9 @@
       }
   </style>
 @endsection
+<div id="loader-overlay">
+  <div class="loader"></div>
+</div>
 @section('content')
 <!-- Content -->
 
@@ -133,19 +136,23 @@
         <div class="col-md-4 product_category"></div>
         <div class="col-md-4 product_stock"></div>
       </div>
+      
     </div>
     <div class="card-datatable table-responsive">
+      <div class=" d-flex">
+        <button id="deleteRows" style="display:none; background:red; color:white; padding:5px;">Delete Selected</button>
+        </div>
       <table class="datatables-products table">
         <thead class="border-top">
           <tr>
             <th></th>
-            <th></th>
+            <th><input type="checkbox" id="select-all" title="Click To Select All Rows"></th>
             <th>product</th>
             <th>category</th>
             <th>stock</th>
-            <th>sku</th>
+            <th>description</th>
             <th>price</th>
-            <th>qty</th>
+            <th>discounted </th>
             <th>status</th>
             <th>actions</th>
           </tr>
@@ -154,6 +161,8 @@
     </div>
   </div>
 </div>
+{{-- Edit Modal --}}
+
 <!-- / Content -->
 @endsection
 @section('Build-JS')
@@ -206,4 +215,12 @@
 </script>
 @section('Page-JS')
     <script src="../../assets/js/app-ecommerce-product-list.js"></script>
+    <script>
+      var addProductURL = "{{route('add-products')}}";
+      var productsListURL = "{{route('list-products')}}";
+      var csrfToken = $('meta[name="csrf-token"]').attr('content')
+      var deleteCategoryURL = "{{route('delete-product',':id')}}";
+      var editProductURL = "{{route('edit-product',':id')}}";
+      var selectDeleteUrl = "{{route('delete-selected-products')}}"
+    </script>
 @endsection

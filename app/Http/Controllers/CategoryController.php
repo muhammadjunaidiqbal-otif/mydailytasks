@@ -44,23 +44,23 @@ class CategoryController extends Controller
              'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf', // adjust types as needed
          ]);
         $filePath = null;
-    if ($request->hasFile('attachment')) {
-        $file = $request->file('attachment');
-        $filePath = $file->store('categories', 'public');
-    } else {
-        $filePath = "No File Uploaded";
-    }
+        if ($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $filePath = $file->store('categories', 'public');
+        } else {
+            $filePath = "No File Uploaded";
+        }
        
-    $category = Category::create([
-        'title' => $request->categoryTitle,
-        'slug' => $request->slug,
-        'image' => $filePath,
-        'parent_id' => null,
-        'description' => $request->description,
-        'status' => $request->status,
-        'created_at' => now(),
-        'updated_at' => null,
-    ]);
+        $category = Category::create([
+            'title' => $request->categoryTitle,
+            'slug' => $request->slug,
+            'image' => $filePath,
+            'parent_id' => null,
+            'description' => $request->description,
+            'status' => $request->status,
+            'created_at' => now(),
+            'updated_at' => null,
+        ]);
 
     return response()->json([
         'success' => true,
@@ -135,8 +135,7 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $category = Category::find($id); // Corrected query
-
+        $category = Category::find($id); 
         if (!$category) {
             return response()->json(['error' => 'Category not found!'], 404);
         }
