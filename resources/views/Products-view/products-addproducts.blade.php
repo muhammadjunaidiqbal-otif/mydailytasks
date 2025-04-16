@@ -82,7 +82,7 @@
                   <h5 class="card-tile mb-0">Product information</h5>
                 </div>
                 <div class="card-body">
-                  <input type="hidden"value="{{isset($products)?$products->id:''}}" id="ecommerce-product-id">
+                  <input type="hidden"value="{{ isset($products)?$products->id:'' }}" id="ecommerce-product-id">
                   <div class="mb-6">
                     <label class="form-label" for="ecommerce-product-name">Name</label>
                     <input
@@ -104,7 +104,7 @@
                         placeholder="SKU"
                         name="sku"
                         aria-label="Product SKU"
-                        value="{{isset($products)?$products->sku:''}}" />
+                        value="{{ isset($products)?$products->sku:''  }}" />
                     </div>
                     <div class="col">
                       <label class="form-label" for="ecommerce-product-barcode">Barcode</label>

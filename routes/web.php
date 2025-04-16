@@ -158,3 +158,16 @@ Route::delete('/product/delete/{id}',[ProductController::class,'destroy'])->name
 Route::get('/product/edit/{id}',[ProductController::class,'edit'])->name('edit-product');
 Route::post('/product/update/{id}',[ProductController::class,'update'])->name('update-product');
 Route::post('/delete-selectedproducts',[ProductController::class,'deleteSelectedRows'])->name('delete-selected-products'); 
+
+//User-Dashboards Routes
+Route::get('/home',function(){
+    return view('Users.home');
+})->name('users-home-page');
+
+Route::get('/shop', function () {
+    return view('Users.shop');
+})->name('users-shop-page');
+
+Route::get('/product', function () {
+    return view('Users.product');
+})->name('users-product-page');

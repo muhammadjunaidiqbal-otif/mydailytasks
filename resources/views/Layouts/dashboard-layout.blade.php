@@ -1818,7 +1818,7 @@
     <script>  
       var isAuthenticated = @json(Auth::check());
       var userName = @json(Auth::user()->name ?? '');
-      document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function () {
   const currentUrl = window.location.href;
 
   document.querySelectorAll('.menu-item a').forEach(link => {
