@@ -3,5 +3,5 @@
     Product
 @endsection
 @section('content')
-    
+    Hi
 @endsection

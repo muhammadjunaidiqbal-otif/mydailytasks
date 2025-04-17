@@ -25,15 +25,19 @@
     <link rel="stylesheet" href="user-assets/css/plugins/owl-carousel/owl.carousel.css">
     <link rel="stylesheet" href="user-assets/css/plugins/magnific-popup/magnific-popup.css">
     <link rel="stylesheet" href="user-https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    @yield('Fav-Icon')
+
     <!-- For Font Awesome 5+ -->    
     <!-- Plugins CSS File -->
     <link rel="stylesheet" href="user-assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="user-assets/css/main.min.css">
     <link rel="stylesheet" href="user-assets/css/icons.min.css">
+    @yield('Plugin-CSS')
 
     <!-- Main CSS File -->
     <link rel="stylesheet" href="user-assets/css/style.css">
     <link rel="stylesheet" href="user-assets/css/plugins/nouislider/nouislider.css">
+    @yield('Main-CSS')
     <style>
         .dropdown-cart-action a.btn {
     padding: 0.6rem 1rem;
@@ -111,8 +115,6 @@
                                 <ul>
                                     <li><a href="tel:#"><i class="icon-phone"></i>Call: +0123 456 789</a></li>
                                     <li><a href=""><i class="icon-heart-o"></i>Wishlist <span>(3)</span></a></li>
-                                    <li><a href="">About Us</a></li>
-                                    <li><a href="">Contact Us</a></li>
                                     <li><a href="" data-toggle="modal"><i class="icon-user"></i>Login</a></li>
                                 </ul>
                             </li>
@@ -135,86 +137,17 @@
 
                         <nav class="main-nav">
                             <ul class="menu sf-arrows">
-                                <li class="megamenu-container active">
+                                <li class="megamenu-container {{ request()->routeIs('users-home-page') ? 'active' : '' }}">
                                     <a href="{{route('users-home-page')}}" class="">Home</a>
                                 </li>
-                                <li>
+                                <li class="{{ request()->routeIs('users-shop-page') ? 'active' : '' }}">
                                     <a href="{{route('users-shop-page')}}" class="">Shop</a>
                                 </li>
-                                <li>
-                                    <a href="{{route('users-product-page')}}" class="">Product</a>
-
-                                    {{-- <div class="megamenu megamenu-sm">
-                                        <div class="row no-gutters">
-                                            <div class="col-md-6">
-                                                <div class="menu-col">
-                                                    <div class="menu-title">Product Details</div><!-- End .menu-title -->
-                                                    <ul>
-                                                        <li><a href="product.html">Default</a></li>
-                                                        <li><a href="product-centered.html">Centered</a></li>
-                                                        <li><a href="product-extended.html"><span>Extended Info<span class="tip tip-new">New</span></span></a></li>
-                                                        <li><a href="product-gallery.html">Gallery</a></li>
-                                                        <li><a href="product-sticky.html">Sticky Info</a></li>
-                                                        <li><a href="product-sidebar.html">Boxed With Sidebar</a></li>
-                                                        <li><a href="product-fullwidth.html">Full Width</a></li>
-                                                        <li><a href="product-masonry.html">Masonry Sticky Info</a></li>
-                                                    </ul>
-                                                </div><!-- End .menu-col -->
-                                            </div><!-- End .col-md-6 -->
-
-                                            <div class="col-md-6">
-                                                <div class="banner banner-overlay">
-                                                    <a href="category.html">
-                                                        <img src="assets/img/menu/banner-2.jpg" alt="Banner">
-
-                                                        <div class="banner-content banner-content-bottom">
-                                                            <div class="banner-title text-white">New Trends<br><span><strong>spring 2019</strong></span></div><!-- End .banner-title -->
-                                                        </div><!-- End .banner-content -->
-                                                    </a>
-                                                </div><!-- End .banner -->
-                                            </div><!-- End .col-md-6 -->
-                                        </div><!-- End .row -->
-                                    </div><!-- End .megamenu megamenu-sm --> --}}
+                                <li class="{{ request()->routeIs('users-about-page') ? 'active' : '' }}">
+                                    <a href="{{route('users-about-page')}}" class="">About Us</a>
                                 </li>
-                                <li>
-                                    <a href="blog.html" class="">Blog</a>
-                                    {{-- <ul>
-                                        <li><a href="blog.html">Classic</a></li>
-                                        <li><a href="blog-listing.html">Listing</a></li>
-                                        <li>
-                                            <a href="#">Grid</a>
-                                            <ul>
-                                                <li><a href="blog-grid-2cols.html">Grid 2 columns</a></li>
-                                                <li><a href="blog-grid-3cols.html">Grid 3 columns</a></li>
-                                                <li><a href="blog-grid-4cols.html">Grid 4 columns</a></li>
-                                                <li><a href="blog-grid-sidebar.html">Grid sidebar</a></li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="#">Masonry</a>
-                                            <ul>
-                                                <li><a href="blog-masonry-2cols.html">Masonry 2 columns</a></li>
-                                                <li><a href="blog-masonry-3cols.html">Masonry 3 columns</a></li>
-                                                <li><a href="blog-masonry-4cols.html">Masonry 4 columns</a></li>
-                                                <li><a href="blog-masonry-sidebar.html">Masonry sidebar</a></li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="#">Mask</a>
-                                            <ul>
-                                                <li><a href="blog-mask-grid.html">Blog mask grid</a></li>
-                                                <li><a href="blog-mask-masonry.html">Blog mask masonry</a></li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="#">Single Post</a>
-                                            <ul>
-                                                <li><a href="single.html">Default with sidebar</a></li>
-                                                <li><a href="single-fullwidth.html">Fullwidth no sidebar</a></li>
-                                                <li><a href="single-fullwidth-sidebar.html">Fullwidth with sidebar</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul> --}}
+                                <li class="{{ request()->routeIs('users-contact-page') ? 'active' : '' }}">
+                                    <a href="{{route('users-contact-page')}}" class="">Contact Us</a>
                                 </li>
                             </ul><!-- End .menu -->
                         </nav><!-- End .main-nav -->
@@ -254,62 +187,51 @@
                             </div><!-- End .dropdown-menu -->
                         </div><!-- End .compare-dropdown -->
                         <div class="dropdown cart-dropdown">
-                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                            <a href="" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
                                 <i class="icon-shopping-cart"></i>
-                                <span class="cart-count">2</span>
+                                {{-- <span class="cart-count"></span> --}}
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right">
                                 <div class="dropdown-cart-products">
+                                    @php $cart = session('cart', []); @endphp
+                                    @foreach($cart as $product)
                                     <div class="product">
                                         <div class="product-cart-details">
                                             <h4 class="product-title">
-                                                <a href="product.html">Beige knitted elastic runner shoes</a>
+                                                <a href="product.html">{{$product['name']}}</a>
                                             </h4>
 
                                             <span class="cart-product-info">
-                                                <span class="cart-product-qty">1</span>
-                                                x $84.00
+                                                <span class="cart-product-qty">{{$product['quantity']}}</span>
+                                                x {{$product['price']}}
                                             </span>
                                         </div><!-- End .product-cart-details -->
 
                                         <figure class="product-image-container">
-                                            <a href="product.html" class="product-image">
-                                                <img src="user-assets/images/products/cart/product-1.jpg" alt="product">
+                                            <a href="" class="product-image">
+                                                <img src="{{ !empty($product['image']) && $product['image'] !== 'No File Uploaded' 
+                                                ? asset('storage/' . $product['image']) 
+                                                : asset('user-assets/images/products/product-4.jpg') }}" alt="product">
                                             </a>
                                         </figure>
-                                        <a href="#" class="btn-remove" title="Remove Product"><i class="icon-close"></i></a>
+                                        <form action="{{ route('remove-from-cart') }}" method="POST" style="display: inline;">
+                                            @csrf
+                                            <input type="hidden" name="product_id" value="{{ $product['id']}}">
+                                            <button type="submit" class="btn-remove"><i class="icon-close"></i></button>
+                                        </form>
                                     </div><!-- End .product -->
-
-                                    <div class="product">
-                                        <div class="product-cart-details">
-                                            <h4 class="product-title">
-                                                <a href="product.html">Blue utility pinafore denim dress</a>
-                                            </h4>
-
-                                            <span class="cart-product-info">
-                                                <span class="cart-product-qty">1</span>
-                                                x $76.00
-                                            </span>
-                                        </div><!-- End .product-cart-details -->
-
-                                        <figure class="product-image-container">
-                                            <a href="product.html" class="product-image">
-                                                <img src="user-assets/images/products/cart/product-2.jpg" alt="product">
-                                            </a>
-                                        </figure>
-                                        <a href="#" class="btn-remove" title="Remove Product"><i class="icon-close"></i></a>
-                                    </div><!-- End .product -->
+                                    @endforeach
                                 </div><!-- End .cart-product -->
 
                                 <div class="dropdown-cart-total">
                                     <span>Total</span>
 
-                                    <span class="cart-total-price">$160.00</span>
+                                    <span class="cart-total-price"></span>
                                 </div><!-- End .dropdown-cart-total -->
 
                                 <div class="dropdown-cart-action d-flex gap-2">
-                                    <a href="cart.html" class="btn btn-sm btn-primary flex-fill text-center">View Cart</a>
+                                    <a href="{{route('users-cart-page')}}" class="btn btn-sm btn-primary flex-fill text-center">View Cart</a>
                                     <a href="checkout.html" class="btn btn-sm btn-outline-primary-2 flex-fill d-flex justify-content-center align-items-center">
                                         <span>Checkout</span>
                                         <i class="icon-long-arrow-right ml-2"></i>
@@ -322,6 +244,7 @@
                 </div><!-- End .container -->
             </div><!-- End .header-middle -->
         </header><!-- End .header -->
+        
         @sectionMissing('content')
             <div class="loader-wrapper" style="display:flex;justify-content:center;align-items:center;height:200px;">
                 <div class="spinner-border text-primary color-changing-spinner" role="status">
@@ -331,6 +254,7 @@
         @else
             @yield('content')
         @endif
+        
         <footer class="footer">
         	<div class="footer-middle">
 	            <div class="container">
@@ -384,7 +308,7 @@
 
 	            				<ul class="widget-list">
 	            					<li><a href="#">Sign In</a></li>
-	            					<li><a href="cart.html">View Cart</a></li>
+	            					<li><a href="{{route('users-cart-page')}}">View Cart</a></li>
 	            					<li><a href="#">My Wishlist</a></li>
 	            					<li><a href="#">Track My Order</a></li>
 	            					<li><a href="#">Help</a></li>
@@ -423,19 +347,16 @@
                  <li class="active">
                      <a href="index.html">Home</a>
                      <ul>
-
                      </ul>
                  </li>
                  <li>
                      <a href="category.html">Shop</a>
-                     <ul>
-                         
+                     <ul>        
                      </ul>
                  </li>
                  <li>
-                     <a href="product.html" class="sf-with-ul">Product</a>
-                     <ul>
-                         
+                     <a href="product.html" class="sf-with-ul">About</a>
+                     <ul>   
                      </ul>
                  </li>
                  <li>
@@ -443,18 +364,12 @@
                      <ul>
                          <li>
                              <a href="about.html">About</a>
-
                              <ul>
-                                 <li><a href="about.html">About 01</a></li>
-                                 <li><a href="about-2.html">About 02</a></li>
                              </ul>
                          </li>
                          <li>
                              <a href="contact.html">Contact</a>
-
                              <ul>
-                                 <li><a href="contact.html">Contact 01</a></li>
-                                 <li><a href="contact-2.html">Contact 02</a></li>
                              </ul>
                          </li>
                          <li><a href="login.html">Login</a></li>
@@ -465,40 +380,14 @@
                  </li>
                  <li>
                      <a href="blog.html">Blog</a>
-
                      <ul>
-                         <li><a href="blog.html">Classic</a></li>
-                         <li><a href="blog-listing.html">Listing</a></li>
-                         <li>
-                             <a href="#">Grid</a>
-                             <ul>
-                                 
-                             </ul>
-                         </li>
-                         <li>
-                             <a href="#">Masonry</a>
-                             <ul>
-                                 
-                             </ul>
-                         </li>
-                         <li>
-                             <a href="#">Mask</a>
-                             <ul>
-                                 
-                             </ul>
-                         </li>
-                         <li>
-                             <a href="#">Single Post</a>
-                             <ul>
-                                 
-                             </ul>
-                         </li>
+                         <li></li>
                      </ul>
                  </li>
                  <li>
                      <a href="elements-list.html">Elements</a>
                      <ul>
-                         
+                        <li></li>                        
                      </ul>
                  </li>
              </ul>
@@ -522,7 +411,9 @@
     <script src="user-assets/js/jquery.magnific-popup.min.js"></script>
     <script src="user-assets/js/wNumb.js"></script>
     <script src="user-assets/js/nouislider.min.js"></script>
-    <!-- Main JS File -->
+    @yield('Plugin-JS')
+    <!-- Main JS File -->    
     <script src="user-assets/js/main.js"></script>
+    @yield('Main-JS')
 </body>
 </html>

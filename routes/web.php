@@ -11,6 +11,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\EcomShopController;
 use App\Http\Controllers\PartnerRoleController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
@@ -164,10 +165,28 @@ Route::get('/home',function(){
     return view('Users.home');
 })->name('users-home-page');
 
-Route::get('/shop', function () {
-    return view('Users.shop');
-})->name('users-shop-page');
+Route::get('/shop', [EcomShopController::class,'showProducts'])->name('users-shop-page');
 
 Route::get('/product', function () {
     return view('Users.product');
 })->name('users-product-page');
+
+Route::get('/cart', function () {
+    return view('Users.cart');
+})->name('users-cart-page');
+
+Route::get('/about-us', function () {
+    return view('Users.about');
+})->name('users-about-page');
+
+Route::get('/contact', function () {
+    return view('Users.contact');
+})->name('users-contact-page');
+
+Route::get('/clear-session', function () {
+    session()->forget('cart'); // or session()->flush();
+    return 'Session cleared!';
+});
+
+Route::post('/cart/add', [EcomShopController::class, 'addToCart'])->name('add-to-cart');
+Route::post('/cart/remove', [EcomShopController::class, 'removeFromCart'])->name('remove-from-cart');

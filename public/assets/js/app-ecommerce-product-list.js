@@ -210,9 +210,11 @@ $(function () {
           // Sku
           targets: 5,
           render: function (data, type, full, meta) {
-            var $sku = full['description'];
-
-            return '<span>' + $sku + '</span>';
+            //var $sku = full['description'];
+            const text = full['description']; // or whatever your field is
+            const shortText = text.length > 6 ? text.substring(0, 50) + '...' : text;
+            return shortText;
+            //return '<span>' + $sku + '</span>';
           }
         },
         {

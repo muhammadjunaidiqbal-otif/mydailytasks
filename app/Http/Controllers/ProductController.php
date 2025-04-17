@@ -19,6 +19,9 @@ class ProductController extends Controller
             'info' => $products
         ]);
     }
+    public function test(){
+        return "HI";
+    }
 
     /**
      * Show the form for creating a new resource.
