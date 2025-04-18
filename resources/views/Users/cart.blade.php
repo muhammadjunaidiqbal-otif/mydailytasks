@@ -12,16 +12,6 @@
 @endsection
 @section('content')
 <main class="main">
-    <nav aria-label="breadcrumb" class="breadcrumb-nav">
-        <div class="container">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Shop</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
-            </ol>
-        </div><!-- End .container -->
-    </nav><!-- End .breadcrumb-nav -->
-
     <div class="page-content">
         <div class="cart">
             <div class="container">
@@ -61,10 +51,10 @@
                                     <td class="price-col">{{$product['price']}}</td>
                                     <td class="quantity-col">
                                         <div class="cart-product-quantity">
-                                            <input type="number" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
+                                            <input type="spinner" class="form-control quantity-input" value="{{$product['quantity']}}" min="1" max="10" step="1" data-decimals="0" data-id="{{ $product['id'] }}" required>
                                         </div><!-- End .cart-product-quantity -->
                                     </td>
-                                    <td class="total-col">$84.00</td>
+                                    <td class="total-col">{{$product['price']*$product['quantity']}}.00</td>
                                     <td class="remove-col">
                                         <form action="{{ route('remove-from-cart') }}" method="POST" style="display: inline;">
                                             @csrf
@@ -100,56 +90,16 @@
                                 <tbody>
                                     <tr class="summary-subtotal">
                                         <td>Subtotal:</td>
-                                        <td>$160.00</td>
+                                        <td class="sub-total"></td>
                                     </tr><!-- End .summary-subtotal -->
-                                    <tr class="summary-shipping">
-                                        <td>Shipping:</td>
-                                        <td>&nbsp;</td>
-                                    </tr>
-
-                                    <tr class="summary-shipping-row">
-                                        <td>
-                                            <div class="custom-control custom-radio">
-                                                <input type="radio" id="free-shipping" name="shipping" class="custom-control-input">
-                                                <label class="custom-control-label" for="free-shipping">Free Shipping</label>
-                                            </div><!-- End .custom-control -->
-                                        </td>
-                                        <td>$0.00</td>
-                                    </tr><!-- End .summary-shipping-row -->
-
-                                    <tr class="summary-shipping-row">
-                                        <td>
-                                            <div class="custom-control custom-radio">
-                                                <input type="radio" id="standart-shipping" name="shipping" class="custom-control-input">
-                                                <label class="custom-control-label" for="standart-shipping">Standart:</label>
-                                            </div><!-- End .custom-control -->
-                                        </td>
-                                        <td>$10.00</td>
-                                    </tr><!-- End .summary-shipping-row -->
-
-                                    <tr class="summary-shipping-row">
-                                        <td>
-                                            <div class="custom-control custom-radio">
-                                                <input type="radio" id="express-shipping" name="shipping" class="custom-control-input">
-                                                <label class="custom-control-label" for="express-shipping">Express:</label>
-                                            </div><!-- End .custom-control -->
-                                        </td>
-                                        <td>$20.00</td>
-                                    </tr><!-- End .summary-shipping-row -->
-
-                                    <tr class="summary-shipping-estimate">
-                                        <td>Estimate for Your Country<br> <a href="dashboard.html">Change address</a></td>
-                                        <td>&nbsp;</td>
-                                    </tr><!-- End .summary-shipping-estimate -->
-
                                     <tr class="summary-total">
-                                        <td>Total:</td>
-                                        <td>$160.00</td>
+                                        <td >Total:</td>
+                                        <td class="total"></td>
                                     </tr><!-- End .summary-total -->
                                 </tbody>
                             </table><!-- End .table table-summary -->
 
-                            <a href="checkout.html" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
+                            <a id="checkoutButton" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
                         </div><!-- End .summary -->
 
                         <a href="{{route('users-shop-page')}}" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
@@ -160,3 +110,10 @@
     </div><!-- End .page-content -->
 </main><!-- End .main -->
 @endsection
+@section('Plugin-JS')
+    <script src="user-assets/js/bootstrap-input-spinner.js"></script>
+    <script>
+        var updateCartInputURL = "{{ route('update-cart-quantity') }}";
+        var checkOutURL = "{{ route('users-checkout-page') }}";
+    </script>
+@endsection 

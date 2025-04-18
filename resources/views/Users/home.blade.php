@@ -12,13 +12,6 @@
 @endsection
 
 @section('content')
-<nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
-    <div class="container">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="">Home</a></li>
-        </ol>
-    </div><!-- End .container -->
-</nav><!-- End .breadcrumb-nav -->
 <main class="main">
     <div class="container-fluid">
         <div class="row">
@@ -1301,10 +1294,10 @@
     </div><!-- End .owl-carousel -->
 </main><!-- End .main -->
 @endsection
-{{-- @section('Plugin-JS')
+@section('Plugin-JS')
     <script src="user-assets/js/jquery.plugin.min.js"></script>
     <script src="user-assets/js/jquery.countdown.min.js"></script>
 @endsection
 @section('Main-JS')
     <script src="user-assets/js/demos/demo-7.js"></script>
-@endsection --}}
+@endsection

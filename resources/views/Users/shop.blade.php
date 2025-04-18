@@ -15,15 +15,6 @@
 @endsection
 @section('content')
 <main class="main">
-    <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
-        <div class="container-fluid">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{route('users-home-page')}}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{route('users-shop-page')}}">Shop</a></li>
-                </ol>
-        </div><!-- End .container-fluid -->
-    </nav><!-- End .breadcrumb-nav -->
-
     <div class="page-content">
         <div class="container-fluid">
             <div class="toolbox">

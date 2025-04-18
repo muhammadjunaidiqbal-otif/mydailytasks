@@ -234,16 +234,72 @@ $(document).ready(function () {
 
 	// Quantity Input - Cart page - Product Details pages
     function quantityInputs() {
-        if ( $.fn.inputSpinner ) {
-            $("input[type='number']").inputSpinner({
+        
+        updateSubtotal();
+        if ($.fn.inputSpinner) {
+            $("input.quantity-input").inputSpinner({
                 decrementButton: '<i class="icon-minus"></i>',
                 incrementButton: '<i class="icon-plus"></i>',
                 groupClass: 'input-spinner',
                 buttonsClass: 'btn-spinner',
                 buttonsWidth: '26px'
             });
+    
+            // Update total price on input change
+            $("input.quantity-input").on("input", function () {
+                let $row = $(this).closest("tr");
+                let unitPrice = parseFloat($row.find(".price-col").text());
+                let quantity = parseInt($(this).val());
+                let total = unitPrice * quantity;
+    
+                $row.find(".total-col").text(total.toFixed(2));
+                
+            });
+            
+        } else {
+            console.log("inputSpinner plugin not loaded");
         }
+
+        $(document).on('change', '.quantity-input', function () {
+            var productId = $(this).data('id');
+            var quantity = $(this).val();
+            console.log("ID : "+ productId + "Quantity : " + quantity);
+            $.ajax({
+                url: updateCartInputURL,
+                type: "POST",
+                data: {
+                    product_id: productId,
+                    quantity: quantity
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Proper header
+                  },
+                success: function (res) {
+                    window.location.reload();
+                    updateSubtotal();
+                }
+            });
+        });
+    function updateSubtotal() {
+        console.log("enter Sub Total Calculate FUnction")
+        let subtotal = 0;
+        $('.total-col').each(function () {
+            let value = parseFloat($(this).text());
+            if (!isNaN(value)) {
+                subtotal += value;
+            }
+        });
+
+        $('.sub-total').text(subtotal.toFixed(2));
+        $('.total').text(subtotal.toFixed(2));
+        $('.cart-total-price').text(subtotal.toFixed(2));
+}
+        $('#checkoutButton').on('click',function(){
+            window.location.href = checkOutURL ;
+        })
     }
+    
+ 
 
     // Sticky Content - Sidebar - Social Icons etc..
     // Wrap elements with <div class="sticky-content"></div> if you want to make it sticky
@@ -780,4 +836,5 @@ $(document).ready(function () {
             }, 500)
         }, 10000)
     }
+
 });

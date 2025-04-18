@@ -166,6 +166,7 @@ Route::get('/home',function(){
 })->name('users-home-page');
 
 Route::get('/shop', [EcomShopController::class,'showProducts'])->name('users-shop-page');
+Route::get('/laod-products', [EComShopController::class, 'getProducts'])->name('shop.load.products');
 
 Route::get('/product', function () {
     return view('Users.product');
@@ -190,3 +191,6 @@ Route::get('/clear-session', function () {
 
 Route::post('/cart/add', [EcomShopController::class, 'addToCart'])->name('add-to-cart');
 Route::post('/cart/remove', [EcomShopController::class, 'removeFromCart'])->name('remove-from-cart');
+Route::post('/update-cart-quantity', [EcomShopController::class, 'updateCartQuantity'])->name('update-cart-quantity');
+
+Route::get('/check-out',[EcomShopController::class,'checkOutPage'])->name('users-checkout-page');

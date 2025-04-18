@@ -9,8 +9,9 @@
     <meta name="keywords" content="HTML5 Template">
     <meta name="description" content="Molla - Bootstrap eCommerce Template">
     <meta name="author" content="p-themes">
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Favicon -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="apple-touch-icon" sizes="180x180" href="user-assets/images/icons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="user-assets/images/icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="user-assets/images/icons/favicon-16x16.png">
@@ -24,14 +25,14 @@
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="user-assets/css/plugins/owl-carousel/owl.carousel.css">
     <link rel="stylesheet" href="user-assets/css/plugins/magnific-popup/magnific-popup.css">
-    <link rel="stylesheet" href="user-https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     @yield('Fav-Icon')
 
     <!-- For Font Awesome 5+ -->    
     <!-- Plugins CSS File -->
     <link rel="stylesheet" href="user-assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="user-assets/css/main.min.css">
-    <link rel="stylesheet" href="user-assets/css/icons.min.css">
+
     @yield('Plugin-CSS')
 
     <!-- Main CSS File -->
@@ -163,7 +164,7 @@
                                 </div><!-- End .header-search-wrapper -->
                             </form>
                         </div><!-- End .header-search -->
-                        <div class="dropdown compare-dropdown">
+                        {{-- <div class="dropdown compare-dropdown">
                             <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static" title="Compare Products" aria-label="Compare Products">
                                 <i class="icon-random"></i>
                             </a>
@@ -185,16 +186,17 @@
                                     <a href="#" class="btn btn-outline-primary-2"><span>Compare</span><i class="icon-long-arrow-right"></i></a>
                                 </div>
                             </div><!-- End .dropdown-menu -->
-                        </div><!-- End .compare-dropdown -->
-                        <div class="dropdown cart-dropdown">
+                        </div><!-- End .compare-dropdown --> --}}
+                        <div class="dropdown cart-dropdown ">
                             <a href="" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
-                                <i class="icon-shopping-cart"></i>
+                                <i class="icon-shopping-cart {{ request()->routeIs('users-cart-page') ? 'disabled' : '' }}"></i>
                                 {{-- <span class="cart-count"></span> --}}
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right">
                                 <div class="dropdown-cart-products">
                                     @php $cart = session('cart', []); @endphp
+                                    @if(count($cart)>0)
                                     @foreach($cart as $product)
                                     <div class="product">
                                         <div class="product-cart-details">
@@ -222,13 +224,16 @@
                                         </form>
                                     </div><!-- End .product -->
                                     @endforeach
+                                    @else
+                                    <h5>No Items Selected</h5>
+                                    @endif
                                 </div><!-- End .cart-product -->
 
-                                <div class="dropdown-cart-total">
+                                {{-- <div class="dropdown-cart-total">
                                     <span>Total</span>
 
                                     <span class="cart-total-price"></span>
-                                </div><!-- End .dropdown-cart-total -->
+                                </div><!-- End .dropdown-cart-total --> --}}
 
                                 <div class="dropdown-cart-action d-flex gap-2">
                                     <a href="{{route('users-cart-page')}}" class="btn btn-sm btn-primary flex-fill text-center">View Cart</a>
