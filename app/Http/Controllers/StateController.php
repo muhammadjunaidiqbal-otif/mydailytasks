@@ -18,7 +18,8 @@ class StateController extends Controller
     }
     public function StatesForCountry($country_id)
     {
-        $states = State::where('country_id', $country_id)->get();
+        //return response()->json($country_id);
+        $states = State::where('country_id', $country_id)->orderBy('name')->get();
         return response()->json($states);
     }
 

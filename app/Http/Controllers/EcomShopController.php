@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Country;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -62,6 +63,7 @@ class EcomShopController extends Controller
 
     public function checkOutPage(){
         $products = session('cart',[]);
-        return view('Users.checkout',compact('products')) ;
+        $countries = Country::orderBy('name','asc')->get();
+        return view('Users.checkout',compact('products','countries')) ;
     }   
 }

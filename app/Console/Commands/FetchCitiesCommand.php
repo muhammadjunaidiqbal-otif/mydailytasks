@@ -32,7 +32,7 @@ class FetchCitiesCommand extends Command
     {
         $client = new Client();
 
-        $states = State::where('country_id','77')->get();
+        $states = State::all();
 
     foreach ($states as $state) {
         try {

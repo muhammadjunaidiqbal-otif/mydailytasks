@@ -143,5 +143,6 @@
           <!-- / Content -->
 @section('Page-JS')
   <script src="../../assets/js/pages-auth.js"></script>
+  
 @endsection          
 @endsection

@@ -237,7 +237,7 @@
 
                                 <div class="dropdown-cart-action d-flex gap-2">
                                     <a href="{{route('users-cart-page')}}" class="btn btn-sm btn-primary flex-fill text-center">View Cart</a>
-                                    <a href="checkout.html" class="btn btn-sm btn-outline-primary-2 flex-fill d-flex justify-content-center align-items-center">
+                                    <a href="{{ route('users-checkout-page') }}" class="btn btn-sm btn-outline-primary-2 flex-fill d-flex justify-content-center align-items-center">
                                         <span>Checkout</span>
                                         <i class="icon-long-arrow-right ml-2"></i>
                                     </a>

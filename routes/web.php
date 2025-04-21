@@ -13,6 +13,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EcomShopController;
 use App\Http\Controllers\PartnerRoleController;
+use App\Http\Controllers\BillingAddressController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::get('/test', function () {
@@ -97,8 +98,8 @@ Route::get('/country-users',[CountryController::class,'users']);
 Route::get('/country-states',[CountryController::class,'getstates']);
 
 
-Route::get('/get-states/{country_id}',[StateController::class,'StatesForCountry']);
-Route::get('/get-cities/{state_id}',[CityController::class,'CitiesforState']);
+Route::get('/get-states/{country_id}',[StateController::class,'StatesForCountry'])->name('states-for-countries');
+Route::get('/get-cities/{state_id}',[CityController::class,'CitiesforState'])->name('cities-for-states');
 
 //tempalte routes
 Route::get('/test-page',function(){
@@ -188,9 +189,10 @@ Route::get('/clear-session', function () {
     session()->forget('cart'); // or session()->flush();
     return 'Session cleared!';
 });
-
+//cart page routes
 Route::post('/cart/add', [EcomShopController::class, 'addToCart'])->name('add-to-cart');
 Route::post('/cart/remove', [EcomShopController::class, 'removeFromCart'])->name('remove-from-cart');
 Route::post('/update-cart-quantity', [EcomShopController::class, 'updateCartQuantity'])->name('update-cart-quantity');
-
+//checkout page routes
 Route::get('/check-out',[EcomShopController::class,'checkOutPage'])->name('users-checkout-page');
+Route::post('/addBillingAddress',[BillingAddressController::class,'addBillingInfo'])->name('add-billing-info');

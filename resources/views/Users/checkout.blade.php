@@ -14,10 +14,10 @@
         <div class="checkout">
             <div class="container">
                 <div class="checkout-discount">
-                    <form action="#">
+                    {{-- <form action="#">
                         <input type="text" class="form-control" required id="checkout-discount-input">
                         <label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here to enter your code</span></label>
-                    </form>
+                    </form> --}}
                 </div><!-- End .checkout-discount -->
                 <form action="">
                     <div class="row">
@@ -26,64 +26,74 @@
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <label>First Name *</label>
-                                        <input type="text" class="form-control" required>
+                                        <input type="text" class="form-control" id="firstName" name="firstName" required>
                                     </div><!-- End .col-sm-6 -->
 
                                     <div class="col-sm-6">
                                         <label>Last Name *</label>
-                                        <input type="text" class="form-control" required>
+                                        <input type="text" class="form-control" id="lastName" name="lastName" required>
                                     </div><!-- End .col-sm-6 -->
                                 </div><!-- End .row -->
 
                                 <label>Company Name (Optional)</label>
-                                <input type="text" class="form-control">
+                                <input type="text" class="form-control" id="companyName" name="companyName">
 
                                 <label>Country *</label>
-                                <input type="text" class="form-control" required>
+                                <select id="country" name="country_id" class="form-control">
+                                    <option value="">Select Country</option>
+                                     @foreach ($countries as $country)
+                                        <option value="{{ $country->id }}">{{ $country->name }}</option>
+                                     @endforeach 
+                                </select>
 
                                 <label>Street address *</label>
-                                <input type="text" class="form-control" placeholder="House number and Street name" required>
-                                <input type="text" class="form-control" placeholder="Appartments, suite, unit etc ..." required>
+                                <input type="text" class="form-control" placeholder="House number and Street name" id="address" name="addess" required>
+                                
 
                                 <div class="row">
                                     <div class="col-sm-6">
-                                        <label>Town / City *</label>
-                                        <input type="text" class="form-control" required>
+                                        <label>State / County *</label>
+                                        <select id="state" name="state_id"  class="form-control" required>
+                                            <option value="">Select State</option>                                           
+                                        </select>
                                     </div><!-- End .col-sm-6 -->
 
                                     <div class="col-sm-6">
-                                        <label>State / County *</label>
-                                        <input type="text" class="form-control" required>
+                                        <label>Town / City *</label>
+                                        <select id="city" name="city_id"  class="form-control" required>
+                                            <option value="">Select City</option>
+                                            
+                                        </select>
                                     </div><!-- End .col-sm-6 -->
                                 </div><!-- End .row -->
 
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <label>Postcode / ZIP *</label>
-                                        <input type="text" class="form-control" required>
+                                        <input type="text" class="form-control" id="postalCode" name="postalCode" required>
                                     </div><!-- End .col-sm-6 -->
 
                                     <div class="col-sm-6">
                                         <label>Phone *</label>
-                                        <input type="tel" class="form-control" required>
+                                        <input type="tel" class="form-control" id="phone" name="phone" required>
                                     </div><!-- End .col-sm-6 -->
                                 </div><!-- End .row -->
 
                                 <label>Email address *</label>
-                                <input type="email" class="form-control" required>
+                                <input type="email" class="form-control" id="email" name="email" required>
 
-                                <div class="custom-control custom-checkbox">
+                                {{-- <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input" id="checkout-create-acc">
                                     <label class="custom-control-label" for="checkout-create-acc">Create an account?</label>
-                                </div><!-- End .custom-checkbox -->
+                                </div><!-- End .custom-checkbox --> --}}
 
-                                <div class="custom-control custom-checkbox">
+                                {{-- <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input" id="checkout-diff-address">
                                     <label class="custom-control-label" for="checkout-diff-address">Ship to a different address?</label>
-                                </div><!-- End .custom-checkbox -->
+                                </div><!-- End .custom-checkbox --> --}}
 
                                 <label>Order notes (optional)</label>
-                                <textarea class="form-control" cols="30" rows="4" placeholder="Notes about your order, e.g. special notes for delivery"></textarea>
+                                <textarea class="form-control" cols="30" rows="4" placeholder="Notes about your order, e.g. special notes for delivery" id="description" name="description"></textarea>
                         </div><!-- End .col-lg-9 -->
                         <aside class="col-lg-3">
                             <div class="summary">
@@ -185,7 +195,7 @@
                                             <h2 class="card-title">
                                                 <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-5" aria-expanded="false" aria-controls="collapse-5">
                                                     Credit Card (Stripe)
-                                                    <img src="assets/images/payments-summary.png" alt="payments cards">
+                                                    <img src="user-assets/images/payments-summary.png" alt="payments cards">
                                                 </a>
                                             </h2>
                                         </div><!-- End .card-header -->
@@ -196,7 +206,7 @@
                                     </div><!-- End .card -->
                                 </div><!-- End .accordion -->
 
-                                <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
+                                <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block" id="submitBillingForm">
                                     <span class="btn-text">Place Order</span>
                                     <span class="btn-hover-text">Proceed to Checkout</span>
                                 </button>
@@ -214,7 +224,7 @@
 @endsection
 @section('Main-JS')
     <script>
-           $(document).ready(function () {
+        $(document).ready(function () {
         let subtotal = 0;
     
         // Iterate over each element with the class 'checkout-price'
@@ -235,6 +245,98 @@
         $('.checkout-subtotal').text(formattedSubtotal);
         $('.checkout-total').text(formattedSubtotal);
       });  
-   
+      var getStatesUrl = "{{ route('states-for-countries', ':id' )}}";
+      var getCitiesUrl = "{{route('cities-for-states',':id')}}";
+      var addBillingInfoUrl = "{{route('add-billing-info')}}";
+      const cartProducts = @json($products);
+    </script>
+    <script>
+    $(document).ready(function() {
+    $('#country').on('change', function() {
+        var countryID = $(this).val();
+        console.log('Selected Country ID:', countryID);
+        $("#state").html('<option value="">Select State</option>');
+        if(countryID){
+            $.ajax({
+                url: getStatesUrl.replace(':id',countryID),
+                type: "GET",
+                dataType: 'json',
+                success: function(res){
+                    $.each(res, function(key, value){
+                        $("#state").append('<option value="'+value.id+'">'+value.name+'</option>');
+                    });
+                }
+            });
+        }
+    });
+  });
+  $(document).ready(function() {
+  $('#state').on('change', function() {
+        var stateID = $(this).val();
+        console.log('Selected Country ID:', stateID);
+        $("#city").html('<option value="">Select City</option>');
+        if(stateID){
+            $.ajax({
+                url: getCitiesUrl.replace(':id',stateID),
+                type: "GET",
+                dataType: 'json',
+                success: function(res){
+                    $.each(res, function(key, value){
+                        $("#city").append('<option value="'+value.id+'">'+value.name+'</option>');
+                    });
+                }
+            });
+        }
+    });
+});
+$(document).ready(function(){
+    $('#submitBillingForm').on('click', function (e) {
+        e.preventDefault();
+        let formData = new FormData();
+        formData.append('first_name', $('#firstName').val());
+        formData.append('last_name', $('#lastName').val());
+        formData.append('company_name', $('#companyName').val());
+        formData.append('country_id', $('#country').val());
+        formData.append('address', $('#address').val());
+        formData.append('state_id', $('#state').val());
+        formData.append('city_id', $('#city').val());
+        formData.append('postal_code', $('#postalCode').val());
+        formData.append('phone', $('#phone').val());
+        formData.append('email', $('#email').val());
+        formData.append('description',$('#description').val());
+
+        var cartProducts = @json($products);
+        var total = $('.checkout-total').text();
+
+        formData.append('cart', JSON.stringify(cartProducts));
+        formData.append('total', total);
+
+        for (const [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+        }
+        //console.log(cartProducts , total)
+        if(formData){
+        $.ajax({
+            url :addBillingInfoUrl ,
+            type : "POST" , 
+            data : formData ,
+            processData: false,
+            contentType: false,
+            headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Proper header
+            },
+            success : function(response){
+                console.log("Created Successfully")
+            },
+            error : function(){
+                console.log("Error")
+            },
+            complete : function(){
+
+            }
+        });
+    }
+    });
+});
     </script>
 @endsection

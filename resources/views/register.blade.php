@@ -107,3 +107,24 @@ ttps://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
         toastr.success('{{ session('success') }}');
     @endif
 </script>
+<script>
+    $(document).ready(function() {
+    $('#country').on('change', function() {
+        var countryID = this.value;
+        $("#state").html('<option value="">Select State</option>');
+        $("#city").html('<option value="">Select City</option>');
+        if(countryID){
+            $.ajax({
+                url: "{{ route('states-for-countries') }}/" + countryID,
+                type: "GET",
+                dataType: 'json',
+                success: function(res){
+                    $.each(res, function(key, value){
+                        $("#state").append('<option value="'+value.id+'">'+value.name+'</option>');
+                    });
+                }
+            });
+        }
+    });
+  });
+  </script>
