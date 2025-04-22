@@ -196,3 +196,5 @@ Route::post('/update-cart-quantity', [EcomShopController::class, 'updateCartQuan
 //checkout page routes
 Route::get('/check-out',[EcomShopController::class,'checkOutPage'])->name('users-checkout-page');
 Route::post('/addBillingAddress',[BillingAddressController::class,'addBillingInfo'])->name('add-billing-info');
+
+Route::get('/order-success',[BillingAddressController::class,'orderSuccess'])->name('order.success');

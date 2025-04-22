@@ -45,7 +45,7 @@
                                         <option value="{{ $country->id }}">{{ $country->name }}</option>
                                      @endforeach 
                                 </select>
-
+                                
                                 <label>Street address *</label>
                                 <input type="text" class="form-control" placeholder="House number and Street name" id="address" name="addess" required>
                                 
@@ -131,7 +131,7 @@
                                 </table><!-- End .table table-summary -->
 
                                 <div class="accordion-summary" id="accordion-payment">
-                                    <div class="card">
+                                    {{-- <div class="card">
                                         <div class="card-header" id="heading-1">
                                             <h2 class="card-title">
                                                 <a role="button" data-toggle="collapse" href="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
@@ -188,7 +188,7 @@
                                                 Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis fermentum.
                                             </div><!-- End .card-body -->
                                         </div><!-- End .collapse -->
-                                    </div><!-- End .card -->
+                                    </div><!-- End .card --> --}}
 
                                     <div class="card">
                                         <div class="card-header" id="heading-5">
@@ -323,10 +323,12 @@ $(document).ready(function(){
             processData: false,
             contentType: false,
             headers: {
-              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Proper header
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
             },
             success : function(response){
-                console.log("Created Successfully")
+                if (response.url) {
+                    window.location.href = response.url; 
+                }
             },
             error : function(){
                 console.log("Error")
