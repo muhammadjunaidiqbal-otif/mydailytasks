@@ -36,13 +36,15 @@ class UserController extends Controller
             $request->session()->regenerate();
             if($user->email_verified_at===null){
                     return redirect()->route('verification.notice')->with('error','Verify Your Email First To Login !');
-                }else{
-                    return redirect()->route('user-Dashboard')->with('status','Login Successfully ;)');
+                }if ($user->role_id == 1) {  // Assuming 1 is for admin
+                    return redirect()->route('user-Dashboard')->with('status', 'Login Successfully :)');
+                } else {
+                    return redirect()->route('users-home-page')->with('status', 'Login Successfully :)');
                 }
-            
-        }else{
-            return back()->with('error','Invalid Username or Password');
-        }
+            } else {
+                // If login fails, return back with an error
+                return back()->with('error', 'Invalid Username or Password');
+            }
     }
     public function dashboard(){
         if(Auth::check()){

@@ -52,6 +52,7 @@ class EcomShopController extends Controller
     return redirect()->back()->with('success', 'Item removed from cart.');
     }
     public function updateCartQuantity(Request $request){
+        sleep(10);
     $cart = session('cart', []);
     if (isset($cart[$request->product_id])) {
         $cart[$request->product_id]['quantity'] = $request->quantity;

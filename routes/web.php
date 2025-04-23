@@ -8,6 +8,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\UserController; 
+use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
@@ -20,7 +21,7 @@ Route::get('/test', function () {
     return view('welcome');
 });
 
-Route::get('/', function () {
+Route::get('/login', function () {
     return view('auth.auth-login');
 })->name('login-page');
 
@@ -162,7 +163,7 @@ Route::post('/product/update/{id}',[ProductController::class,'update'])->name('u
 Route::post('/delete-selectedproducts',[ProductController::class,'deleteSelectedRows'])->name('delete-selected-products'); 
 
 //User-Dashboards Routes
-Route::get('/home',function(){
+Route::get('/',function(){
     return view('Users.home');
 })->name('users-home-page');
 
@@ -198,3 +199,6 @@ Route::get('/check-out',[EcomShopController::class,'checkOutPage'])->name('users
 Route::post('/addBillingAddress',[BillingAddressController::class,'addBillingInfo'])->name('add-billing-info');
 
 Route::get('/order-success',[BillingAddressController::class,'orderSuccess'])->name('order.success');
+Route::get('/order/cancel', [BillingAddressController::class, 'orderCancel'])->name('order.cancel');
+Route::post('/stripe/webhook', [BillingAddressController::class, 'handleWebhook']);
+Route::get('/orders', [OrdersController::class, 'pendingOrders'])->name('orders.pending');

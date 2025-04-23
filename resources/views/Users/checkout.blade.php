@@ -13,6 +13,9 @@
     <div class="page-content">
         <div class="checkout">
             <div class="container">
+                @if(isset($message))
+                alert({{$message}})
+                @endif
                 <div class="checkout-discount">
                     {{-- <form action="#">
                         <input type="text" class="form-control" required id="checkout-discount-input">
@@ -81,12 +84,12 @@
 
                                 <label>Email address *</label>
                                 <input type="email" class="form-control" id="email" name="email" required>
-
-                                {{-- <div class="custom-control custom-checkbox">
+                                @guest
+                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input" id="checkout-create-acc">
                                     <label class="custom-control-label" for="checkout-create-acc">Create an account?</label>
-                                </div><!-- End .custom-checkbox --> --}}
-
+                                </div><!-- End .custom-checkbox --> 
+                                @endguest
                                 {{-- <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input" id="checkout-diff-address">
                                     <label class="custom-control-label" for="checkout-diff-address">Ship to a different address?</label>
@@ -210,6 +213,9 @@
                                     <span class="btn-text">Place Order</span>
                                     <span class="btn-hover-text">Proceed to Checkout</span>
                                 </button>
+                                <div class="text-center p-3">
+                                <a href="{{ route('orders.pending') }}" class="" title="View Pending Orders">View Pendig Orders</a>
+                                </div>    
                             </div><!-- End .summary -->
                         </aside><!-- End .col-lg-3 -->
                     </div><!-- End .row -->
@@ -284,6 +290,10 @@
                     $.each(res, function(key, value){
                         $("#city").append('<option value="'+value.id+'">'+value.name+'</option>');
                     });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching cities:', error);
+                    alert('Failed to load cities. Please try again.');
                 }
             });
         }
@@ -304,7 +314,9 @@ $(document).ready(function(){
         formData.append('phone', $('#phone').val());
         formData.append('email', $('#email').val());
         formData.append('description',$('#description').val());
-
+        if ($('#checkout-create-acc').is(':checked')) {
+            formData.append('create_account', true);
+        }
         var cartProducts = @json($products);
         var total = $('.checkout-total').text();
 

@@ -77,5 +77,8 @@
     <div class="text-center mt-5">
         <a href="{{ route('users-shop-page') }}" class="btn btn-primary">Continue Shopping</a>
     </div>
+    <div class="text-center mt-5">
+        <a href="{{ route('orders.pending') }}" class="btn btn-primary">View Pendig Orders</a>
+    </div>
 </div>
 @endsection

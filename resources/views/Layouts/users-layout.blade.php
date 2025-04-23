@@ -116,7 +116,7 @@
                                 <ul>
                                     <li><a href="tel:#"><i class="icon-phone"></i>Call: +0123 456 789</a></li>
                                     <li><a href=""><i class="icon-heart-o"></i>Wishlist <span>(3)</span></a></li>
-                                    <li><a href="" data-toggle="modal"><i class="icon-user"></i>Login</a></li>
+                                    <li><a href="{{route('login-page')}}"><i class="icon-user"></i>Login</a></li>
                                 </ul>
                             </li>
                         </ul><!-- End .top-menu -->
