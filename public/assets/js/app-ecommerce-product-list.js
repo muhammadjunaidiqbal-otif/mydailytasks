@@ -64,6 +64,13 @@ $(function () {
           }
         },
         { data: 'in_stock' },
+        {
+          data: 'sale_end',
+          render: function(data, type, row) {
+              const date = data ? new Date(data).toISOString().slice(0, 16) : '';
+              return `<input type="datetime-local" class="form-control sale-end-input" data-id="${row.id}" value="${date}" />`;
+          }
+        },
         { data: 'description' },
         { data: 'base_price' },
         { data: 'discounted_price' },
@@ -208,7 +215,7 @@ $(function () {
         },
         {
           // Sku
-          targets: 5,
+          targets: 6,
           render: function (data, type, full, meta) {
             //var $sku = full['description'];
             const text = full['description']; // or whatever your field is
@@ -217,15 +224,15 @@ $(function () {
             //return '<span>' + $sku + '</span>';
           }
         },
-        {
-          // price
-          targets: 6,
-          render: function (data, type, full, meta) {
-            var $price = full['base_price'];
+        // {
+        //   // price
+        //   targets: 6,
+        //   render: function (data, type, full, meta) {
+        //     var $price = full['base_price'];
 
-            return '<span>' + $price + '</span>';
-          }
-        },
+        //     return '<span>' + $price + '</span>';
+        //   }
+        // },
         // {
         //   // qty
         //   targets: 7,
@@ -643,7 +650,31 @@ $('#deleteRows').on('click', function () {
       }
   });
 });
+$(document).on('change','.sale-end-input',function(){
+  var productId = $(this).data('id');
+  const rawInput = $(this).val(); // "2025-04-28T20:20"
+  const saleEnd = rawInput.replace('T', ':').length === 16 
+    ? rawInput.replace('T', ' ') + ':00' // "2025-04-28 20:20:00"
+    : rawInput.replace('T', ' '); // fallback
 
+   $.ajax({
+     url : updateProductSaleEndURL,
+     type : 'POST' ,
+     data :{
+       _token : csrfToken ,
+       product_id : productId ,
+       sale_end : saleEnd 
+     },
+     success : function(response){
+      $('.datatables-products').DataTable().ajax.reload();;
+      toastr.success(response.success);
+     },
+     error : function(xhr){
+      toastr.error("Error Updating Sale End");
+     }
+   });
+  alert(saleEnd);
+});
   // Filter form control to default size
   // ? setTimeout used for multilingual table initialization
   setTimeout(() => {

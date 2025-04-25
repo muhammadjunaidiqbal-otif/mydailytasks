@@ -6,7 +6,37 @@
 
 @endsection
 @section('Main-CSS')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.1/build/css/intlTelInput.css">
+<style>
+    .phone-input-wrapper {
+  position: relative;
+  display: inline-block;
+}
 
+.msg {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: -100px;
+  font-size: 0.9em;
+}
+
+.msg.valid {
+  color: green;
+}
+
+.msg.error {
+  color: red;
+}
+
+.hide {
+  display: none;
+}
+
+input.error {
+  border-color: red;
+}
+</style>
 @endsection
 @section('content')
 <main class="main">
@@ -76,10 +106,13 @@
                                         <input type="text" class="form-control" id="postalCode" name="postalCode" required>
                                     </div><!-- End .col-sm-6 -->
 
-                                    <div class="col-sm-6">
-                                        <label>Phone *</label>
+                                    <div class="col-sm-6 position-relative">
+                                        <label for="phone">Phone *</label>
                                         <input type="tel" class="form-control" id="phone" name="phone" required>
+                                        <div id="valid-msg" class=" text-success d-none" style="right: 10px; top: 38px;">✓ Valid</div>
+                                        <div id="error-msg" class=" text-danger d-none" style="right: 10px; top: 38px;"></div>
                                     </div><!-- End .col-sm-6 -->
+                                    
                                 </div><!-- End .row -->
 
                                 <label>Email address *</label>
@@ -338,8 +371,10 @@ $(document).ready(function(){
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
             },
             success : function(response){
-                if (response.url) {
-                    window.location.href = response.url; 
+                if (response.redirect) {
+                    window.location.href = response.redirect;
+                } else if (response.url) {
+                    window.location.href = response.url; // Stripe URL
                 }
             },
             error : function(){
@@ -352,5 +387,51 @@ $(document).ready(function(){
     }
     });
 });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.1/build/js/intlTelInput.min.js"></script>
+    <script>
+        const input = document.querySelector("#phone");
+        const errorMsg = document.querySelector("#error-msg");
+        const validMsg = document.querySelector("#valid-msg");
+
+        const errorMap = [
+            "Invalid number",
+            "Invalid country code",
+            "Too short",
+            "Too long",
+            "Invalid number"
+        ];
+
+    const iti = window.intlTelInput(input, {
+        initialCountry: "pk",
+        strictMode: true,
+        loadUtils: () => import("https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.1/build/js/utils.js?1743167482095"),
+    });
+
+    const reset = () => {
+        input.classList.remove("error");
+        errorMsg.textContent = "";
+        errorMsg.classList.add("d-none");
+        validMsg.classList.add("d-none");
+    };
+
+    const validate = () => {
+        reset();
+        if (!input.value.trim()) return;
+        if (iti.isValidNumberPrecise()) {
+            validMsg.classList.remove("d-none");
+        }else {
+            const errorCode = iti.getValidationError();
+            const msg = errorMap[errorCode] || "Invalid number";
+            input.classList.add("error");
+            errorMsg.textContent = msg;
+            errorMsg.classList.remove("d-none");
+        }
+};
+
+input.addEventListener("input", validate);
+input.addEventListener("blur", validate);
+input.addEventListener("change", reset);
+
     </script>
 @endsection

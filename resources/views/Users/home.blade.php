@@ -3,12 +3,36 @@
     Home
 @endsection
 @section('Plugin-CSS')
+<meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="user-assets/css/plugins/jquery.countdown.css">
 @endsection
 @section('Main-CSS')
     <link rel="stylesheet" href="user-assets/css/style.css">
     <link rel="stylesheet" href="user-assets/css/skins/skin-demo-7.css">
     <link rel="stylesheet" href="user-assets/css/demos/demo-7.css">
+    <style>
+        .spinner-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #ddd;
+    border-top: 4px solid #333;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+    </style>
 @endsection
 
 @section('content')
@@ -17,28 +41,28 @@
         <div class="row">
             <div class="col-lg-6">
                 <div class="banner banner-big banner-overlay">
-                    <a href="#">
+                    <a href="">
                         <img src="user-assets/images/demos/demo-7/banners/banner-1.jpg" alt="Banner">
                     </a>
 
                     <div class="banner-content banner-content-center">
                         <h3 class="banner-subtitle text-white"><a href="#">New Collection</a></h3><!-- End .banner-subtitle -->
                         <h2 class="banner-title text-white"><a href="#">Shop Women's</a></h2><!-- End .banner-title -->
-                        <a href="#" class="btn underline"><span>Discover Now</span></a>
+                        <a href="{{route('users-shop-page')}}" class="btn underline"><span>Discover Now</span></a>
                     </div><!-- End .banner-content -->
                 </div><!-- End .banner -->
             </div><!-- End .col-lg-6 -->
 
             <div class="col-lg-6">
                 <div class="banner banner-big banner-overlay">
-                    <a href="#">
+                    <a href="">
                         <img src="user-assets/images/demos/demo-7/banners/banner-2.jpg" alt="Banner">
                     </a>
 
                     <div class="banner-content banner-content-center">
                         <h3 class="banner-subtitle text-white"><a href="#">New Collection</a></h3><!-- End .banner-subtitle -->
                         <h2 class="banner-title text-white"><a href="#">Shop Men's</a></h2><!-- End .banner-title -->
-                        <a href="#" class="btn underline"><span>Discover Now</span></a>
+                        <a href="{{route('users-shop-page')}}" class="btn underline"><span>Discover Now</span></a>
                     </div><!-- End .banner-content -->
                 </div><!-- End .banner -->
             </div><!-- End .col-lg-6 -->
@@ -47,42 +71,42 @@
         <div class="row justify-content-center">
             <div class="col-md-6 col-lg-4">
                 <div class="banner banner-overlay text-white">
-                    <a href="#">
+                    <a href="">
                         <img src="user-assets/images/demos/demo-7/banners/banner-3.jpg" alt="Banner">
                     </a>
 
                     <div class="banner-content banner-content-right">
                         <h4 class="banner-subtitle"><a href="#">Flip Flop</a></h4><!-- End .banner-subtitle -->
                         <h3 class="banner-title"><a href="#">Summer<br>sale -70% off</a></h3><!-- End .banner-title -->
-                        <a href="#" class="btn underline btn-outline-white-3 banner-link">Shop Now</a>
+                        <a href="{{route('users-shop-page')}}" class="btn underline btn-outline-white-3 ">Shop Now</a>
                     </div><!-- End .banner-content -->
                 </div><!-- End .banner -->
             </div><!-- End .col-lg-4 -->
 
             <div class="col-md-6 col-lg-4">
                 <div class="banner banner-overlay color-grey">
-                    <a href="#">
+                    <a href="">
                         <img src="user-assets/images/demos/demo-7/banners/banner-4.jpg" alt="Banner">
                     </a>
 
                     <div class="banner-content">
                         <h4 class="banner-subtitle"><a href="#">Accessories</a></h4><!-- End .banner-subtitle -->
                         <h3 class="banner-title"><a href="#">2019 Winter<br>up to 50% off</a></h3><!-- End .banner-title -->
-                        <a href="#" class="btn underline banner-link">Shop Now</a>
+                        <a href="{{route('users-shop-page')}}" class="btn underline banner-link">Shop Now</a>
                     </div><!-- End .banner-content -->
                 </div><!-- End .banner -->
             </div><!-- End .col-lg-4 -->
 
             <div class="col-md-6 col-lg-4">
                 <div class="banner banner-overlay text-white">
-                    <a href="#">
+                    <a href="">
                         <img src="user-assets/images/demos/demo-7/banners/banner-5.jpg" alt="Banner">
                     </a>
 
                     <div class="banner-content banner-content-right mr">
                         <h4 class="banner-subtitle"><a href="#">New in</a></h4><!-- End .banner-subtitle -->
                         <h3 class="banner-title"><a href="#">Women’s<br>sportswear</a></h3><!-- End .banner-title -->
-                        <a href="#" class="btn underline btn-outline-white-3 banner-link">Shop Now</a>
+                        <a href="{{route('users-shop-page')}}" class="btn underline btn-outline-white-3 banner-link">Shop Now</a>
                     </div><!-- End .banner-content -->
                 </div><!-- End .banner -->
             </div><!-- End .col-lg-4 -->
@@ -143,233 +167,25 @@
 
                 <ul class="nav nav-pills justify-content-center" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="featured-women-link" data-toggle="tab" href="#featured-women-tab" role="tab" aria-controls="featured-women-tab" aria-selected="true">Womens Clothing</a>
+                        <a class="nav-link active" id="featured-women-link" data-toggle="tab" href="#featured-women-tab" role="tab" aria-controls="featured-women-tab" aria-selected="true">TOP SELLING PRODUCTS</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="featured-men-link" data-toggle="tab" href="#featured-men-tab" role="tab" aria-controls="featured-men-tab" aria-selected="false">Mens Clothing</a>
-                    </li>
+                    
                 </ul>
             </div><!-- End .heading -->
 
             <div class="tab-content tab-content-carousel">
                 <div class="tab-pane p-0 fade show active" id="featured-women-tab" role="tabpanel" aria-labelledby="featured-women-link">
-                    <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow" data-toggle="owl" 
-                        data-owl-options='{
-                            "nav": false, 
-                            "dots": true,
-                            "margin": 20,
-                            "loop": false,
-                            "responsive": {
-                                "0": {
-                                    "items":2
-                                },
-                                "480": {
-                                    "items":2
-                                },
-                                "768": {
-                                    "items":3
-                                },
-                                "992": {
-                                    "items":4
-                                },
-                                "1200": {
-                                    "items":5,
-                                    "nav": true
-                                }
-                            }
-                        }'>
-                        <div class="product product-7 text-center">
-                            <figure class="product-media">
-                                <a href="product.html">
-                                    <img src="user-assets/images/demos/demo-7/products/product-1-1.jpg" alt="Product image" class="product-image">
-                                    <img src="user-assets/images/demos/demo-7/products/product-1-2.jpg" alt="Product image" class="product-image-hover">
-                                </a>
-
-                                <div class="product-action-vertical">
-                                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
-                                    <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
-                                </div><!-- End .product-action-vertical -->
-
-                                <div class="product-action">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                </div><!-- End .product-action -->
-                            </figure><!-- End .product-media -->
-
-                            <div class="product-body">
-                                <h3 class="product-title"><a href="product.html">Backpack</a></h3><!-- End .product-title -->
-                                <div class="product-price">
-                                    $60.00
-                                </div><!-- End .product-price -->
-                                <div class="ratings-container">
-                                    <div class="ratings">
-                                        <div class="ratings-val" style="width: 20%;"></div><!-- End .ratings-val -->
-                                    </div><!-- End .ratings -->
-                                    <span class="ratings-text">( 2 Reviews )</span>
-                                </div><!-- End .rating-container -->
-                            </div><!-- End .product-body -->
-                        </div><!-- End .product -->
-
-                        <div class="product product-7 text-center">
-                            <figure class="product-media">
-                                <a href="product.html">
-                                    <img src="user-assets/images/demos/demo-7/products/product-2-1.jpg" alt="Product image" class="product-image">
-                                    <img src="user-assets/images/demos/demo-7/products/product-2-2.jpg" alt="Product image" class="product-image-hover">
-                                </a>
-
-                                <div class="product-action-vertical">
-                                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
-                                    <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
-                                </div><!-- End .product-action-vertical -->
-
-                                <div class="product-action">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                </div><!-- End .product-action -->
-                            </figure><!-- End .product-media -->
-
-                            <div class="product-body">
-                                <h3 class="product-title"><a href="product.html">Biker jacket</a></h3><!-- End .product-title -->
-                                <div class="product-price">
-                                    $120.99
-                                </div><!-- End .product-price -->
-                                <div class="ratings-container">
-                                    <div class="ratings">
-                                        <div class="ratings-val" style="width: 20%;"></div><!-- End .ratings-val -->
-                                    </div><!-- End .ratings -->
-                                    <span class="ratings-text">( 2 Reviews )</span>
-                                </div><!-- End .rating-container -->
-
-                                <div class="product-nav product-nav-dots">
-                                    <a href="#" class="active" style="background: #d79442;"><span class="sr-only">Color name</span></a>
-                                    <a href="#" style="background: #cc3333;"><span class="sr-only">Color name</span></a>
-                                </div><!-- End .product-nav -->
-                            </div><!-- End .product-body -->
-                        </div><!-- End .product -->
-                        <div class="product product-7 text-center">
-                            <figure class="product-media">
-                                <a href="product.html">
-                                    <img src="user-assets/images/demos/demo-7/products/product-3-1.jpg" alt="Product image" class="product-image">
-                                    <img src="user-assets/images/demos/demo-7/products/product-3-2.jpg" alt="Product image" class="product-image-hover">
-                                </a>
-
-                                <div class="product-action-vertical">
-                                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
-                                    <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
-                                </div><!-- End .product-action-vertical -->
-
-                                <div class="product-action">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                </div><!-- End .product-action -->
-                            </figure><!-- End .product-media -->
-
-                            <div class="product-body">
-                                <h3 class="product-title"><a href="product.html">Sandals</a></h3><!-- End .product-title -->
-                                <div class="product-price">
-                                    $70.00
-                                </div><!-- End .product-price -->
-                                <div class="ratings-container">
-                                    <div class="ratings">
-                                        <div class="ratings-val" style="width: 60%;"></div><!-- End .ratings-val -->
-                                    </div><!-- End .ratings -->
-                                    <span class="ratings-text">( 4 Reviews )</span>
-                                </div><!-- End .rating-container -->
-                            </div><!-- End .product-body -->
-                        </div><!-- End .product -->
-                        <div class="product product-7 text-center">
-                            <figure class="product-media">
-                                <span class="product-label label-circle label-sale">Sale</span>
-                                <a href="product.html">
-                                    <img src="user-assets/images/demos/demo-7/products/product-4-1.jpg" alt="Product image" class="product-image">
-                                    <img src="user-assets/images/demos/demo-7/products/product-4-2.jpg" alt="Product image" class="product-image-hover">
-                                </a>
-
-                                <div class="product-action-vertical">
-                                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
-                                    <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
-                                </div><!-- End .product-action-vertical -->
-
-                                <div class="product-action">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                </div><!-- End .product-action -->
-
-                                <div class="deal-countdown offer-countdown" data-until="+11d"></div><!-- End .deal-countdown -->
-                            </figure><!-- End .product-media -->
-
-                            <div class="product-body">
-                                <h3 class="product-title"><a href="product.html">Super Skinny High Jeggings</a></h3><!-- End .product-title -->
-                                <div class="product-price">
-                                    <span class="new-price">$190.00</span>
-                                    <span class="old-price">$310.00</span>
-                                </div><!-- End .product-price -->
-                                <div class="ratings-container">
-                                    <div class="ratings">
-                                        <div class="ratings-val" style="width: 40%;"></div><!-- End .ratings-val -->
-                                    </div><!-- End .ratings -->
-                                    <span class="ratings-text">( 4 Reviews )</span>
-                                </div><!-- End .rating-container -->
-                            </div><!-- End .product-body -->
-                        </div><!-- End .product -->
-                        <div class="product product-7 text-center">
-                            <figure class="product-media">
-                                <span class="product-label label-circle label-top">Top</span>
-                                <a href="product.html">
-                                    <img src="user-assets/images/demos/demo-7/products/product-5-1.jpg" alt="Product image" class="product-image">
-                                    <img src="user-assets/images/demos/demo-7/products/product-5-2.jpg" alt="Product image" class="product-image-hover">
-                                </a>
-
-                                <div class="product-action-vertical">
-                                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
-                                    <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
-                                </div><!-- End .product-action-vertical -->
-
-                                <div class="product-action">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                </div><!-- End .product-action -->
-                            </figure><!-- End .product-media -->
-
-                            <div class="product-body">
-                                <h3 class="product-title"><a href="product.html">Short wrap dress</a></h3><!-- End .product-title -->
-                                <div class="product-price">
-                                    $80.00
-                                </div><!-- End .product-price -->
-                                <div class="ratings-container">
-                                    <div class="ratings">
-                                        <div class="ratings-val" style="width: 100%;"></div><!-- End .ratings-val -->
-                                    </div><!-- End .ratings -->
-                                    <span class="ratings-text">( 6 Reviews )</span>
-                                </div><!-- End .rating-container -->
-                            </div><!-- End .product-body -->
-                        </div><!-- End .product -->
-                        <div class="product product-7 text-center">
-                            <figure class="product-media">
-                                <a href="product.html">
-                                    <img src="user-assets/images/demos/demo-7/products/product-1-1.jpg" alt="Product image" class="product-image">
-                                    <img src="user-assets/images/demos/demo-7/products/product-1-2.jpg" alt="Product image" class="product-image-hover">
-                                </a>
-
-                                <div class="product-action-vertical">
-                                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
-                                    <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
-                                </div><!-- End .product-action-vertical -->
-
-                                <div class="product-action">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                </div><!-- End .product-action -->
-                            </figure><!-- End .product-media -->
-
-                            <div class="product-body">
-                                <h3 class="product-title"><a href="product.html">Backpack</a></h3><!-- End .product-title -->
-                                <div class="product-price">
-                                    $60.00
-                                </div><!-- End .product-price -->
-                                <div class="ratings-container">
-                                    <div class="ratings">
-                                        <div class="ratings-val" style="width: 20%;"></div><!-- End .ratings-val -->
-                                    </div><!-- End .ratings -->
-                                    <span class="ratings-text">( 2 Reviews )</span>
-                                </div><!-- End .rating-container -->
-                            </div><!-- End .product-body -->
-                        </div><!-- End .product -->
-                    </div><!-- End .owl-carousel -->
+                   
+                        <div id="product-loader" class="spinner-wrapper">
+                            <div class="spinner"></div>
+                        </div>
+                    
+                        <!-- Product Carousel -->
+                        <div id="product-carousel" class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow" style="display: none;">
+                            <!-- Products will be loaded here dynamically -->
+                        </div>
+                        <!-- Products will be loaded here -->
+                    <!-- End .owl-carousel -->
                 </div><!-- .End .tab-pane -->
                 <div class="tab-pane p-0 fade" id="featured-men-tab" role="tabpanel" aria-labelledby="featured-men-link">
                     <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow" data-toggle="owl" 
@@ -1300,4 +1116,145 @@
 @endsection
 @section('Main-JS')
     <script src="user-assets/js/demos/demo-7.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const loader = document.getElementById('product-loader');
+            const carousel = document.getElementById('product-carousel');
+
+            // Show loader, hide carousel initially
+            loader.style.display = 'flex';
+            carousel.style.display = 'none';
+            fetch('/load-products')
+                .then(response => response.json())
+                .then(products => {
+                    const carousel = document.getElementById('product-carousel');
+                    let html = '';
+                    
+                    products.forEach(product => {
+                        html += `
+                            <div class="product product-7 text-center">
+                                <figure class="product-media">
+                                    <a href="">
+                                        <img src=" ${product.image_url}" alt="Product image" class="product-image">
+                                        <img src="user-assets/images/demos/demo-7/products/product-11-2.jpg" alt="Product hover image" class="product-image product-image-hover">
+                                    </a>
+                                    <div class="product-action-vertical">
+                                        <a href="" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                        <a href="" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
+                                    </div>
+                                    <div class="product-action">
+                                        <a href="" class="btn-product btn-cart add-to-cart-btnHome" data-id="${product.id}"><span>add to cart</span></a>
+                                    </div>
+                                    <div class="deal-countdown offer-countdown saleCountDown" data-until="${product.sale_end}"></div>
+                                </figure>
+                                <div class="product-body">
+                                    <h3 class="product-title"><a href="">${product.name}</a></h3>
+                                    <div class="product-price">$${product.base_price}</div>
+                                    <div class="ratings-container">
+                                        <div class="ratings">
+                                            <div class="ratings-val" style="width: %;"></div>
+                                        </div>
+                                        <span class="ratings-text"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+    
+                    carousel.innerHTML = html;
+                    // Hide loader, show carousel
+                loader.style.display = 'none';
+                carousel.style.display = 'block';
+                    // Re-init Owl Carousel
+                    $(carousel).owlCarousel({
+                        nav: false,
+                        dots: true,
+                        margin: 20,
+                        loop: false,
+                        responsive: {
+                            0: { items: 2 },
+                            480: { items: 2 },
+                            768: { items: 3 },
+                            992: { items: 4 },
+                            1200: { items: 5, nav: true }
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading products:', error);
+                });
+        });
+        $(document).on('click','.add-to-cart-btnHome',function(e){
+            e.preventDefault();
+            var productId = $(this).data('id');
+            console.log("Add To Cart Btn : " , productId);
+            $.ajax({
+            url: '/add-to-cart',
+            type: 'POST',
+            data: {
+                product_id: productId,
+                _token: $('meta[name="csrf-token"]').attr('content') // CSRF token
+            },
+            success: function(response){
+                console.log(response);
+
+                alert(response.Success);
+            },
+            error: function(xhr){
+                console.error(xhr.responseText);
+                alert('Something went wrong.');
+            },
+            complete:function(){
+                window.location.reload();
+
+            }
+        });
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+    // Loop through all elements with class 'deal-countdown'
+    document.querySelectorAll('.deal-countdown').forEach(function (el) {
+        const saleEnd = el.dataset.until;
+        console.log("Enter Count Down "+ saleEnd);
+        if (saleEnd && saleEnd !== 'null') {
+            let formattedSaleEnd = saleEnd.replace(' ', 'T');
+            startCountdown(el, formattedSaleEnd);
+            console.log("Enter Count Down "+ saleEnd);
+        }
+    });
+
+    // Function to start the countdown for a product
+    function startCountdown(el, saleEnd) {
+        const saleEndDate = new Date(saleEnd);
+        const timerElement = el;
+        console.log("Time "+ saleEndDate);
+        // Function to update the countdown
+        function updateCountdown() {
+            const now = new Date();
+            const timeRemaining = saleEndDate - now;
+
+            if (timeRemaining <= 0) {
+                // If the sale has ended, display "Expired"
+                timerElement.innerHTML = "Sale Ended";
+                clearInterval(countdownInterval);
+            } else {
+                // Calculate remaining time (hours, minutes, seconds)
+                const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+                const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+                // Display the time left
+                timerElement.innerHTML = `${hours}h ${minutes}m ${seconds}s`;
+            }
+        }
+
+        // Initial countdown update
+        updateCountdown();
+
+        // Update countdown every second
+        const countdownInterval = setInterval(updateCountdown, 1000);
+    }
+});
+
+
+    </script>
 @endsection

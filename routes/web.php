@@ -58,7 +58,7 @@ Route::get('/index.html',function(){
 
 Route::post('/send-mail',[UserController::class,'resendmail'])->name('mail.send');
 Route::get('/verify-email/{id}',[UserController::class,'verifyemail'])->name('verify.email');
-Route::post('/verified-email',[UserController::class,'verifiedemail'])->name('verified.mail');
+Route::get('/verified-email',[UserController::class,'verifiedemail'])->name('verified.mail');
 
 
 
@@ -71,7 +71,13 @@ Route::get('/email/verify', function () {
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
  
-    return redirect()->route('user-Dashboard');
+    $context = request('context');
+
+    if ($context === 'checkout') {
+        return redirect()->route('users-checkout-page')->with('verified', true);
+    }
+
+    return redirect()->route('user-Dashboard')->with('verified', true);
 })->middleware(['auth', 'signed'])->name('verification.verify');
 //Resending the Verification Email
 Route::post('/email/verification-notification', function (Request $request) {
@@ -161,6 +167,8 @@ Route::delete('/product/delete/{id}',[ProductController::class,'destroy'])->name
 Route::get('/product/edit/{id}',[ProductController::class,'edit'])->name('edit-product');
 Route::post('/product/update/{id}',[ProductController::class,'update'])->name('update-product');
 Route::post('/delete-selectedproducts',[ProductController::class,'deleteSelectedRows'])->name('delete-selected-products'); 
+Route::get('/load-products', [ProductController::class, 'loadProducts'])->name('load.products');
+Route::post('/products/sale-end', [ProductController::class, 'updateSaleEnd'])->name('add-products-saleEnd');
 
 //User-Dashboards Routes
 Route::get('/',function(){
@@ -200,5 +208,9 @@ Route::post('/addBillingAddress',[BillingAddressController::class,'addBillingInf
 
 Route::get('/order-success',[BillingAddressController::class,'orderSuccess'])->name('order.success');
 Route::get('/order/cancel', [BillingAddressController::class, 'orderCancel'])->name('order.cancel');
-Route::post('/stripe/webhook', [BillingAddressController::class, 'handleWebhook']);
+
 Route::get('/orders', [OrdersController::class, 'pendingOrders'])->name('orders.pending');
+
+Route::post('/add-to-cart', [EcomShopController::class,'homeAddToCartBtn'])->name('cart.add');
+
+//email verification regidtered user 

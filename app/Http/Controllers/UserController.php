@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use ajax;
 use App\Models\City;
 use App\Models\User;
@@ -75,6 +74,7 @@ class UserController extends Controller
 
 
         $user = User::create($data);
+        session(['verification_context' => 'register']);
         $user->sendEmailVerificationNotification(); 
         $user_info= ['email'=>$user->email,'password'=>$request->password];
 
@@ -207,13 +207,16 @@ class UserController extends Controller
         }
          public function verifiedemail(Request $request){
            // return $request;
-            $user =  User::where('email',$request->email)->first();
-            if($user->email_verified_at===null){
-                return view('auth.verify-email')->with('status','Sorry! You Are Not Verified');
-                }else{
-                    return view('Dashboards.index')->with('status','Email Verified Successfully');     
-                }
-         }   
+           $user = auth()->user(); // Use logged-in user instead of searching by email
+
+           if (!$user || !$user->hasVerifiedEmail()) {
+               return back()->with('status', 'Sorry! You Are Not Verified');
+           }
+           if($user->role_id==1){
+            return view('Dashboards.index')->with('status', 'Email Verified Successfully');
+           }
+           return redirect()->route('users-checkout-page');
+        }   
     public function index(Request $request)
     {
        // sleep(60);

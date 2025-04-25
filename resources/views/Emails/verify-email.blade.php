@@ -51,15 +51,12 @@
             Account activation link sent to your email address: hello@example.com Please follow the link inside to
             continue.
           </p>
-          <form action="{{ route('verified.mail') }}" method="GET">
-            @csrf
-            <button type="submit" class="btn btn-primary w-100 my-6">Already Verified!</button>
-          </form>
+          <a class="btn btn-primary w-100 my-6" href="{{route('verified.mail.user')}}"> Already Verified ! </a>
           <p class="text-center mb-0">
             Didn't get the mail?
-            <form action="{{route('verification.send')}}" method="post">
+            <form action="{{route('verification.send.user')}}" method="post">
               @csrf
-              <button type="submit" class="btn btn-primary  w-100 my-6" title="Resend Email Link">Resend</a>
+              <button type="submit" class="btn btn-outline-primary"> Resend </a>
           </form>
           </p>
         </div>

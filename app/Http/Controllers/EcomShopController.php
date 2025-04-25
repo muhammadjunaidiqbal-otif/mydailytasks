@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Country;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class EcomShopController extends Controller
 {
@@ -42,6 +43,7 @@ class EcomShopController extends Controller
     session()->put('cart', $cart);
     return redirect()->back()->with('success', 'Product added to cart!');
     }
+
     public function removeFromCart(Request $request)
     {
     $cart = session('cart', []);
@@ -52,7 +54,7 @@ class EcomShopController extends Controller
     return redirect()->back()->with('success', 'Item removed from cart.');
     }
     public function updateCartQuantity(Request $request){
-        sleep(10);
+        
     $cart = session('cart', []);
     if (isset($cart[$request->product_id])) {
         $cart[$request->product_id]['quantity'] = $request->quantity;
@@ -67,4 +69,28 @@ class EcomShopController extends Controller
         $countries = Country::orderBy('name','asc')->get();
         return view('Users.checkout',compact('products','countries')) ;
     }   
+
+    public function homeAddToCartBtn(Request $request){
+        //return $request;
+        Log::info('Add to Cart Request', $request->all());
+    $product = Product::findOrFail($request->product_id);
+
+    $cart = session()->get('cart', []);
+    if(isset($cart[$product->id])) {
+        $cart[$product->id]['quantity']++;
+    } else {
+        $cart[$product->id] = [
+            "id"=>$product->id,
+            "name" => $product->name,
+            "quantity" => 1,
+            "price" => $product->base_price,
+            "image" => $product->image
+        ];
+    }
+    session()->put('cart', $cart);
+    return response()->json([
+        'Success'=>"Product Added To Cart Successfully",
+        'cart'=>$cart
+        ]);
+    }
 }

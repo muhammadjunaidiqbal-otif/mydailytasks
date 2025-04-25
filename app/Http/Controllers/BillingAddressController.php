@@ -32,25 +32,42 @@ class BillingAddressController extends Controller
         'email'        => 'required|email|max:255',
         'description'  => 'nullable|string|max:500',
         ]);
-        if (!Auth::check()) {
-            $user = User::where('email', $request->email)->first();
-            if ($request->has('create_account')) {
-                if (!$user) {
-                    $randomPassword = Str::random(8);
-                    $user = User::create([
-                        'name'       => $request->first_name . ' ' . $request->last_name,
-                        'email'      => $request->email,
-                        'password'   => Hash::make($randomPassword),
-                        'country_id' => $request->country_id,
-                        'state_id'   => $request->state_id,
-                        'city_id'    => $request->city_id,
-                        'role_id'    => 2,
-                    ]);
-                }
-            }
-            if ($user) {
-                Auth::login($user);
-            }
+        $user = Auth::user(); // Start with logged in user
+
+    // If not logged in, handle user creation/login
+    if (!$user) {
+        $user = User::where('email', $request->email)->first();
+
+        if ($request->has('create_account') && !$user) {
+            $randomPassword = Str::random(8);
+            $user = User::create([
+                'name'       => $request->first_name . ' ' . $request->last_name,
+                'email'      => $request->email,
+                'password'   => Hash::make($randomPassword),
+                'country_id' => $request->country_id,
+                'state_id'   => $request->state_id,
+                'city_id'    => $request->city_id,
+                'role_id'    => 2,
+            ]);
+
+            // Send verification email
+            session(['verification_context' => 'checkout']);
+            $user->sendEmailVerificationNotification();
+        }
+
+        if ($user) {
+            Auth::login($user);
+        }
+    }
+        
+        // Important: now we can safely retrieve the logged-in user
+        $user = Auth::user();
+
+    // If email is not verified, redirect to verification
+        if (!$user->hasVerifiedEmail()) {
+            return response()->json([
+                'redirect' => route('verification.notice')
+            ]);
         }
         $billingAddress = BillingAddress::create([
             'first_name' => $request->first_name,
@@ -157,12 +174,12 @@ class BillingAddressController extends Controller
             Log::error('Invalid Stripe signature: ' . $e->getMessage());
             return response('Invalid signature', 400);
         }
-    
+        $session = $event->data->object;
         Log::info('Stripe Webhook Event Received', ['type' => $event->type]);
-    
+        Log::info('Session Id',['type'=>$session->id]);
         switch ($event->type) {
             case 'checkout.session.completed':
-                $session = $event->data->object;
+                
                 $order = Orders::where('stripe_session_id', $session->id)->first();
                 if ($order) {
                     $order->update([
@@ -194,5 +211,13 @@ class BillingAddressController extends Controller
     
         return response('Webhook handled', 200);    
     }
-
+    public function userEmailVerificationCheck(Request $request){
+        // return $request;
+        $user =  User::where('email',$request->email)->first();
+        if($user->email_verified_at===null){
+            return view('Emails.verify-email')->with('status','Sorry! You Are Not Verified');
+            }else{
+                return redirect()->route('users-checkout-page')->with('status','Email Verified Successfully');     
+            }
+    }
 }

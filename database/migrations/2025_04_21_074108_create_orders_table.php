@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::hasTable('orders')) {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
@@ -23,12 +24,15 @@ return new class extends Migration
             $table->timestamps();
         });
     }
+    }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
-    }
+        if (Schema::hasTable('orders')) {
+            Schema::dropIfExists('orders');
+        }
+    }    
 };

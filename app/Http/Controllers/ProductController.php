@@ -6,15 +6,15 @@ use Exception;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $products = Product::with('category')->get();
+    public function index(){
+        $products = Product::where('status', 'Publish')->with('category')->get();
         return response()->json([
             'info' => $products
         ]);
@@ -26,8 +26,7 @@ class ProductController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
+    public function create(){
         $categories = Category::all();
         return view('Products-view.products-addproducts',['categories'=>$categories]);
     }
@@ -35,8 +34,7 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request){
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'sku' => 'required|string|max:255',
@@ -91,16 +89,14 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
+    public function show(string $id){
         //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
-    {
+    public function edit($id){
         $products = Product::with('category')->find($id);
         $categories = Category::all();
         return view('Products-view.products-addproducts',[
@@ -112,8 +108,7 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,$id)
-    {
+    public function update(Request $request,$id){
         $request->validate([
             'name'              => 'required|string|max:255',
             'sku'               => 'required|string|max:255',
@@ -179,8 +174,7 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
-    {
+    public function destroy($id){
         $product = Product::find($id); 
         if (!$product) {
             return response()->json(['error' => 'Product not found!'], 404);
@@ -198,4 +192,27 @@ class ProductController extends Controller
         }
         return response()->json(['error'=> 'No records selected.'], 400);
     }
+    public function loadProducts(){
+        $products = Product::where('top_item', 1)->latest()->take(10)->get();
+        $products->transform(function ($product) {
+            $product->image_url = !empty($product->image) && $product->image !== 'No File Uploaded'
+                ? asset('storage/' . $product->image)
+                : asset('user-assets/images/products/product-4.jpg');
+            return $product;
+        });
+        Log::info(["products"=>$products]);
+        return response()->json($products);
+    }
+    public function updateSaleEnd(Request $request){
+    $request->validate([
+        'sale_end' => 'date|nullable',
+    ]);
+
+    $product = Product::findOrFail($request->product_id);
+    $product->sale_end = $request->sale_end;
+    $product->save();
+
+    return response()->json(['success' => 'Sale end updated']);
+    }
+
 }

@@ -150,6 +150,7 @@
             <th>product</th>
             <th>category</th>
             <th>stock</th>
+            <th>Sale Till</th>
             <th>description</th>
             <th>price</th>
             <th>discounted </th>
@@ -221,6 +222,7 @@
       var csrfToken = $('meta[name="csrf-token"]').attr('content')
       var deleteCategoryURL = "{{route('delete-product',':id')}}";
       var editProductURL = "{{route('edit-product',':id')}}";
-      var selectDeleteUrl = "{{route('delete-selected-products')}}"
+      var selectDeleteUrl = "{{route('delete-selected-products')}}";
+      var updateProductSaleEndURL = "{{route('add-products-saleEnd')}}";
     </script>
 @endsection
