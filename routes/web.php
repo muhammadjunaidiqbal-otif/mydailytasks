@@ -20,11 +20,10 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 Route::get('/test', function () {
     return view('welcome');
 });
-
+//Authentication Routes 
 Route::get('/login', function () {
     return view('auth.auth-login');
 })->name('login-page');
-
 Route::post('/login',[UserController::class,'login'])->name('user-login');
 Route::get('/register-page',function(){
     return view('auth.auth-register');
@@ -33,8 +32,6 @@ Route::get('/reset-page', function () {
     return view('forgetpass');
 })->name('reset.page');
 Route::post('/register',[UserController::class,'register'])->name('user-register');
-
-
 Route::post('/login-user',[UserController::class,'login'])->name('login.user');
 Route::get('/logout',[UserController::class,'logout'])->name('user-logout');
 Route::get('/forget-pass',function(){
@@ -42,69 +39,58 @@ Route::get('/forget-pass',function(){
 })->name('forget-pass');
 Route::get('/users-details',[UserController::class,'users'])->name('user.index');
 
-
+//Routes For Custom Password Reset
 Route::post('/verify-email',[UserController::class,'verify_Email'])->name('verifyemail');
 Route::get('/email',[UserController::class,'mail'])->name('send.email');
 Route::get('/reset-pass/{token}',[UserController::class,'resetpassform'])->name('reset.pass');
 Route::post('/submit-reset-pass',[UserController::class,'submitresetpassword'])->name('sumbit.resetpass');
-
+Route::post('/send-mail',[UserController::class,'resendmail'])->name('mail.send');
+Route::get('/verify-email/{id}',[UserController::class,'verifyemail'])->name('verify.email');
+Route::get('/verified-email',[UserController::class,'verifiedemail'])->name('verified.mail');
 Route::get('/email-verification',function(){
     return view('emailverification');
 })->name('verification.page');
+//Admin-Pages Routes
 
 Route::get('/index.html',function(){
     return view('Dashboards.index');
 })->name('user-Dashboard');
-
-Route::post('/send-mail',[UserController::class,'resendmail'])->name('mail.send');
-Route::get('/verify-email/{id}',[UserController::class,'verifyemail'])->name('verify.email');
-Route::get('/verified-email',[UserController::class,'verifiedemail'])->name('verified.mail');
-
-
-
-
+//Larave Email Verification Routes
 //The Email Verification Notice
 Route::get('/email/verify', function () {
     return view('auth.auth-emailverification');
 })->middleware('auth')->name('verification.notice');
+
 //The Email Verification Handler
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
- 
     $context = request('context');
-
     if ($context === 'checkout') {
         return redirect()->route('users-checkout-page')->with('verified', true);
     }
-
     return redirect()->route('user-Dashboard')->with('verified', true);
 })->middleware(['auth', 'signed'])->name('verification.verify');
+
 //Resending the Verification Email
 Route::post('/email/verification-notification', function (Request $request) {
     //dd(123);
-    $request->user()->sendEmailVerificationNotification();
- 
+    $request->user()->sendEmailVerificationNotification(); 
     return back()->with('status', 'Verification link sent again!');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 
 
-//fetch-cities
+//fetch-cities-countries-states Routes From API's
 Route::get('/fetch-countries', [ApiController::class, 'fetchCountries']);
 Route::get('/fetch-states', [ApiController::class, 'fetchStates']);
 Route::get('/fetch-cities', [ApiController::class, 'fetchCities']);
 //test route
 Route::get('/countries-details',[CountryController::class,'GetCountries']);
 Route::get('/cities-details',[CityController::class,'GetCities']);
-
 Route::get('/states-details',[StateController::class,'GetStates']);
-
 Route::get('/states-details',[StateController::class,'GetStates']);
 Route::get('/country-users',[CountryController::class,'users']);
-
 Route::get('/country-states',[CountryController::class,'getstates']);
-
-
 Route::get('/get-states/{country_id}',[StateController::class,'StatesForCountry'])->name('states-for-countries');
 Route::get('/get-cities/{state_id}',[CityController::class,'CitiesforState'])->name('cities-for-states');
 
@@ -125,7 +111,6 @@ Route::get('/users-datatable',function(){
 
 //
 Route::resource('/roles',RoleController::class);
-
 Route::resource('/partners',PartnerRoleController::class);
 
 
@@ -133,6 +118,7 @@ Route::resource('/partners',PartnerRoleController::class);
 Route::get('/data-table',function(){
     return view('Partners.datatables');
 });
+//Advancedatatable routes
 Route::get('/advance-dt',function(){
     return view('Datatables.advance-dt');
 });
@@ -205,12 +191,12 @@ Route::post('/update-cart-quantity', [EcomShopController::class, 'updateCartQuan
 //checkout page routes
 Route::get('/check-out',[EcomShopController::class,'checkOutPage'])->name('users-checkout-page');
 Route::post('/addBillingAddress',[BillingAddressController::class,'addBillingInfo'])->name('add-billing-info');
-
 Route::get('/order-success',[BillingAddressController::class,'orderSuccess'])->name('order.success');
 Route::get('/order/cancel', [BillingAddressController::class, 'orderCancel'])->name('order.cancel');
-
 Route::get('/orders', [OrdersController::class, 'pendingOrders'])->name('orders.pending');
-
 Route::post('/add-to-cart', [EcomShopController::class,'homeAddToCartBtn'])->name('cart.add');
 
-//email verification regidtered user 
+//Admin->Orders Routes
+Route::get('/orders-list-page',[OrdersController::class,'ordersListPage'])->name('orders-list-page');
+Route::get('/orders/list',[OrdersController::class,'ordersList'])->name('orders-list');
+Route::get('/order/detail',[OrdersController::class,'orderDetail'])->name('order-detail');

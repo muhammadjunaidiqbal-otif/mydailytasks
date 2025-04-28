@@ -200,19 +200,19 @@ class ProductController extends Controller
                 : asset('user-assets/images/products/product-4.jpg');
             return $product;
         });
-        Log::info(["products"=>$products]);
+        //Log::info(["products"=>$products]);
         return response()->json($products);
     }
     public function updateSaleEnd(Request $request){
-    $request->validate([
-        'sale_end' => 'date|nullable',
-    ]);
+        $request->validate([
+            'sale_end' => 'date|nullable',
+        ]);
 
-    $product = Product::findOrFail($request->product_id);
-    $product->sale_end = $request->sale_end;
-    $product->save();
-
-    return response()->json(['success' => 'Sale end updated']);
+        $product = Product::findOrFail($request->product_id);
+        $product->sale_end = $request->sale_end;
+        $product->save();
+        
+        return response()->json(['success' => 'Sale end updated']);
     }
 
 }

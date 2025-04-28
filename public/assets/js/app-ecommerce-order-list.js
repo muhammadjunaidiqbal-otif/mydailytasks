@@ -23,33 +23,38 @@ $(function () {
 
   var dt_order_table = $('.datatables-order'),
     statusObj = {
-      1: { title: 'Dispatched', class: 'bg-label-warning' },
-      2: { title: 'Delivered', class: 'bg-label-success' },
-      3: { title: 'Out for Delivery', class: 'bg-label-primary' },
-      4: { title: 'Ready to Pickup', class: 'bg-label-info' }
+      1: { title: 'pending', class: 'bg-label-warning' },
+      2: { title: 'success', class: 'bg-label-success' },
+      3: { title: 'failed', class: 'bg-label-primary' },
+      4: { title: 'refunded', class: 'bg-label-info' }
     },
     paymentObj = {
-      1: { title: 'Paid', class: 'text-success' },
-      2: { title: 'Pending', class: 'text-warning' },
-      3: { title: 'Failed', class: 'text-danger' },
-      4: { title: 'Cancelled', class: 'text-secondary' }
+      1: { title: 'paid', class: 'text-success' },
+      2: { title: 'pending', class: 'text-warning' },
+      3: { title: 'unpaid', class: 'text-danger' },
+      //4: { title: 'Cancelled', class: 'text-secondary' }
     };
 
   // E-commerce Products datatable
 
   if (dt_order_table.length) {
     var dt_products = dt_order_table.DataTable({
-      ajax: assetsPath + 'json/ecommerce-customer-order.json', // JSON file to add data
+      processing : true ,
+      serverSide : false ,
+      ajax:{
+        'url' : orderListURL,
+        'dataSrc' : 'info'
+      } , // JSON file to add data
       columns: [
         // columns according to JSON
         { data: 'id' },
         { data: 'id' },
-        { data: 'order' },
-        { data: 'date' },
-        { data: 'customer' }, //email //avatar
-        { data: 'payment' },
+        { data: 'id' },
+        { data: 'created_at' },
+        { data: 'discount' }, //email //avatar
+        { data: 'total' },
         { data: 'status' },
-        { data: 'method' }, //method_number
+        { data: 'payment_status' }, //method_number
         { data: '' }
       ],
       columnDefs: [
@@ -80,9 +85,9 @@ $(function () {
           // Order ID
           targets: 2,
           render: function (data, type, full, meta) {
-            var $order_id = full['order'];
+            var $order_id = full['id'];
             // Creates full output for row
-            var $row_output = '<a href="app-ecommerce-order-details.html"><span>#' + $order_id + '</span></a>';
+            var $row_output = '<a href="" data-id="' + $order_id + '"><span>#' + $order_id + '</span></a>';
             return $row_output;
           }
         },
@@ -90,63 +95,68 @@ $(function () {
           // Date and Time
           targets: 3,
           render: function (data, type, full, meta) {
-            var date = new Date(full.date); // convert the date string to a Date object
-            var timeX = full['time'].substring(0, 5);
+            var date = new Date(full.created_at); // convert the date string to a Date object
+            console.log("Date "+ date);
+            var formattedTime = date.toLocaleTimeString('en-US', {
+              hour: '2-digit',
+              minute: '2-digit'
+            });
+            console.log("time"+formattedTime)
             var formattedDate = date.toLocaleDateString('en-US', {
               month: 'short',
               day: 'numeric',
               year: 'numeric',
-              time: 'numeric'
             });
-            return '<span class="text-nowrap">' + formattedDate + ', ' + timeX + '</span>';
+
+            return '<span class="text-nowrap">' + formattedDate + ', ' + formattedTime + '</span>';
           }
         },
-        {
-          // Customers
-          targets: 4,
-          responsivePriority: 1,
-          render: function (data, type, full, meta) {
-            var $name = full['customer'],
-              $email = full['email'],
-              $avatar = full['avatar'];
-            if ($avatar) {
-              // For Avatar image
-              var $output =
-                '<img src="' + assetsPath + 'img/avatars/' + $avatar + '" alt="Avatar" class="rounded-circle">';
-            } else {
-              // For Avatar badge
-              var stateNum = Math.floor(Math.random() * 6);
-              var states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'];
-              var $state = states[stateNum],
-                $name = full['customer'],
-                $initials = $name.match(/\b\w/g) || [];
-              $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
-              $output = '<span class="avatar-initial rounded-circle bg-label-' + $state + '">' + $initials + '</span>';
-            }
-            // Creates full output for row
-            var $row_output =
-              '<div class="d-flex justify-content-start align-items-center order-name text-nowrap">' +
-              '<div class="avatar-wrapper">' +
-              '<div class="avatar avatar-sm me-3">' +
-              $output +
-              '</div>' +
-              '</div>' +
-              '<div class="d-flex flex-column">' +
-              '<h6 class="m-0"><a href="pages-profile-user.html" class="text-heading">' +
-              $name +
-              '</a></h6>' +
-              '<small>' +
-              $email +
-              '</small>' +
-              '</div>' +
-              '</div>';
-            return $row_output;
-          }
-        },
+        // {
+        //   // Customers
+        //   targets: 4,
+        //   responsivePriority: 1,
+        //   render: function (data, type, full, meta) {
+        //     var $name = full['customer'],
+        //       $email = full['email'],
+        //       $avatar = full['avatar'];
+        //     if ($avatar) {
+        //       // For Avatar image
+        //       var $output =
+        //         '<img src="' + assetsPath + 'img/avatars/' + $avatar + '" alt="Avatar" class="rounded-circle">';
+        //     } else {
+        //       // For Avatar badge
+        //       var stateNum = Math.floor(Math.random() * 6);
+        //       var states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'];
+        //       var $state = states[stateNum],
+        //         $name = full['customer'],
+        //         $initials = $name.match(/\b\w/g) || [];
+        //       $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
+        //       $output = '<span class="avatar-initial rounded-circle bg-label-' + $state + '">' + $initials + '</span>';
+        //     }
+        //     // Creates full output for row
+        //     var $row_output =
+        //       '<div class="d-flex justify-content-start align-items-center order-name text-nowrap">' +
+        //       '<div class="avatar-wrapper">' +
+        //       '<div class="avatar avatar-sm me-3">' +
+        //       $output +
+        //       '</div>' +
+        //       '</div>' +
+        //       '<div class="d-flex flex-column">' +
+        //       '<h6 class="m-0"><a href="pages-profile-user.html" class="text-heading">' +
+        //       $name +
+        //       '</a></h6>' +
+        //       '<small>' +
+        //       $email +
+        //       '</small>' +
+        //       '</div>' +
+        //       '</div>';
+        //     return $row_output;
+        //   }
+        // },
         {
           targets: 5,
           render: function (data, type, full, meta) {
-            var $payment = full['payment'],
+            var $payment = full['payment_status'],
               $paymentObj = paymentObj[$payment];
             if ($paymentObj) {
               return (
@@ -161,47 +171,46 @@ $(function () {
             return data;
           }
         },
-        {
-          // Status
-          targets: -3,
-          render: function (data, type, full, meta) {
-            var $status = full['status'];
+        //  {
+        //    // Status
+        //    targets: -3,
+        //    render: function (data, type, full, meta) {
+        //      var $status = full['status']
+        //      return (
+        //        '<span class="badge px-2 ' +
+        //        statusObj[$status].class +
+        //        '" text-capitalized>' +
+        //        statusObj[$status].title +
+        //        '</span>'
+        //      );
+        //    }
+        //  },
+        // {
+        //   // Payment Method
+        //   targets: -2,
+        //   render: function (data, type, full, meta) {
+        //     var $method = full['method'];
+        //     var $method_number = full['method_number'];
 
-            return (
-              '<span class="badge px-2 ' +
-              statusObj[$status].class +
-              '" text-capitalized>' +
-              statusObj[$status].title +
-              '</span>'
-            );
-          }
-        },
-        {
-          // Payment Method
-          targets: -2,
-          render: function (data, type, full, meta) {
-            var $method = full['method'];
-            var $method_number = full['method_number'];
-
-            if ($method == 'paypal') {
-              $method_number = '@gmail.com';
-            }
-            return (
-              '<div class="d-flex align-items-center text-nowrap">' +
-              '<img src="' +
-              assetsPath +
-              'img/icons/payments/' +
-              $method +
-              '.png" alt="' +
-              $method +
-              '" width="29">' +
-              '<span><i class="ti ti-dots me-1 mt-1"></i>' +
-              $method_number +
-              '</span>' +
-              '</div>'
-            );
-          }
-        },
+        //     if ($method == 'paypal') {
+        //       $method_number = '@gmail.com';
+        //     }
+        //     return (
+        //       '<div class="d-flex align-items-center text-nowrap">' +
+        //       '<img src="' +
+        //       assetsPath +
+        //       'img/icons/payments/' +
+        //       $method +
+        //       '.png" alt="' +
+        //       $method +
+        //       '" width="29">' +
+        //       '<span><i class="ti ti-dots me-1 mt-1"></i>' +
+        //       $method_number +
+        //       '</span>' +
+        //       '</div>'
+        //     );
+        //   }
+        // },
         {
           // Actions
           targets: -1,
@@ -213,7 +222,7 @@ $(function () {
               '<div class="d-flex justify-content-sm-start align-items-sm-center">' +
               '<button class="btn btn-icon btn-text-secondary waves-effect waves-light rounded-pill dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical"></i></button>' +
               '<div class="dropdown-menu dropdown-menu-end m-0">' +
-              '<a href="app-ecommerce-order-details.html" class="dropdown-item">View</a>' +
+              '<a href="" class="dropdown-item">View</a>' +
               '<a href="javascript:0;" class="dropdown-item delete-record">' +
               'Delete' +
               '</a>' +

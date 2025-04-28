@@ -32,6 +32,47 @@
         transform: rotate(360deg);
     }
 }
+.product-label.label-sale {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #f08080; /* light red */
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    z-index: 5;
+}
+
+.deal-countdown {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin: 10px 0;
+}
+
+.countdown-item {
+    background-color: #f08080; /* light red */
+    padding: 10px 8px;
+    border-radius: 5px;
+    text-align: center;
+    color: #fff;
+    min-width: 50px;
+}
+
+.countdown-value {
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.countdown-label {
+    display: block;
+    font-size: 12px;
+    margin-top: 4px;
+}
     </style>
 @endsection
 
@@ -1138,6 +1179,10 @@
                                         <img src=" ${product.image_url}" alt="Product image" class="product-image">
                                         <img src="user-assets/images/demos/demo-7/products/product-11-2.jpg" alt="Product hover image" class="product-image product-image-hover">
                                     </a>
+                                    <!-- Sale Badge -->
+                                    ${product.sale_end ? `
+                                    <span class="product-label label-sale">Sale</span>
+                                    ` : ''}
                                     <div class="product-action-vertical">
                                         <a href="" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
                                         <a href="" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
@@ -1145,7 +1190,14 @@
                                     <div class="product-action">
                                         <a href="" class="btn-product btn-cart add-to-cart-btnHome" data-id="${product.id}"><span>add to cart</span></a>
                                     </div>
-                                    <div class="deal-countdown offer-countdown saleCountDown" data-until="${product.sale_end}"></div>
+                                    ${product.sale_end ? `
+                            <div class="deal-countdown offer-countdown saleCountDown" data-until="${product.sale_end}">
+                                <div class="countdown-item"><span class="countdown-value" data-days>00</span><span class="countdown-label">days</span></div>
+                                <div class="countdown-item"><span class="countdown-value" data-hours>00</span><span class="countdown-label">hours</span></div>
+                                <div class="countdown-item"><span class="countdown-value" data-minutes>00</span><span class="countdown-label">minutes</span></div>
+                                <div class="countdown-item"><span class="countdown-value" data-seconds>00</span><span class="countdown-label">seconds</span></div>
+                            </div>
+                            ` : ''}
                                 </figure>
                                 <div class="product-body">
                                     <h3 class="product-title"><a href="">${product.name}</a></h3>
@@ -1179,6 +1231,7 @@
                             1200: { items: 5, nav: true }
                         }
                     });
+                    startAllCountdowns();
                 })
                 .catch(error => {
                     console.error('Error loading products:', error);
@@ -1210,50 +1263,52 @@
             }
         });
     });
-    document.addEventListener("DOMContentLoaded", function () {
-    // Loop through all elements with class 'deal-countdown'
-    document.querySelectorAll('.deal-countdown').forEach(function (el) {
-        const saleEnd = el.dataset.until;
-        console.log("Enter Count Down "+ saleEnd);
-        if (saleEnd && saleEnd !== 'null') {
-            let formattedSaleEnd = saleEnd.replace(' ', 'T');
-            startCountdown(el, formattedSaleEnd);
-            console.log("Enter Count Down "+ saleEnd);
-        }
-    });
-
-    // Function to start the countdown for a product
-    function startCountdown(el, saleEnd) {
-        const saleEndDate = new Date(saleEnd);
-        const timerElement = el;
-        console.log("Time "+ saleEndDate);
-        // Function to update the countdown
-        function updateCountdown() {
-            const now = new Date();
-            const timeRemaining = saleEndDate - now;
-
-            if (timeRemaining <= 0) {
-                // If the sale has ended, display "Expired"
-                timerElement.innerHTML = "Sale Ended";
-                clearInterval(countdownInterval);
-            } else {
-                // Calculate remaining time (hours, minutes, seconds)
-                const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
-                const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-
-                // Display the time left
-                timerElement.innerHTML = `${hours}h ${minutes}m ${seconds}s`;
+    function startAllCountdowns() {
+        document.querySelectorAll('.deal-countdown').forEach(function (el) {
+            const saleEnd = el.dataset.until;
+            
+            if (saleEnd && saleEnd !== 'null') {
+                let formattedSaleEnd = saleEnd.replace(' ', 'T');
+                startCountdown(el, formattedSaleEnd);
+                console.log("Enter CountDown Function : "+formattedSaleEnd);
             }
+        }); 
+    }
+    function startCountdown(el, saleEnd) {
+    const saleEndDate = new Date(saleEnd);
+    let countdownInterval;
+
+    const daysEl = el.querySelector('[data-days]');
+    const hoursEl = el.querySelector('[data-hours]');
+    const minutesEl = el.querySelector('[data-minutes]');
+    const secondsEl = el.querySelector('[data-seconds]');
+
+    function updateCountdown() {
+        const now = new Date();
+        const timeRemaining = saleEndDate - now;
+
+        if (timeRemaining <= 0) {
+            clearInterval(countdownInterval);
+            el.innerHTML = `<div class="expired-text">Sale Ended</div>`;
+            return;
         }
 
-        // Initial countdown update
-        updateCountdown();
+        const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
 
-        // Update countdown every second
-        const countdownInterval = setInterval(updateCountdown, 1000);
+        if (daysEl) daysEl.textContent = String(days).padStart(2, '0');
+        if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
+        if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
+        if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
     }
-});
+
+    countdownInterval = setInterval(updateCountdown, 1000);
+    updateCountdown();
+}
+   
+    
 
 
     </script>

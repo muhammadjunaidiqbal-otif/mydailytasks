@@ -17,4 +17,18 @@ class OrdersController extends Controller
 
     return view('Users.pending-order', compact('orders'));
     }
+    public function ordersListPage(){
+        $orders = Orders::all();
+        return view('Admin.Orders.orders-list',compact('orders'));
+    }
+    public function ordersList(){
+        $orders = Orders::with('user')->where('user_id','!=',null)->get();
+        return response()->json([
+            'info'=>$orders
+        ]);
+    }
+    public function orderDetail(){
+        return view('Admin.Orders.order-details');
+    }
+
 }

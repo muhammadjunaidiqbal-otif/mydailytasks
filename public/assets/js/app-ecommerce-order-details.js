@@ -221,6 +221,7 @@ $(function () {
   //for custom year
   function getCurrentYear() {
     var currentYear = new Date().getFullYear();
+    console.log("Current Year" + currentYear);
     return currentYear;
   }
 

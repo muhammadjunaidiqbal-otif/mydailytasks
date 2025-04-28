@@ -11,8 +11,7 @@ use Illuminate\Http\Request;
 
 class ApiController extends Controller
 {
-    public function fetchCountries()
-    {
+    public function fetchCountries(){
         $client = new Client();
 
        // try {

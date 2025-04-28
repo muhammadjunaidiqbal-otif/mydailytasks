@@ -13,4 +13,8 @@ class Orders extends Model
     public function billingAddress(){
         return $this->belongsTo(BillingAddress::class,'billing_id');
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

@@ -320,24 +320,24 @@
                     </li>
                   </ul>
                 </li>
-                {{-- <li class="menu-item">
+                 <li class="menu-item">
                   <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <div data-i18n="Order">Order</div>
                   </a>
                   <ul class="menu-sub">
                     <li class="menu-item">
-                      <a href="app-ecommerce-order-list.html" class="menu-link">
+                      <a href="{{route('orders-list-page')}}" class="menu-link">
                         <div data-i18n="Order List">Order List</div>
                       </a>
                     </li>
                     <li class="menu-item">
-                      <a href="app-ecommerce-order-details.html" class="menu-link">
+                      <a href="{{route('order-detail')}}" class="menu-link">
                         <div data-i18n="Order Details">Order Details</div>
                       </a>
                     </li>
                   </ul>
                 </li>
-                <li class="menu-item">
+                {{--<li class="menu-item">
                   <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <div data-i18n="Customer">Customer</div>
                   </a>

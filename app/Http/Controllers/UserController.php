@@ -98,13 +98,12 @@ class UserController extends Controller
         //return $request;
         $user=Auth::user();
         if(isset($user->remember_token)){
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        $user->setRememberToken(null);
-        $user->save();
-    }
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            $user->setRememberToken(null);
+            $user->save();
+        }
         Auth::logout();
-
         return redirect()->route('login-page')->with('status','Logout Successfully . ');
     }
 
@@ -119,26 +118,25 @@ class UserController extends Controller
         }
     }
 
-    public function mail(Request $request)
-    {
-    $token =  str::random(64);
-    DB::table('password_reset_tokens')->where('email',$request->email)->delete();
+    public function mail(Request $request){
+        $token =  str::random(64);
+        DB::table('password_reset_tokens')->where('email',$request->email)->delete();
 
-    DB::table('password_reset_tokens')->insert([
-        'email'=>$request->email,
-        'token'=>$token,
-        'created_at'=>now()
-    ]);
-    $name = User::where('email',$request->email)->get();
-    //return $name[0]['name'];
-    $data = ['name' => $name[0]['name'],
-              'token'=>$token,
-              'email'=>$request->email
-    ];
+        DB::table('password_reset_tokens')->insert([
+            'email'=>$request->email,
+            'token'=>$token,
+            'created_at'=>now()
+        ]);
+        $name = User::where('email',$request->email)->get();
+        //return $name[0]['name'];
+        $data = ['name' => $name[0]['name'],
+                  'token'=>$token,
+                  'email'=>$request->email
+        ];
     
-    Mail::to('junaidiqbalmrar@gmail.com')->send(new TestMail($data));
+        Mail::to('junaidiqbalmrar@gmail.com')->send(new TestMail($data));
 
-    return redirect()->route('login-page')->with('status','Reset Pass Mail Send Successfully');
+        return redirect()->route('login-page')->with('status','Reset Pass Mail Send Successfully');
     }
     public function resetpassform($token)
     {
@@ -156,47 +154,46 @@ class UserController extends Controller
 
     public function submitresetpassword(Request $request){
     
-    $request->validate([
-        
-        'password' => [
-        'required',
-        'min:8',
-        'regex:/[A-Z]/',        // At least one uppercase letter
-        'regex:/[a-z]/',        // At least one lowercase letter
-        'regex:/[0-9]/',        // At least one number
-        ],    // At least one special character,
-        'confirm-pass' => 'required|same:password'
-    ]);
-    //return $request;
-    $updatepassword = DB::table('password_reset_tokens')->where(['email'=>$request->email,'token'=>$request->token])->first();
-    //return $updatepassword;
-    if(!$updatepassword){
-        return back()->with('status','Invalid Token');
-    }else{
-        User::where('email',$request->email)->update([
-            'password'=>Hash::make($request->password)
+        $request->validate([            
+            'password' => [
+            'required',
+            'min:8',
+            'regex:/[A-Z]/',        // At least one uppercase letter
+            'regex:/[a-z]/',        // At least one lowercase letter
+            'regex:/[0-9]/',        // At least one number
+            ],    // At least one special character,
+            'confirm-pass' => 'required|same:password'
         ]);
-        DB::table('password_reset_tokens')->where(['email'=>$request->email,'token'=>$request->token])->delete();
-        return redirect()->route('login-page')->with('status','Password Updated Successfully!');
-    }
-    
+        //return $request;
+        $updatepassword = DB::table('password_reset_tokens')->where(['email'=>$request->email,'token'=>$request->token])->first();
+        //return $updatepassword;
+        if(!$updatepassword){
+            return back()->with('status','Invalid Token');
+        }else{
+            User::where('email',$request->email)->update([
+                'password'=>Hash::make($request->password)
+            ]);
+            DB::table('password_reset_tokens')->where(['email'=>$request->email,'token'=>$request->token])->delete();
+            return redirect()->route('login-page')->with('status','Password Updated Successfully!');
+        }
+
 
     }
     public function verifyemail($id){
-    //return $request->email;
-    $user = User::where('id',$id)->first();
+        //return $request->email;
+        $user = User::where('id',$id)->first();
 
-    $user->update(['email_verified_at'=>now()]);
-    $data=[ 'name'=>$user->name,
-            'email'=>$user->email,
-            'success'=>"Email Verified !"
-        ];
+        $user->update(['email_verified_at'=>now()]);
+        $data=[ 'name'=>$user->name,
+                'email'=>$user->email,
+                'success'=>"Email Verified !"
+            ];
 
-        return view('Admin.Dashboard',['info'=>$data]);
+            return view('Admin.Dashboard',['info'=>$data]);
 
     }
     public function resendmail(Request $request){
-    $user = User::where('email',$request->email)->first();
+        $user = User::where('email',$request->email)->first();
     
         $data=[ 'name'=>$user->name,
             'id'=>$user->id,
@@ -205,20 +202,18 @@ class UserController extends Controller
             Mail::to($user->email)->send(new EmailVerifyMail($data));
             return view('emailverification',['info'=>$data]);
         }
-         public function verifiedemail(Request $request){
-           // return $request;
-           $user = auth()->user(); // Use logged-in user instead of searching by email
-
-           if (!$user || !$user->hasVerifiedEmail()) {
-               return back()->with('status', 'Sorry! You Are Not Verified');
-           }
-           if($user->role_id==1){
+    public function verifiedemail(Request $request){
+        // return $request;
+        $user = auth()->user(); // Use logged-in user instead of searching by email
+        if (!$user || !$user->hasVerifiedEmail()) {
+            return back()->with('status', 'Sorry! You Are Not Verified');
+        }
+        if($user->role_id==1){
             return view('Dashboards.index')->with('status', 'Email Verified Successfully');
-           }
-           return redirect()->route('users-checkout-page');
-        }   
-    public function index(Request $request)
-    {
+        }
+        return redirect()->route('users-checkout-page');
+    }   
+    public function index(Request $request){
        // sleep(60);
         $partners =  User::with('role')->get();
         return response()->json([
@@ -240,18 +235,18 @@ class UserController extends Controller
     
     } 
     public function update(Request $request){
-    $user = User::find($request->id);
-    if (!$user) {
-        return response()->json(['error' => 'User not found']);
-    }
+        $user = User::find($request->id);
+        if (!$user) {
+            return response()->json(['error' => 'User not found']);
+        }
 
-    // Update user fields
-    $user->name = $request->name;
-    $user->email = $request->email;
-    $user->role_id=$request->role;
-    $user->save();
+        // Update user fields
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->role_id=$request->role;
+        $user->save();
 
-    return response()->json(['success' => 'User updated successfully']);
+        return response()->json(['success' => 'User updated successfully']);
     }   
 
     public function deleteSelectedRows(Request $request){

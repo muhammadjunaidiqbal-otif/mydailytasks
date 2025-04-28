@@ -130,7 +130,7 @@ class BillingAddressController extends Controller
                     $request->session_id,
                 []
             );
-       //dd($session);
+       dd($session);
        if ($session->payment_status === 'paid') {
         $order = Orders::find($request->order_id);
         $order->payment_status = 'paid';
