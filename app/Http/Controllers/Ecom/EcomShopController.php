@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Ecom;
 
 use App\Models\Country;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 
 class EcomShopController extends Controller
-{
+{   
     public function showProducts(){
         sleep(1);
         $products = Product::with('category')->get();
-        return view('Users.shop',compact('products'));
+        return view('Ecom.shop',compact('products'));
     }
     public function getProducts()
     {
@@ -67,7 +68,7 @@ class EcomShopController extends Controller
     public function checkOutPage(){
         $products = session('cart',[]);
         $countries = Country::orderBy('name','asc')->get();
-        return view('Users.checkout',compact('products','countries')) ;
+        return view('Ecom.checkout',compact('products','countries')) ;
     }   
 
     public function homeAddToCartBtn(Request $request){

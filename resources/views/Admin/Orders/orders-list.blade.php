@@ -164,5 +164,6 @@
     <script src="../../assets/js/app-ecommerce-order-list.js"></script>
     <script>
         var orderListURL = "{{route('orders-list')}}";
+        var orderDetailsURL = "{{route('order-detail',':id')}}";
     </script>
 @endsection

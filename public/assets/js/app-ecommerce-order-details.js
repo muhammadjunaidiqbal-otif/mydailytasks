@@ -14,14 +14,19 @@ $(function () {
   // E-commerce Products datatable
   if (dt_details_table.length) {
     var dt_products = dt_details_table.DataTable({
-      ajax: assetsPath + 'json/ecommerce-order-details.json', // JSON file to add data
+      processing : true , 
+      serverSide : false ,
+      ajax: {
+        url : cartDetailsURl,
+        dataSrc : 'info'
+      }, // JSON file to add data
       columns: [
         // columns according to JSON
         { data: 'id' },
         { data: 'id' },
-        { data: 'product_name' },
+        { data: 'name' },
         { data: 'price' },
-        { data: 'qty' },
+        { data: 'quantity' },
         { data: '' }
       ],
       columnDefs: [
@@ -48,56 +53,56 @@ $(function () {
           },
           searchable: false
         },
-        {
-          // Product name and product info
-          targets: 2,
-          responsivePriority: 1,
-          searchable: false,
-          orderable: false,
-          render: function (data, type, full, meta) {
-            var $name = full['product_name'],
-              $product_brand = full['product_info'],
-              $image = full['image'];
-            if ($image) {
-              // For Product image
-              var $output =
-                '<img src="' +
-                assetsPath +
-                'img/products/' +
-                $image +
-                '" alt="product-' +
-                $name +
-                '" class="rounded-2">';
-            } else {
-              // For Product badge
-              var stateNum = Math.floor(Math.random() * 6);
-              var states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'];
-              var $state = states[stateNum],
-                $name = full['product_name'],
-                $initials = $name.match(/\b\w/g) || [];
-              $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
-              $output = '<span class="avatar-initial rounded-2 bg-label-' + $state + '">' + $initials + '</span>';
-            }
-            // Creates full output for Product name and product_brand
-            var $row_output =
-              '<div class="d-flex justify-content-start align-items-center text-nowrap">' +
-              '<div class="avatar-wrapper">' +
-              '<div class="avatar avatar-sm me-3">' +
-              $output +
-              '</div>' +
-              '</div>' +
-              '<div class="d-flex flex-column">' +
-              '<h6 class="text-heading mb-0">' +
-              $name +
-              '</h6>' +
-              '<small>' +
-              $product_brand +
-              '</small>' +
-              '</div>' +
-              '</div>';
-            return $row_output;
-          }
-        },
+        // {
+        //   // Product name and product info
+        //   targets: 2,
+        //   responsivePriority: 1,
+        //   searchable: false,
+        //   orderable: false,
+        //   render: function (data, type, full, meta) {
+        //     var $name = full['name'],
+        //       //$product_brand = full['product_info'],
+        //       $image = full['image'];
+        //     if ($image) {
+        //       // For Product image
+        //       var $output =
+        //         '<img src="' +
+        //         assetsPath +
+        //         'img/products/' +
+        //         $image +
+        //         '" alt="product-' +
+        //         $name +
+        //         '" class="rounded-2">';
+        //     } else {
+        //       // For Product badge
+        //       var stateNum = Math.floor(Math.random() * 6);
+        //       var states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'];
+        //       var $state = states[stateNum],
+        //         $name = full['product_name'],
+        //         $initials = $name.match(/\b\w/g) || [];
+        //       $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
+        //       $output = '<span class="avatar-initial rounded-2 bg-label-' + $state + '">' + $initials + '</span>';
+        //     }
+        //     // Creates full output for Product name and product_brand
+        //     var $row_output =
+        //       '<div class="d-flex justify-content-start align-items-center text-nowrap">' +
+        //       '<div class="avatar-wrapper">' +
+        //       '<div class="avatar avatar-sm me-3">' +
+        //       $output +
+        //       '</div>' +
+        //       '</div>' +
+        //       '<div class="d-flex flex-column">' +
+        //       '<h6 class="text-heading mb-0">' +
+        //       $name +
+        //       '</h6>' +
+        //       '<small>' +
+        //       // $product_brand +
+        //       '</small>' +
+        //       '</div>' +
+        //       '</div>';
+        //     return $row_output;
+        //   }
+        // },
         {
           // For Price
           targets: 3,
@@ -115,7 +120,7 @@ $(function () {
           searchable: false,
           orderable: false,
           render: function (data, type, full, meta) {
-            var $qty = full['qty'];
+            var $qty = full['quantity'];
             var $output = '<span class="text-body">' + $qty + '</span>';
             return $output;
           }
@@ -126,7 +131,7 @@ $(function () {
           searchable: false,
           orderable: false,
           render: function (data, type, full, meta) {
-            var $total = full['qty'] * full['price'];
+            var $total = full['quantity'] * full['price'];
             var $output = '<span class="text-body">' + $total + '</span>';
             return $output;
           }

@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Orders;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class OrdersController extends Controller
@@ -22,13 +23,22 @@ class OrdersController extends Controller
         return view('Admin.Orders.orders-list',compact('orders'));
     }
     public function ordersList(){
-        $orders = Orders::with('user')->where('user_id','!=',null)->get();
+        $orders = Orders::with('user')->where('user_id','!=',null)->orderBy('id','asc')->get();
         return response()->json([
             'info'=>$orders
         ]);
     }
-    public function orderDetail(){
-        return view('Admin.Orders.order-details');
+    public function orderDetail($id){
+        $order = Orders::with(['billingAddress.country', 'billingAddress.state', 'billingAddress.city'])
+        ->find($id);
+        //return $order;
+        return view('Admin.Orders.order-details',compact('order'));
+    }
+    public function cartDetails($id){
+        $order = Orders::find($id);
+        $cart = json_decode($order->cart, true);
+        $cartItems = array_values($cart);
+        return response()->json(['info'=>$cartItems]);
     }
 
 }

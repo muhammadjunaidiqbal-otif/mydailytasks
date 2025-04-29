@@ -37,8 +37,8 @@
                 <th><input type="checkbox" id="select-all"></th> 
                 <th>ID</th>
                 <th>Name</th>
-                {{-- <th>Email</th>
-                <th>Roles</th> --}}
+                 <th>Email</th>
+                <th>Roles</th> 
                 <th>Actions</th>
             </tr>
         </thead>
@@ -80,9 +80,9 @@
             <div class="mb-3">
               <label for="editUserRole" class="form-label">Role</label>
               <select class="form-control" id="editUserRole">
-                <option value="admin">Admin</option>
-                <option value="editor">Partner</option>
-                <option value="user">Customer</option>
+                <option value="1">Admin</option>
+                <option value="2">Partner</option>
+                <option value="3">Customer</option>
               </select>
             </div>
   
@@ -101,7 +101,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-         function confirmAction() {
+    function confirmAction() {
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -117,7 +117,7 @@
         });
     }
         var selectedRows = {};
-        $(document).ready(function() {
+    $(document).ready(function() {
             //Datatable
            var dt_basic =  $('#myTable').DataTable({
                 "processing": true,
@@ -137,7 +137,7 @@
                         $('#loader').fadeIn();  // Show loader before request
                         },
                     "complete": function () {
-                        $('#loader').fadeOut(); // Hide loader after data is fetched
+                        //$('#loader').fadeOut(); // Hide loader after data is fetched
                     }
                 },
                 "columns": [
@@ -151,13 +151,13 @@
                     },
                                 { "data": "id",visible:false },
                                 { "data": "name" },
-                                //{ "data": "email" },
-                                // { 
-                                //      "data": "role",//"visible":false,
-                                //     "render": function(data, type, row) {
-                                //         return data ? data.name : 'user'; 
-                                //     }
-                                // },
+                                { "data": "email" },
+                                 { 
+                                      "data": "role",//"visible":false,
+                                     "render": function(data, type, row) {
+                                         return data ? data.name : 'user'; 
+                                     }
+                                 },
                                 {
                                     "render": function(data , type , full) {
                                     return `
@@ -178,27 +178,23 @@
                
             });
             // Select All Checkboxes
-            $('#select-all').on('change', function () {
-    var isChecked = this.checked;
-
-    // Select all checkboxes, including those not in the current page
-    $('.select-checkbox').prop('checked', isChecked);
-
-    $('#myTable').DataTable().rows().every(function () {
-        var row = this.node();
-        var rowId = $(row).find('.select-checkbox').data('id');
-
-        if (isChecked) {
-            selectedRows[rowId] = true;
-        } else {
-            delete selectedRows[rowId];
-        }
+    $('#select-all').on('change', function () {
+        var isChecked = this.checked;
+        // Select all checkboxes, including those not in the current page
+        $('.select-checkbox').prop('checked', isChecked);
+            $('#myTable').DataTable().rows().every(function () {
+                var row = this.node();
+            var rowId = $(row).find('.select-checkbox').data('id');
+            if (isChecked) {
+                selectedRows[rowId] = true;
+            } else {
+                delete selectedRows[rowId];
+            }
+        });
+        updateDeleteButtonVisibility();
     });
 
-    updateDeleteButtonVisibility();
-});
-
-$('#myTable tbody').on('change', '.select-checkbox', function () {
+    $('#myTable tbody').on('change', '.select-checkbox', function () {
         var rowId = $(this).data('id');
         if (this.checked) {
             selectedRows[rowId] = true;
@@ -207,9 +203,8 @@ $('#myTable tbody').on('change', '.select-checkbox', function () {
             $('#select-all').prop('checked', false);
         }
         if ($('.select-checkbox:checked').length === $('.select-checkbox').length) {
-        $('#select-all').prop('checked', true);
-    }
-
+            $('#select-all').prop('checked', true);
+        }   
         updateDeleteButtonVisibility();
     });
     dt_basic.on('draw', function () {
@@ -217,9 +212,7 @@ $('#myTable tbody').on('change', '.select-checkbox', function () {
             var rowId = $(this).data('id');
             $(this).prop('checked', selectedRows[rowId] === true);
         });
-
         $('#select-all').prop('checked', Object.keys(selectedRows).length === dt_basic.rows().count());
-
         updateDeleteButtonVisibility();
     });
     function updateDeleteButtonVisibility() {
@@ -268,59 +261,57 @@ $('#myTable tbody').on('change', '.select-checkbox', function () {
             }
         });
     });
-
-            $(document).on('click', '.btn-edit', function() {
-                var id = $(this).data('id');
-
-                $.ajax({
-                url: "{{ route('partners.show', ':id') }}".replace(':id', id), 
-                type: "GET",
-                success: function(response) {
-                    $('#editUserId').val(response.id);
-                    $('#editUserName').val(response.name);
-                    $('#editUserEmail').val(response.email);
-                    
-                
-                    // Open Modal - Bootstrap 5 Syntax
-                    var myModal = new bootstrap.Modal(document.getElementById('editUserModal'));
-                    myModal.show();
-                    },
-                    error: function(xhr) {
-                    alert("Error fetching user data.");
-                    }
-                });
-            });
-            //submit Edit Form Modal
-            $(document).on('submit', '#editUserForm', function(e) {
-                e.preventDefault(); 
-                        
-                var id = $('#editUserId').val();
-                var name = $('#editUserName').val();
-                var email = $('#editUserEmail').val();
-                var role = $('#editUserRole').val();
-                        
-                $.ajax({
-                    url: "{{ route('user.update', ':id') }}".replace(':id', id), 
-                    type: "POST",
-                    data: {
-                        _token: "{{ csrf_token() }}", 
-                        id: id,
-                        name: name,
-                        email: email,
-                        role: role
-                    },
-                    success: function(response) {
-                        alert(response.success);
-                        $('#editUserModal').modal('hide'); 
-                        $('#myTable').DataTable().ajax.reload(); 
-                    },
-                    error: function(xhr) {
-                        alert("Error updating user.");
-                    }
-                });
+    //edit button click evnt
+    $(document).on('click', '.btn-edit', function() {
+        var id = $(this).data('id');
+        $.ajax({
+        url: "{{ route('partners.show', ':id') }}".replace(':id', id), 
+        type: "GET",
+        success: function(response) {
+            $('#editUserId').val(response.id);
+            $('#editUserName').val(response.name);
+            $('#editUserEmail').val(response.email);
+            
+            // Open Modal - Bootstrap 5 Syntax
+            var myModal = new bootstrap.Modal(document.getElementById('editUserModal'));
+            myModal.show();
+            },
+            error: function(xhr) {
+            alert("Error fetching user data.");
+            }
         });
-        //delete selected rows
-        $('#deleteRows').on('click', function () {
+    });
+    //submit Edit Form Modal
+    $(document).on('submit', '#editUserForm', function(e) {
+        e.preventDefault(); 
+                
+        var id = $('#editUserId').val();
+        var name = $('#editUserName').val();
+        var email = $('#editUserEmail').val();
+        var role = $('#editUserRole').val();
+                
+        $.ajax({
+            url: "{{ route('user.update', ':id') }}".replace(':id', id), 
+            type: "POST",
+            data: {
+                _token: "{{ csrf_token() }}", 
+                id: id,
+                name: name,
+                email: email,
+                role: role
+            },
+            success: function(response) {
+                alert(response.success);
+                $('#editUserModal').modal('hide'); 
+                $('#myTable').DataTable().ajax.reload(); 
+            },
+            error: function(xhr) {
+                alert("Error updating user.");
+            }
+        });
+    });
+    //delete selected rows
+    $('#deleteRows').on('click', function () {
         var selectedIds = Object.keys(selectedRows);
         if (selectedIds.length === 0) {
             alert("No users selected.");
@@ -352,9 +343,8 @@ $('#myTable tbody').on('change', '.select-checkbox', function () {
             }
         });
     });
-
-    });
-    </script>
+});
+</script>
 
 </body>
 </html>

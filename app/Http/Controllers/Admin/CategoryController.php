@@ -1,17 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 
-use Illuminate\Http\Request;
-use App\Models\Category;
 use ajax;
+use App\Models\Category;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    public function showCategoriesPage(){
+        return view('Admin.Products-view.products-categories');
+    }
     public function index()
     {
         $categories = Category::all();

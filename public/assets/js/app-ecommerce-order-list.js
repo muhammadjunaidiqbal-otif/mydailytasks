@@ -23,15 +23,15 @@ $(function () {
 
   var dt_order_table = $('.datatables-order'),
     statusObj = {
-      1: { title: 'pending', class: 'bg-label-warning' },
-      2: { title: 'success', class: 'bg-label-success' },
-      3: { title: 'failed', class: 'bg-label-primary' },
-      4: { title: 'refunded', class: 'bg-label-info' }
+      'pending': { title: 'pending', class: 'bg-label-warning' },
+      'success': { title: 'success', class: 'bg-label-success' },
+      'failed': { title: 'failed', class: 'bg-label-primary' },
+      'refunded': { title: 'refunded', class: 'bg-label-info' }
     },
     paymentObj = {
-      1: { title: 'paid', class: 'text-success' },
-      2: { title: 'pending', class: 'text-warning' },
-      3: { title: 'unpaid', class: 'text-danger' },
+      'paid': { title: 'paid', class: 'text-success' },
+      'pending': { title: 'pending', class: 'text-warning' },
+      'unpaid': { title: 'unpaid', class: 'text-danger' },
       //4: { title: 'Cancelled', class: 'text-secondary' }
     };
 
@@ -47,11 +47,16 @@ $(function () {
       } , // JSON file to add data
       columns: [
         // columns according to JSON
+        { data: null ,defaultContent:'' },
         { data: 'id' },
-        { data: 'id' },
-        { data: 'id' },
+        { data: 'id', },
         { data: 'created_at' },
-        { data: 'discount' }, //email //avatar
+        { 
+          data: "user",//"visible":false,
+          render: function(data, type, row) {
+            return data ? data.name : 'user'; 
+          }, 
+        }, //email //avatar
         { data: 'total' },
         { data: 'status' },
         { data: 'payment_status' }, //method_number
@@ -87,7 +92,7 @@ $(function () {
           render: function (data, type, full, meta) {
             var $order_id = full['id'];
             // Creates full output for row
-            var $row_output = '<a href="" data-id="' + $order_id + '"><span>#' + $order_id + '</span></a>';
+            var $row_output = '<a href="javascript:void(0);" class="orderDetailLink" data-id="' + $order_id + '"><span>#' + $order_id + '</span></a>';
             return $row_output;
           }
         },
@@ -154,7 +159,7 @@ $(function () {
         //   }
         // },
         {
-          targets: 5,
+          targets: 7,
           render: function (data, type, full, meta) {
             var $payment = full['payment_status'],
               $paymentObj = paymentObj[$payment];
@@ -171,20 +176,20 @@ $(function () {
             return data;
           }
         },
-        //  {
-        //    // Status
-        //    targets: -3,
-        //    render: function (data, type, full, meta) {
-        //      var $status = full['status']
-        //      return (
-        //        '<span class="badge px-2 ' +
-        //        statusObj[$status].class +
-        //        '" text-capitalized>' +
-        //        statusObj[$status].title +
-        //        '</span>'
-        //      );
-        //    }
-        //  },
+        {
+          // Status
+          targets: -3,
+          render: function (data, type, full, meta) {
+            var $status = full['status']
+            return (
+              '<span class="badge px-2 ' +
+              statusObj[$status].class +
+              '" text-capitalized>' +
+              statusObj[$status].title +
+              '</span>'
+            );
+          }
+        },
         // {
         //   // Payment Method
         //   targets: -2,
@@ -222,8 +227,8 @@ $(function () {
               '<div class="d-flex justify-content-sm-start align-items-sm-center">' +
               '<button class="btn btn-icon btn-text-secondary waves-effect waves-light rounded-pill dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical"></i></button>' +
               '<div class="dropdown-menu dropdown-menu-end m-0">' +
-              '<a href="" class="dropdown-item">View</a>' +
-              '<a href="javascript:0;" class="dropdown-item delete-record">' +
+              '<a href="javascript:void(0);" class="dropdown-item viewBtn" data-id="' + full.id + '">View</a>' +
+              '<a href="javascript:0;" class="dropdown-item delete-record deleteBtn">' +
               'Delete' +
               '</a>' +
               '</div>' +
@@ -432,7 +437,20 @@ $(function () {
   $('.datatables-order tbody').on('click', '.delete-record', function () {
     dt_products.row($(this).parents('tr')).remove().draw();
   });
-
+  $('.datatables-order tbody').on('click','.orderDetailLink',function(){
+    var id = $(this).data('id');
+    //alert('Btn Clicked'+id);
+    if(id){
+      window.location.href = orderDetailsURL.replace(':id',id);
+    }
+  });
+  $('.datatables-order tbody').on('click','.viewBtn',function(){
+    var id = $(this).data('id');
+    if(id){
+      //alert('Btn Clicked'+id);
+      window.location.href = orderDetailsURL.replace(':id',id);
+    }
+  });
   // Filter form control to default size
   // ? setTimeout used for multilingual table initialization
   setTimeout(() => {

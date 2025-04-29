@@ -428,7 +428,8 @@ $('#eCommerceCategoryListForm').on('click','.data-update',function(e){
     var id = $('#ecommerce-category-id').val();
     var title = $('#ecommerce-category-title').val();
     var slug = $('#ecommerce-category-slug').val();
-    var description = $('#ecommerce-category-description').val();
+    const descriptionHtml = quill.root.innerHTML.trim();
+    var description = $('#description').val(descriptionHtml);
     var image = $('#ecommerce-category-image').val();
     var status = $('#ecommerce-category-status').val();
     var parent_category = $('#ecommerce-category-parent-category').val();
@@ -446,7 +447,7 @@ $('#eCommerceCategoryListForm').on('click','.data-update',function(e){
     $.ajax({
       url : submitEditCategoryFormURL,
       type : "POST",
-      data: { 
+      data : { 
         id: id,
         title: title,
         slug: slug,
@@ -467,7 +468,7 @@ $('#eCommerceCategoryListForm').on('click','.data-update',function(e){
       error : function(xhr){
         toastr.error('Something went wrong. Please try again.');
       },
-      complete: function () {
+      complete  : function () {
         btn_name = updateBtn.prop('disabled', false).text('Add');
         //console.log(btn_name.text());
       }

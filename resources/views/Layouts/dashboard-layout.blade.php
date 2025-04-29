@@ -331,7 +331,7 @@
                       </a>
                     </li>
                     <li class="menu-item">
-                      <a href="{{route('order-detail')}}" class="menu-link">
+                      <a href="{{route('order-detail',':id')}}" class="menu-link">
                         <div data-i18n="Order Details">Order Details</div>
                       </a>
                     </li>
@@ -1181,7 +1181,7 @@
               <ul class="menu-sub">
                 <li class="menu-item">
                   <a href="{{route('users.datatable')}}" class="menu-link">
-                    <div data-i18n="Basic">Basic</div>
+                    <div data-i18n="Users">Users</div>
                   </a>
                 </li>
                 {{-- <li class="menu-item">

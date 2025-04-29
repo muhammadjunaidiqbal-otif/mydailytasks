@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Ecom;
 
 use Stripe\Webhook;
 use App\Models\User;
@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use UnexpectedValueException;
 use App\Models\BillingAddress;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Stripe\Exception\SignatureVerificationException;
@@ -130,7 +131,7 @@ class BillingAddressController extends Controller
                     $request->session_id,
                 []
             );
-       dd($session);
+       //dd($session);
        if ($session->payment_status === 'paid') {
         $order = Orders::find($request->order_id);
         $order->payment_status = 'paid';
@@ -139,7 +140,7 @@ class BillingAddressController extends Controller
 
         session()->forget('cart');
 
-        return view('Users.invoice', [
+        return view('Ecom.invoice', [
             'order' => $order,
             'billing' => $order->billingAddress,
         ]);

@@ -1,18 +1,22 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use Exception;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    public function showProductsListPage(){
+        return view('Admin.Products-view.products-productslist');
+    }
     public function index(){
         $products = Product::where('status', 'Publish')->with('category')->get();
         return response()->json([
@@ -28,7 +32,7 @@ class ProductController extends Controller
      */
     public function create(){
         $categories = Category::all();
-        return view('Products-view.products-addproducts',['categories'=>$categories]);
+        return view('Admin.Products-view.products-addproducts',['categories'=>$categories]);
     }
 
     /**
@@ -99,7 +103,7 @@ class ProductController extends Controller
     public function edit($id){
         $products = Product::with('category')->find($id);
         $categories = Category::all();
-        return view('Products-view.products-addproducts',[
+        return view('Admin.Products-view.products-addproducts',[
             'categories'=>$categories,
             'products'=>$products
         ]);

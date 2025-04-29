@@ -21,14 +21,14 @@
 @endsection
 @section('content')
      <!-- Content -->
-
+     
      <div class="container-xxl flex-grow-1 container-p-y">
         <div
           class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
           <div class="d-flex flex-column justify-content-center">
             <div class="mb-1">
-              <span class="h5">Order #32543 </span><span class="badge bg-label-success me-1 ms-2">Paid</span>
-              <span class="badge bg-label-info">Ready to Pickup</span>
+              <span class="h5">Order #{{$order->id}}</span><span class="badge bg-label-success me-1 ms-2">{{$order->payment_status}}</span>
+              <span class="badge bg-label-info">{{$order->status}}</span>
             </div>
             <p class="mb-0">Aug 17, <span id="orderYear"></span>, 5:48 (ET)</p>
           </div>
@@ -81,7 +81,7 @@
                 </div>
               </div>
             </div>
-            <div class="card mb-6">
+            {{-- <div class="card mb-6">
               <div class="card-header">
                 <h5 class="card-title m-0">Shipping activity</h5>
               </div>
@@ -148,7 +148,7 @@
                   </li>
                 </ul>
               </div>
-            </div>
+            </div> --}}
           </div>
           <div class="col-12 col-lg-4">
             <div class="card mb-6">
@@ -162,9 +162,9 @@
                   </div>
                   <div class="d-flex flex-column">
                     <a href="app-user-view-account.html" class="text-body text-nowrap">
-                      <h6 class="mb-0">Shamus Tuttle</h6>
+                      <h6 class="mb-0">{{$order->billingAddress->first_name ." ". $order->billingAddress->last_name}}</h6>
                     </a>
-                    <span>Customer ID: #58909</span>
+                    <span>Customer ID: #{{$order->billingAddress->id}}</span>
                   </div>
                 </div>
                 <div class="d-flex justify-content-start align-items-center mb-6">
@@ -172,7 +172,7 @@
                     class="avatar rounded-circle bg-label-success me-3 d-flex align-items-center justify-content-center"
                     ><i class="ti ti-shopping-cart ti-lg"></i
                   ></span>
-                  <h6 class="text-nowrap mb-0">12 Orders</h6>
+                  <h6 class="text-nowrap mb-0"></h6>
                 </div>
                 <div class="d-flex justify-content-between">
                   <h6 class="mb-1">Contact info</h6>
@@ -180,12 +180,12 @@
                     <a href=" javascript:void(0)" data-bs-toggle="modal" data-bs-target="#editUser">Edit</a>
                   </h6>
                 </div>
-                <p class="mb-1">Email: Shamus889@yahoo.com</p>
-                <p class="mb-0">Mobile: +1 (609) 972-22-22</p>
+                <p class="mb-1">Email: {{$order->billingAddress->email}}</p>
+                <p class="mb-0">Mobile: {{$order->billingAddress->phone}}</p>
               </div>
             </div>
 
-            <div class="card mb-6">
+            {{-- <div class="card mb-6">
               <div class="card-header d-flex justify-content-between">
                 <h5 class="card-title m-0">Shipping address</h5>
                 <h6 class="m-0">
@@ -195,16 +195,16 @@
               <div class="card-body">
                 <p class="mb-0">45 Roker Terrace <br />Latheronwheel <br />KW5 8NW,London <br />UK</p>
               </div>
-            </div>
+            </div> --}}
             <div class="card mb-6">
               <div class="card-header d-flex justify-content-between">
                 <h5 class="card-title m-0">Billing address</h5>
-                <h6 class="m-0">
+                {{-- <h6 class="m-0">
                   <a href=" javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addNewAddress">Edit</a>
-                </h6>
+                </h6> --}}
               </div>
               <div class="card-body">
-                <p class="mb-6">45 Roker Terrace <br />Latheronwheel <br />KW5 8NW,London <br />UK</p>
+                <p class="mb-6">{{$order->billingAddress->address}}<br />{{$order->billingAddress->city->name}} <br />{{$order->billingAddress->state->name}} <br />{{$order->billingAddress->country->name}}</p>
                 <h5 class="mb-1">Mastercard</h5>
                 <p class="mb-0">Card Number: ******4291</p>
               </div>
@@ -610,4 +610,7 @@
     <script src="../../assets/js/app-ecommerce-order-details.js"></script>
     <script src="../../assets/js/modal-edit-user.js"></script>
     <script src="../../assets/js/modal-add-new-address.js"></script>
+    <script>
+      var cartDetailsURl = "{{route('cartDetailsForOrderId',$order->id)}}";
+    </script>
 @endsection
