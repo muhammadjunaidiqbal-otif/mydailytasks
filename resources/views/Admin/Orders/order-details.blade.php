@@ -33,7 +33,7 @@
             <p class="mb-0">Aug 17, <span id="orderYear"></span>, 5:48 (ET)</p>
           </div>
           <div class="d-flex align-content-center flex-wrap gap-2">
-            <button class="btn btn-label-danger delete-order">Delete Order</button>
+            <button class="btn btn-label-danger delete-order data-id="{{$order->id}}">Delete Order</button>
           </div>
         </div>
 
@@ -177,7 +177,7 @@
                 <div class="d-flex justify-content-between">
                   <h6 class="mb-1">Contact info</h6>
                   <h6 class="mb-1">
-                    <a href=" javascript:void(0)" data-bs-toggle="modal" data-bs-target="#editUser">Edit</a>
+                    {{-- <a href=" javascript:void(0)" data-bs-toggle="modal" data-bs-target="#editUser">Edit</a> --}}
                   </h6>
                 </div>
                 <p class="mb-1">Email: {{$order->billingAddress->email}}</p>

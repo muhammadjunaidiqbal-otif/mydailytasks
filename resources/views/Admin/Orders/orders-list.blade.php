@@ -12,7 +12,17 @@
     <link rel="stylesheet" href="../../assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
 @endsection
 @section('Page-CSS')
-    
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<style>
+  .dt-buttons .dt-datepicker-wrapper {
+  padding: 0 !important;
+  border: none !important;
+}
+.dt-buttons input.form-control {
+  height: 60px;
+  font-size: 0.875rem;
+}
+</style>
 @endsection
 @section('content')
      <!-- Content -->
@@ -120,8 +130,12 @@
 
         <!-- Order List Table -->
         <div class="card">
+          <div class="mb-3">
+            <label for="orderDateRange" class="form-label">Filter by Order Date:</label>
+            <input type="text" id="orderDateRange" class="form-control text-center" style="width: 280px; display: inline-block;" readonly>
+          </div>
           <div class="card-datatable table-responsive">
-            <table class="datatables-order table border-top">
+            <table class="datatables-order table border-top" id="table-info">
               <thead>
                 <tr>
                   <th></th>
@@ -161,9 +175,12 @@
 @endsection
 @section('Page-JS')
     <!-- Page JS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="../../assets/js/app-ecommerce-order-list.js"></script>
     <script>
         var orderListURL = "{{route('orders-list')}}";
         var orderDetailsURL = "{{route('order-detail',':id')}}";
     </script>
+<
 @endsection

@@ -38,13 +38,21 @@ $(function () {
   // E-commerce Products datatable
 
   if (dt_order_table.length) {
-    var dt_products = dt_order_table.DataTable({
+    let startDate = null;
+    let endDate = null;
+
+    var dt_products = dt_order_table.DataTable({ 
       processing : true ,
       serverSide : false ,
       ajax:{
         'url' : orderListURL,
-        'dataSrc' : 'info'
-      } , // JSON file to add data
+        'type':'GET',
+        data: function (d) {
+          d.start_date = startDate;
+          d.end_date = endDate;
+        },
+        'dataSrc' : 'info',
+      },
       columns: [
         // columns according to JSON
         { data: null ,defaultContent:'' },
@@ -101,12 +109,12 @@ $(function () {
           targets: 3,
           render: function (data, type, full, meta) {
             var date = new Date(full.created_at); // convert the date string to a Date object
-            console.log("Date "+ date);
+            //console.log("Date "+ date);
             var formattedTime = date.toLocaleTimeString('en-US', {
               hour: '2-digit',
               minute: '2-digit'
             });
-            console.log("time"+formattedTime)
+            //console.log("time"+formattedTime)
             var formattedDate = date.toLocaleDateString('en-US', {
               month: 'short',
               day: 'numeric',
@@ -431,6 +439,43 @@ $(function () {
     $('.dataTables_length').addClass('ms-n2');
     $('.dt-action-buttons').addClass('pt-0');
     $('.dataTables_filter').addClass('ms-n3 mb-0 mb-md-6');
+
+    $('#orderDateRange').daterangepicker({
+      opens: 'center',
+      timePicker: true,
+      autoUpdateInput: false,
+      locale: {
+        cancelLabel: 'Clear',
+        format: 'YYYY-MM-DD HH:mm:ss'
+      },
+      ranges: {
+        'Today': [moment().startOf('day'), moment().endOf('day')],
+        'Yesterday': [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')],
+        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+        'This Month': [moment().startOf('month'), moment().endOf('month')]
+      }
+    },
+    function (start, end) {
+      // Format the dates for backend filter
+      startDate = start.format('YYYY-MM-DD HH:mm:ss');
+      endDate = end.format('YYYY-MM-DD HH:mm:ss');
+      $('#orderDateRange').val(start.format('DD/MM/YYYY hh:mm A') + ' - ' + end.format('DD/MM/YYYY hh:mm A'));
+      dt_products.ajax.reload();
+    });
+  
+    // Clear Date Range
+    $('#orderDateRange').on('cancel.daterangepicker', function () {
+      $(this).val('');
+      startDate = null;
+      endDate = null;
+      dt_products.ajax.reload();
+    });
+  
+    // Optional: Alert selected dates for debugging
+    $('#orderDateRange').on('apply.daterangepicker', function (ev, picker) {
+      console.log("Date Range applied", picker.startDate.format(), picker.endDate.format());
+    });
   }
 
   // Delete Record
@@ -444,6 +489,7 @@ $(function () {
       window.location.href = orderDetailsURL.replace(':id',id);
     }
   });
+
   $('.datatables-order tbody').on('click','.viewBtn',function(){
     var id = $(this).data('id');
     if(id){

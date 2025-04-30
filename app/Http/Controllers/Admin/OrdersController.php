@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Exception;
+use Carbon\Carbon;
 use App\Models\Orders;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -22,12 +24,22 @@ class OrdersController extends Controller
         $orders = Orders::all();
         return view('Admin.Orders.orders-list',compact('orders'));
     }
-    public function ordersList(){
-        $orders = Orders::with('user')->where('user_id','!=',null)->orderBy('id','asc')->get();
-        return response()->json([
-            'info'=>$orders
-        ]);
+    public function ordersList(Request $request){
+        $query = Orders::with('user')->whereDate('created_at', today());
+
+    if ($request->has('start_date') && $request->has('end_date')) {
+        $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
     }
+
+    $orders = $query->get();
+    $orders = $orders->map(function ($order) {
+        $order->DT_RowId = 'row_' . $order->id;
+        return $order;
+    });
+    return response()->json([
+        'info' => $orders
+    ]);
+}
     public function orderDetail($id){
         $order = Orders::with(['billingAddress.country', 'billingAddress.state', 'billingAddress.city'])
         ->find($id);

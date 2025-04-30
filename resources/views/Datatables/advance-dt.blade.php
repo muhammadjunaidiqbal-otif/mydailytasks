@@ -9,7 +9,7 @@
     
     <!-- Toastr CSS (for notifications) -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
-
+    <link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet" />
     <!-- Custom CSS (if needed) -->
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -31,6 +31,10 @@
         <div class="mb-3">
             <button id="deleteRows" style="display:none; background:red; color:white; padding:5px;">Delete Selected</button>
         </div>
+        <div class="mb-3">
+            <label for="dateRange" class="form-label">Filter by Date Range:</label>
+            <input type="text" id="dateRange" class="form-control" style="width: 300px; display: inline-block;" readonly>
+          </div>
     <table id="myTable" class="display">
         <thead>
             <tr>
@@ -93,7 +97,8 @@
     </div>
   </div>
  
-
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <!-- Bootstrap CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -344,7 +349,31 @@
         });
     });
 });
+let startDate = null;
+let endDate = null;
+
+$('#dateRange').daterangepicker({
+    timePicker: true,
+    startDate: moment().startOf('hour'),
+    endDate: moment().startOf('hour').add(64, 'hour'),
+    locale: {
+      format: 'DD/MM hh:mm A'
+    }
+}, function(start, end) {
+    startDate = start.format('YYYY-MM-DD');
+    endDate = end.format('YYYY-MM-DD');
+    $('#dateRange').val(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
+    $('#myTable').DataTable().ajax.reload(); // Reload table
+});
+
+$('#dateRange').on('cancel.daterangepicker', function(ev, picker) {
+    $(this).val('');
+    startDate = null;
+    endDate = null;
+    $('#myTable').DataTable().ajax.reload();
+});
 </script>
+
 
 </body>
 </html>
