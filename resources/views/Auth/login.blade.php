@@ -114,7 +114,7 @@
                 <i class="tf-icons ti ti-brand-github-filled"></i>
               </a>
 
-              <a href="javascript:;" class="btn btn-sm btn-icon rounded-pill btn-text-google-plus">
+              <a href="{{ route('login.google') }}" class="btn btn-sm btn-icon rounded-pill btn-text-google-plus">
                 <i class="tf-icons ti ti-brand-google-filled"></i>
               </a>
             </div>

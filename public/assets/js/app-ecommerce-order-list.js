@@ -8,7 +8,7 @@
 
 $(function () {
   let borderColor, bodyBg, headingColor;
-
+  let orders ;
   if (isDarkStyle) {
     borderColor = config.colors_dark.borderColor;
     bodyBg = config.colors_dark.bodyBg;
@@ -79,6 +79,7 @@ $(function () {
           responsivePriority: 2,
           targets: 0,
           render: function (data, type, full, meta) {
+            orders = data ;
             return '';
           }
         },
@@ -268,6 +269,22 @@ $(function () {
       buttons: [
         {
           extend: 'collection',
+          text: 'Filter By Order Date',
+          className: 'btn btn-label-secondary dropdown-toggle me-3 ',
+          action: function (e, dt, node, config) {
+            const $input = $('#orderDateRange');
+            const offset = $(node).offset();
+
+            // Position and show the input on top of the button
+            $input.css({
+              top: offset.top + $(node).outerHeight() + 5 + 'px',
+              left: offset.left + 'px',
+              display: 'block'
+            }).focus(); // open daterangepicker
+        }
+        },
+        {
+          extend: 'collection',
           className: 'btn btn-label-secondary dropdown-toggle waves-effect waves-light',
           text: '<i class="ti ti-upload ti-xs me-2"></i>Export',
           buttons: [
@@ -402,6 +419,7 @@ $(function () {
           ]
         }
       ],
+      
       // For responsive popup
       responsive: {
         details: {
@@ -434,22 +452,73 @@ $(function () {
             return data ? $('<table class="table"/><tbody />').append(data) : false;
           }
         }
+      },
+      initComplete: function(settings, json) {
+        updateCounts(); // Call updateCounts after the DataTable is fully initialized
+      },
+      drawCallback: function(settings) {
+        updateCounts(); // Call updateCounts on every redraw
       }
     });
     $('.dataTables_length').addClass('ms-n2');
     $('.dt-action-buttons').addClass('pt-0');
     $('.dataTables_filter').addClass('ms-n3 mb-0 mb-md-6');
+    function updateCounts() {
+      // Ensure dt_products is defined and initialized
+      if (!dt_products || typeof dt_products.data !== 'function') {
+        console.warn('DataTable is not fully initialized yet.');
+        return;
+      }
 
+      // Get the DataTable data
+      const tableData = dt_products.data();
+
+      // Check if tableData is valid
+      if (!tableData || tableData.length === 0) {
+        console.warn('No data available in DataTable.');
+        // Reset counts to 0 if no data
+        $('#pendingPayments').text(0);
+        $('#completedOrders').text(0);
+        $('#refundedOrders').text(0);
+        $('#failedOrders').text(0);
+        $('#pendingPaymentTab').html(`Pending Payment (0)`);
+        $('#completedTab').html(`Completed (0)`);
+        $('#refundedTab').html(`Refunded (0)`);
+        $('#failedTab').html(`Failed (0)`);
+        return;
+      }
+
+      let pendingCount = 0, completedCount = 0, refundedCount = 0, failedCount = 0;
+
+      // Loop through the table data to calculate counts
+      tableData.toArray().forEach(order => {
+        if (order.pending_status === 'pending') pendingCount++;
+        if (order.status === 'success') completedCount++;
+        if (order.status === 'refunded') refundedCount++;
+        if (order.status === 'failed') failedCount++;
+      });
+
+      // Update counts in the widget
+      $('#pendingPayments').text(pendingCount);
+      $('#completedOrders').text(completedCount);
+      $('#refundedOrders').text(refundedCount);
+      $('#failedOrders').text(failedCount);
+
+      // Update counts in the tabs
+      $('#pendingPaymentTab').html(`Pending Payment (${pendingCount})`);
+      $('#completedTab').html(`Completed (${completedCount})`);
+      $('#refundedTab').html(`Refunded (${refundedCount})`);
+      $('#failedTab').html(`Failed (${failedCount})`);
+    }
     $('#orderDateRange').daterangepicker({
       opens: 'center',
-      timePicker: true,
       autoUpdateInput: false,
       locale: {
         cancelLabel: 'Clear',
-        format: 'YYYY-MM-DD HH:mm:ss'
+        format: 'YYYY-MM-DD'
       },
       ranges: {
-        'Today': [moment().startOf('day'), moment().endOf('day')],
+        'Today': [moment(), moment()],
         'Yesterday': [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')],
         'Last 7 Days': [moment().subtract(6, 'days'), moment()],
         'Last 30 Days': [moment().subtract(29, 'days'), moment()],
@@ -458,9 +527,9 @@ $(function () {
     },
     function (start, end) {
       // Format the dates for backend filter
-      startDate = start.format('YYYY-MM-DD HH:mm:ss');
-      endDate = end.format('YYYY-MM-DD HH:mm:ss');
-      $('#orderDateRange').val(start.format('DD/MM/YYYY hh:mm A') + ' - ' + end.format('DD/MM/YYYY hh:mm A'));
+      startDate = start.format('YYYY-MM-DD');
+      endDate = end.format('YYYY-MM-DD');
+      $('#orderDateRange').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
       dt_products.ajax.reload();
     });
   
@@ -475,7 +544,11 @@ $(function () {
     // Optional: Alert selected dates for debugging
     $('#orderDateRange').on('apply.daterangepicker', function (ev, picker) {
       console.log("Date Range applied", picker.startDate.format(), picker.endDate.format());
-    });
+      console.log("order"+ orders)
+      const start = picker.startDate.format('YYYY-MM-DD');
+      const end = picker.endDate.format('YYYY-MM-DD');
+      $(this).val(`${start} -TO- ${end}`);
+     });
   }
 
   // Delete Record

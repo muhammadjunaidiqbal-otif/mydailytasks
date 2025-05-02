@@ -18,6 +18,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Ecom\EcomShopController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashBoardController;
+use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\ForgetPasswordController;
 use App\Http\Controllers\Ecom\BillingAddressController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -31,6 +32,9 @@ Route::get('/test', function () {
 Route::get('/login', [LoginController::class,'loginPage'])->name('login-page');
 Route::post('/login',[LoginController::class,'login'])->name('user-login');
 Route::get('/logout',[LoginController::class,'logout'])->name('user-logout');
+//Login->GoogleAuthenticationController->Google Login
+Route::get('/login/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('login.google');
+Route::get('/login/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
 //RegisterController
 Route::get('/register-page',[RegisterController::class,'ShowRegisterPage']);
 Route::post('/register',[RegisterController::class,'register'])->name('user-register');

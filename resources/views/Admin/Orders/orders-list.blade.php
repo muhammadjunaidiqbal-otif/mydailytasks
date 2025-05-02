@@ -46,7 +46,7 @@
                           }
                         }
                       @endphp
-                      <h4 class="mb-0">{{$pending_payments}}</h4>
+                      <h4 class="mb-0" id="pendingPayments"></h4>
                       <p class="mb-0">Pending Payment</p>
                     </div>
                     <span class="avatar me-sm-6">
@@ -69,7 +69,7 @@
                           }
                         }
                       @endphp
-                      <h4 class="mb-0">{{$completed_orders}}</h4>
+                      <h4 class="mb-0" id="completedOrders"></h4>
                       <p class="mb-0">Completed</p>
                     </div>
                     <span class="avatar p-2 me-lg-6">
@@ -92,7 +92,7 @@
                           }
                         }
                       @endphp
-                      <h4 class="mb-0">{{$refunded_orders}}</h4>
+                      <h4 class="mb-0" id="refundedOrders"></h4>
                       <p class="mb-0">Refunded</p>
                     </div>
                     <span class="avatar p-2 me-sm-6">
@@ -113,7 +113,7 @@
                           }
                         }
                       @endphp
-                      <h4 class="mb-0">{{$failed_orders}}</h4>
+                      <h4 class="mb-0" id="failedOrders"></h4>
                       <p class="mb-0">Failed</p>
                     </div>
                     <span class="avatar p-2">
@@ -130,10 +130,6 @@
 
         <!-- Order List Table -->
         <div class="card">
-          <div class="mb-3">
-            <label for="orderDateRange" class="form-label">Filter by Order Date:</label>
-            <input type="text" id="orderDateRange" class="form-control text-center" style="width: 280px; display: inline-block;" readonly>
-          </div>
           <div class="card-datatable table-responsive">
             <table class="datatables-order table border-top" id="table-info">
               <thead>
@@ -153,6 +149,9 @@
           </div>
         </div>
       </div>
+      <input type="text" id="orderDateRange" class="form-control text-cente" 
+            placeholder="Filter by Order Date" 
+            style="display: none; position: absolute; z-index: 9999; width: 230px;" />
       <!-- / Content -->
 @endsection
 @section('Build-JS')

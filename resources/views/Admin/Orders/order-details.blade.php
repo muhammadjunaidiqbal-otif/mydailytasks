@@ -27,13 +27,13 @@
           class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
           <div class="d-flex flex-column justify-content-center">
             <div class="mb-1">
-              <span class="h5">Order #{{$order->id}}</span><span class="badge bg-label-success me-1 ms-2">{{$order->payment_status}}</span>
-              <span class="badge bg-label-info">{{$order->status}}</span>
+              <span class="h5">Order #{{isset($order->id)}}</span><span class="badge bg-label-success me-1 ms-2">{{isset($order->payment_status)}}</span>
+              <span class="badge bg-label-info">{{isset($order->status)}}</span>
             </div>
             <p class="mb-0">Aug 17, <span id="orderYear"></span>, 5:48 (ET)</p>
           </div>
           <div class="d-flex align-content-center flex-wrap gap-2">
-            <button class="btn btn-label-danger delete-order data-id="{{$order->id}}">Delete Order</button>
+            <button class="btn btn-label-danger delete-order data-id="{{isset($order->id)}}">Delete Order</button>
           </div>
         </div>
 
