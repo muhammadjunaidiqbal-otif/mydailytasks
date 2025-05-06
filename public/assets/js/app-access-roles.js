@@ -409,20 +409,20 @@ $(function () {
   $('.dataTables_filter').addClass('ms-n4 me-4 mt-0 mt-md-6');
 });
 
-(function () {
-  // On edit role click, update text
-  var roleEditList = document.querySelectorAll('.role-edit-modal'),
-    roleAdd = document.querySelector('.add-new-role'),
-    roleTitle = document.querySelector('.role-title');
+// (function () {
+//   // On edit role click, update text
+//   var roleEditList = document.querySelectorAll('.role-edit-modal'),
+//     roleAdd = document.querySelector('.add-new-role'),
+//     roleTitle = document.querySelector('.role-title');
 
-  roleAdd.onclick = function () {
-    roleTitle.innerHTML = 'Add New Role'; // reset text
-  };
-  if (roleEditList) {
-    roleEditList.forEach(function (roleEditEl) {
-      roleEditEl.onclick = function () {
-        roleTitle.innerHTML = 'Edit Role'; // reset text
-      };
-    });
-  }
-})();
+//   roleAdd.onclick = function () {
+//     roleTitle.innerHTML = 'Add New Role'; // reset text
+//   };
+//   if (roleEditList) {
+//     roleEditList.forEach(function (roleEditEl) {
+//       roleEditEl.onclick = function () {
+//         roleTitle.innerHTML = 'Edit Role'; // reset text
+//       };
+//     });
+//   }
+// })();

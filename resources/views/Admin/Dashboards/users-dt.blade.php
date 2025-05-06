@@ -109,7 +109,19 @@
             </div>
             <div class="form-text">Password Must Contain A Capital , A Small And A Numeric Letter </div>
           </div>
-  
+          <div class="col-sm-12">
+            <label class="form-label" for="roles">Select Roles</label>
+            <div class="input-group input-group-merge">
+              <span class="input-group-text"><i class="ti ti-mail"></i></span>
+              <select name="roles" id="roles" class="form-control dt-roleId">
+                <option class="form-control" value="null">Select A Role</option>
+                @foreach ($roles as $role)
+                <option class="form-control" value="{{$role->name}}">{{$role->name}}</option>
+                @endforeach
+            </select>
+            </div>
+            <div class="form-text"></div>
+          </div>
           
           <div class="col-sm-12">
             <button type="submit" class="btn btn-primary data-submit me-sm-4 me-1">Submit</button>
@@ -144,9 +156,11 @@
               <div class="mb-3">
                 <label for="editUserRole" class="form-label">Role</label>
                 <select class="form-control" id="editUserRole">
-                  <option value="1">Admin</option>
-                  <option value="2">Partner</option>
-                  <option value="3">Customer</option>
+                  <option value="null">Select A Role</option>
+                  @foreach ($roles as $role)
+                  <option class="form-control" value="{{$role->name}}">{{$role->name}}</option>
+                  @endforeach
+                  
                 </select>
               </div>
     

@@ -16,9 +16,7 @@
 @section('Page-CSS')
     <link rel="stylesheet" href="../../assets/vendor/css/pages/cards-advance.css" />
 @endsection
-<div id="loader-overlay">
-  <div class="loader"></div>
-</div>
+
 @section('content')
 
     <!-- Content -->
@@ -886,14 +884,12 @@
 <script src="../../assets/vendor/libs/swiper/swiper.js"></script>
 <script src="../../assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
 @endsection
-<!-- Toastr CSS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+
 
 <!-- jQuery (Toastr depends on it) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Toastr JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
   <script>
     @if (session('status'))
         toastr.success("{{ session('status') }}");

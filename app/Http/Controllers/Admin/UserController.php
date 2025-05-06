@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 
 class UserController extends Controller
@@ -34,9 +35,8 @@ class UserController extends Controller
         }
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->role_id=$request->role;
         $user->save();
-
+        $user->syncRoles($request->role);
         return response()->json(['success' => 'User updated successfully']);
     }
     public function deleteSelectedRows(Request $request){
@@ -49,6 +49,7 @@ class UserController extends Controller
     }
 
     public function storeUser(Request $request){
+        Log::info("Request ToStore",['info'=>$request->all()]);
         $data = $request->validate([
             'name'=>'required|string',
             'email'=>'required|email',
@@ -60,6 +61,7 @@ class UserController extends Controller
                             'regex:/[0-9]/'],
                         ]);
         $user = User::create($data);
+        $user->assignRole($request->roleId);
         if($user){
             return response()->json(['success' => 'Records Created successfully']);
         }

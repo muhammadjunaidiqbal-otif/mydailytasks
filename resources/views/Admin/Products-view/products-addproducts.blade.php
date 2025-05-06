@@ -1,3 +1,5 @@
+
+
 @extends('Layouts.dashboard-layout')
 @section('title')
    {{isset($products)?"Update Product" : "Add Product"}}
@@ -19,42 +21,11 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 <style>
-    /* Loader Overlay */
-    #loader-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.8);
-            display: flex; /* Initially visible */
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
   
-        .loader {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #3498db;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-        }
-  
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        #toast-container {
-        z-index: 99999 !important;
-        }
-    </style>
+</style>
 @endsection
-<div id="loader-overlay">
-  <div class="loader"></div>
-</div>
 @section('content')
     <!-- Content -->
-
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="app-ecommerce">
           <!-- Add Product -->
@@ -66,10 +37,12 @@
             </div>
             <div class="d-flex align-content-center flex-wrap gap-4">
               <div class="d-flex gap-4">
-                <button class="btn btn-label-secondary ">Discard</button>
+                <button class="btn btn-label-secondary">Discard</button>
                 {{-- <button class="btn btn-label-primary">Save draft</button> --}}
               </div>
+              @can('write')
               <button type="button" class="btn btn-primary {{isset($products)? 'updateBtn':'publishBtn'}} ">{{isset($products)?"Update":"Publish"}}</button>
+              @endcan
             </div>
           </div>
 
@@ -587,6 +560,7 @@
         </div>
       </div>
       <!-- / Content -->
+      
 @endsection
 @section('Build-JS')
     <script src="../../assets/vendor/libs/jquery/jquery.js"></script>

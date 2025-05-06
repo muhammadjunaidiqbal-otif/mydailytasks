@@ -23,7 +23,7 @@
        
       
   
-    }, 1500); // 1.5 seconds
+    }, 1000); // 1.5 seconds
 };
 
 window.isRtl = window.Helpers.isRtl();

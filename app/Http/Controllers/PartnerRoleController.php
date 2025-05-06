@@ -66,8 +66,12 @@ class PartnerRoleController extends Controller
      */
     public function show(string $id)
     {
-        $user = User::with('role')->findOrFail($id);
-        return response()->json($user);
+        $user = User::findOrFail($id);
+        $role = $user->getRoleNames(); 
+        return response()->json([
+            'user'=>$user,
+            'role'=>$role
+        ]);
     }
 
     /**

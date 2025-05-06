@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
+use App\Http\Controllers\Controller;
 
 class DashBoardController extends Controller
 {
@@ -17,6 +18,7 @@ class DashBoardController extends Controller
         return view('Admin.Dashboards.user-profile');
     }
     public function showUserDataTablePage(){
-        return view('Admin.Dashboards.users-dt');
+        $roles = Role::all();
+        return view('Admin.Dashboards.users-dt',compact('roles'));
     }
 }

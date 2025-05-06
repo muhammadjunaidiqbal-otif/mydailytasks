@@ -5,10 +5,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\CityController;
-use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\Ecom\HomeController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PartnerRoleController;
@@ -19,6 +19,7 @@ use App\Http\Controllers\Ecom\EcomShopController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashBoardController;
 use App\Http\Controllers\Auth\GoogleAuthController;
+use App\Http\Controllers\Admin\PermissionsController;
 use App\Http\Controllers\Auth\ForgetPasswordController;
 use App\Http\Controllers\Ecom\BillingAddressController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -89,7 +90,19 @@ Route::get('/orders-list-page',[OrdersController::class,'ordersListPage'])->name
 Route::get('/orders/list',[OrdersController::class,'ordersList'])->name('orders-list');
 Route::get('/order/details/{id}',[OrdersController::class,'orderDetail'])->name('order-detail');
 Route::get('/cart/details/{id}',[OrdersController::class,'cartDetails'])->name('cartDetailsForOrderId');
-
+//PermissionsController
+Route::get('/permissions',[PermissionsController::class,'showPermissionsPage'])->name('permissions-page');
+Route::get('/permissions/list',[PermissionsController::class,'permissionsList'])->name('permissions-list');
+Route::post('/permission/store',[PermissionsController::class,'storePermission'])->name('permissions-store');
+Route::post('/permissions/update/{id}',[PermissionsController::class,'updatePermission'])->name('permissions-update');
+Route::delete('/permissions/delete/{id}',[PermissionsController::class,'deletePermission'])->name('permissions-delete');
+//RolesController
+Route::get('/roles/list',[RoleController::class,'showRolesPage'])->name('roles-page');
+Route::post('/roles/store', [RoleController::class, 'store'])->name('roles-store');
+Route::get('/roles/{id}/permissions', [RoleController::class, 'getPermissions'])->name('roles.permissions');
+Route::get('/role/edit/{id}',[RoleController::class,'edit'])->name('roles-edit');
+Route::put('/role/{id}/update',[RoleController::class,'update'])->name('roles-update');
+Route::delete('/role/{id}', [RoleController::class, 'destroy'])->name('roles-destroy');
 //EcomController
 //User-Dashboards Routes
 Route::get('/',[HomeController::class,'showHomePage'])->name('users-home-page');

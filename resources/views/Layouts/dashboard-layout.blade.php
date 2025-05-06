@@ -43,6 +43,8 @@
     <!-- Vendors CSS -->
     @yield('Vendor-CSS')
     <!-- Page CSS -->
+    <!-- Toastr CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
     @yield('Page-CSS')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 <style>
@@ -308,11 +310,13 @@
                         <div data-i18n="Product List">Product List</div>
                       </a>
                     </li>
+                    @can('write')
                     <li class="menu-item">
                       <a href="{{route('add-products')}}" class="menu-link">
                         <div data-i18n="Add Product">Add Product</div>
                       </a>
                     </li>
+                    @endcan
                     <li class="menu-item">
                       <a href="{{route('products-category-list')}}" class="menu-link">
                         <div data-i18n="Category List">Category List</div>
@@ -542,7 +546,8 @@
                   </ul>
                 </li>
               </ul>
-            </li>
+            </li> -->
+            @can('write')
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-settings"></i>
@@ -550,17 +555,18 @@
               </a>
               <ul class="menu-sub">
                 <li class="menu-item">
-                  <a href="app-access-roles.html" class="menu-link">
+                  <a href="{{route('roles-page')}}" class="menu-link">
                     <div data-i18n="Roles">Roles</div>
                   </a>
                 </li>
                 <li class="menu-item">
-                  <a href="app-access-permission.html" class="menu-link">
+                  <a href="{{route('permissions-page')}}" class="menu-link">
                     <div data-i18n="Permission">Permission</div>
                   </a>
                 </li>
               </ul>
-            </li> -->
+            </li> 
+            @endcan
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-file"></i>
@@ -593,7 +599,7 @@
                       </a>
                     </li>
                   </ul>
-                </li>
+                </li> 
                 <!-- <li class="menu-item">
                   <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <div data-i18n="Account Settings">Account Settings</div>
@@ -1178,12 +1184,15 @@
                 <i class="menu-icon tf-icons ti ti-layout-grid"></i>
                 <div data-i18n="Datatables">Datatables</div>
               </a>
+              
               <ul class="menu-sub">
+                @can('write')
                 <li class="menu-item">
                   <a href="{{route('users.datatable')}}" class="menu-link">
                     <div data-i18n="Users">Users</div>
                   </a>
                 </li>
+                @endcan
                 {{-- <li class="menu-item">
                   <a href="tables-datatables-advanced.html" class="menu-link">
                     <div data-i18n="Advanced">Advanced</div>
@@ -1676,7 +1685,7 @@
                           </div>
                           <div class="flex-grow-1">
                             <h6 class="mb-0">John Doe</h6>
-                            <small class="text-muted">Admin</small>
+                            <small class="text-muted">{{$role = implode('', auth()->user()->getRoleNames()->toArray())}}</small>
                           </div>
                         </div>
                       </a>
@@ -1748,6 +1757,9 @@
           
         <!-- Content wrapper -->
         <div class="content-wrapper">
+          <div id="loader-overlay">
+            <div class="loader"></div>
+          </div>
           @yield('content')
           <!-- Content wrapper -->
           
@@ -1813,7 +1825,8 @@
 
     <!-- Main JS -->
     <script src="../../assets/js/main.js"></script>
-
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <!-- Page JS -->
     <script>  
       var isAuthenticated = @json(Auth::check());

@@ -25,12 +25,12 @@ class GoogleAuthController extends Controller
                 [
                     'name' => $googleUser->getName(),
                     'google_id' => $googleUser->getId(),
-                    'password' => bcrypt('default_password'), // Optional, set a default
+                    'password' => bcrypt('default_password')
                 ]
             );
             $user = Auth::login($user);
             $logedInUser = Auth::user();
-            if ($logedInUser->role_id == 1) {  // Assuming 1 is for admin
+            if ($logedInUser->role_id == 1) {
                 return redirect()->route('user-Dashboard')->with('status', 'Login Successfully :)');
             } else {
                 return redirect()->route('users-home-page')->with('status', 'Login Successfully :)');

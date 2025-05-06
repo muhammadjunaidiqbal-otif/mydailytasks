@@ -12,14 +12,19 @@ $(function () {
   // Users List datatable
   if (dataTablePermissions.length) {
     dt_permission = dataTablePermissions.DataTable({
-      ajax: assetsPath + 'json/permissions-list.json', // JSON file to add data
+      processing : true,
+      serverSide :false,
+      ajax : {
+        'url' : permissionsListURL ,
+        'dataSrc' : 'info' 
+      } ,// JSON file to add data
       columns: [
         // columns according to JSON
         { data: '' },
         { data: 'id' },
         { data: 'name' },
-        { data: 'assigned_to' },
-        { data: 'created_date' },
+        // { data: 'assigned_to' },
+        { data: 'created_at' },
         { data: '' }
       ],
       columnDefs: [
@@ -47,35 +52,52 @@ $(function () {
             return '<span class="text-nowrap text-heading">' + $name + '</span>';
           }
         },
+        // {
+        //   // User Role
+        //   targets: 3,
+        //   orderable: false,
+        //   render: function (data, type, full, meta) {
+        //     var $assignedTo = full['assigned_to'],
+        //       $output = '';
+        //     var roleBadgeObj = {
+        //       Admin: '<a href="' + userList + '"><span class="badge me-4 bg-label-primary">Administrator</span></a>',
+        //       Manager: '<a href="' + userList + '"><span class="badge me-4 bg-label-warning">Manager</span></a>',
+        //       Users: '<a href="' + userList + '"><span class="badge me-4 bg-label-success">Users</span></a>',
+        //       Support: '<a href="' + userList + '"><span class="badge me-4 bg-label-info">Support</span></a>',
+        //       Restricted:
+        //         '<a href="' + userList + '"><span class="badge me-4 bg-label-danger">Restricted User</span></a>'
+        //     };
+        //     for (var i = 0; i < $assignedTo.length; i++) {
+        //       var val = $assignedTo[i];
+        //       $output += roleBadgeObj[val];
+        //     }
+        //     return '<span class="text-nowrap">' + $output + '</span>';
+        //   }
+        // },
         {
-          // User Role
+          // remove ordering from Name
           targets: 3,
           orderable: false,
           render: function (data, type, full, meta) {
-            var $assignedTo = full['assigned_to'],
-              $output = '';
-            var roleBadgeObj = {
-              Admin: '<a href="' + userList + '"><span class="badge me-4 bg-label-primary">Administrator</span></a>',
-              Manager: '<a href="' + userList + '"><span class="badge me-4 bg-label-warning">Manager</span></a>',
-              Users: '<a href="' + userList + '"><span class="badge me-4 bg-label-success">Users</span></a>',
-              Support: '<a href="' + userList + '"><span class="badge me-4 bg-label-info">Support</span></a>',
-              Restricted:
-                '<a href="' + userList + '"><span class="badge me-4 bg-label-danger">Restricted User</span></a>'
-            };
-            for (var i = 0; i < $assignedTo.length; i++) {
-              var val = $assignedTo[i];
-              $output += roleBadgeObj[val];
-            }
-            return '<span class="text-nowrap">' + $output + '</span>';
+            var $date = full['created_at'];
+            if (!$date) {
+              return '<span class="text-nowrap">-</span>';
           }
-        },
-        {
-          // remove ordering from Name
-          targets: 4,
-          orderable: false,
-          render: function (data, type, full, meta) {
-            var $date = full['created_date'];
-            return '<span class="text-nowrap">' + $date + '</span>';
+          var date = new Date($date);
+          if (isNaN(date.getTime())) {
+              return '<span class="text-nowrap">-</span>';
+          }
+          var formattedDate = date.toLocaleDateString('en-US', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric'
+          });
+          var formattedTime = date.toLocaleTimeString('en-US', {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true
+          });
+          return '<span class="text-nowrap">' + formattedDate + ' ' + formattedTime + '</span>';
           }
         },
         {
@@ -87,12 +109,8 @@ $(function () {
           render: function (data, type, full, meta) {
             return (
               '<div class="d-flex align-items-center">' +
-              '<span class="text-nowrap"><button class="btn btn-icon btn-text-secondary waves-effect waves-light rounded-pill me-1" data-bs-target="#editPermissionModal" data-bs-toggle="modal" data-bs-dismiss="modal"><i class="ti ti-edit ti-md"></i></button>' +
-              '<a href="javascript:;" class="btn btn-icon btn-text-secondary waves-effect waves-light rounded-pill dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical ti-md mx-1"></i></a>' +
-              '<div class="dropdown-menu dropdown-menu-end m-0">' +
-              '<a href="javascript:;"" class="dropdown-item">Edit</a>' +
-              '<a href="javascript:;" class="dropdown-item">Suspend</a>' +
-              '</div>' +
+              '<span class="text-nowrap"><button class="btn btn-icon btn-text-secondary waves-effect waves-light rounded-pill me-1 editBtn"  data-permission=\'' + JSON.stringify(full) + '\' data-bs-target="#editPermissionModal" data-bs-toggle="modal" data-id="'+full.id+'" title="Edit Permission"><i class="ti ti-edit ti-md"></i></button>' +
+              '<a href="javascript:;" class=" text-danger delete-record" data-id="'+full.id+'" title="Delete Permission"><i class="ti ti-trash me-1"></i></a>' +
               '</div>'
             );
           }
@@ -193,7 +211,36 @@ $(function () {
 
   // Delete Record
   $('.datatables-permissions tbody').on('click', '.delete-record', function () {
-    dt_permission.row($(this).parents('tr')).remove().draw();
+    var id = $(this).data('id');
+    //alert("ID : " +id);
+    if (!confirm('Are you sure you want to update this permission?')) {
+      return; // Cancel the action if user clicks "Cancel"
+    }
+    $.ajax({
+      url : permissionDeleteURL.replace(':id',id),
+      type : 'Delete' , 
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Proper header
+      },
+      success : function(response){
+        if (typeof dt_permission !== 'undefined') {
+          dt_permission.ajax.reload(); 
+        } else {
+          console.warn('DataTable (dt_permission) is not defined or initialized.');
+          location.reload();
+        }
+      },
+      error : function(xhr){
+        let errorMessage = 'An error occurred while creating the permission.';
+        if (xhr.status === 422) {
+            const errors = xhr.responseJSON.errors;
+            errorMessage = Object.values(errors).flat().join('\n');
+        } else if (xhr.responseJSON && xhr.responseJSON.message) {
+            errorMessage = xhr.responseJSON.message;
+        }
+        alert(errorMessage);
+      }
+    })
   });
 
   // Filter form control to default size

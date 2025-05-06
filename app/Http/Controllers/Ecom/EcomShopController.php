@@ -11,7 +11,6 @@ use App\Http\Controllers\Controller;
 class EcomShopController extends Controller
 {   
     public function showProducts(){
-        sleep(1);
         $products = Product::with('category')->get();
         return view('Ecom.shop',compact('products'));
     }

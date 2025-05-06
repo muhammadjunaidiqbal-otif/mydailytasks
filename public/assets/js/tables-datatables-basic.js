@@ -431,11 +431,10 @@ $(function () {
         type: "GET",
         success: function(response) {
           console.log("User Data:", response);
-            $('#editUserId').val(response.id);
-            $('#editUserName').val(response.name);
-            $('#editUserEmail').val(response.email);
-            
-        
+            $('#editUserId').val(response.user.id);
+            $('#editUserName').val(response.user.name);
+            $('#editUserEmail').val(response.user.email);
+            $('')
             // Open Modal - Bootstrap 5 Syntax
             var myModal = new bootstrap.Modal(document.getElementById('editUserModal'));
             myModal.show();
@@ -576,6 +575,7 @@ $(function () {
       var name = $('.dt-name').val();
       var email = $('.dt-email').val();
       var password = $('.dt-password').val();
+      var roleId =  $('.dt-roleId').val();
 
       $.ajax({
         url:createRecordUrl, 
@@ -584,7 +584,8 @@ $(function () {
             _token: csrfToken, 
             name: name,
             email: email,
-            password: password
+            password: password,
+            roleId : roleId
         },
         success: function(response) {
             alert(response.success);
