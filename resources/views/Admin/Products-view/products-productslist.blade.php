@@ -193,5 +193,10 @@
       var editProductURL = "{{route('edit-product',':id')}}";
       var selectDeleteUrl = "{{route('delete-selected-products')}}";
       var updateProductSaleEndURL = "{{route('add-products-saleEnd')}}";
+      var canEdit = @json(auth()->user()->can('product_edit'));
+      var canDelete = @json(auth()->user()->can('product_delete'));
+      var canAdd = @json(auth()->user()->can('product_add'));
+      console.log("can" + canEdit);
     </script>
+  
 @endsection

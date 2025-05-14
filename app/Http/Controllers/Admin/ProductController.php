@@ -32,13 +32,18 @@ class ProductController extends Controller
      */
     public function create(){
         $categories = Category::all();
+        if(auth()->user()->can('product_add')){
         return view('Admin.Products-view.products-addproducts',['categories'=>$categories]);
+        }else{
+            return view('Auth.not-authorized-page');
+        }
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request){
+        if(auth()->user()->can('product_add')){
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'sku' => 'required|string|max:255',
@@ -46,6 +51,7 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'category_id' => 'required|exists:categories,id',
             'status' => 'required|in:Scheduled,Publish,Inactive',
+            'purchase_price'=>'required|numeric|min:0',
             'base_price' => 'required|numeric|min:0',
             'discounted_price' => 'nullable|numeric|min:0|max:99999999.99|lte:base_price',
             'charge_tax' => 'required|boolean',
@@ -67,7 +73,8 @@ class ProductController extends Controller
             'description'=>$request->description,
             'category_id'=>$request->category_id,
             'status'=>$request->status,
-            'base_price'=>$request->base_price,
+            'purchase_price'=>$request->purchase_price,
+            'price'=>$request->base_price,
             'discounted_price'=>$request->discounted_price,
             'charge_tax'=>$request->charge_tax,
             'in_stock'=>$request->in_stock,
@@ -88,6 +95,9 @@ class ProductController extends Controller
             'message' => 'Product Created Successfully',
             'product' => $product,
         ], 201);
+        }else{
+            return view('Auth.not-authorized-page');
+        }
     }
 
     /**
@@ -120,6 +130,7 @@ class ProductController extends Controller
             'description'       => 'nullable|string',
             'category_id'       => 'required|exists:categories,id',
             'status'            => 'required|in:Scheduled,Publish,Inactive',
+            'purchase_price'=>'required|numeric|min:0',
             'base_price'        => 'required|numeric|min:0',
             'discounted_price'  => 'nullable|numeric|min:0|max:99999999.99|lte:base_price',
             'charge_tax'        => 'required|boolean',
@@ -153,7 +164,8 @@ class ProductController extends Controller
                 'description'       => $request->description,
                 'category_id'       => $request->category_id,
                 'status'            => $request->status,
-                'base_price'        => $request->base_price,
+                'purchase_price'=>$request->purchase_price,
+                'price'        => $request->base_price,
                 'discounted_price'  => $request->discounted_price,
                 'charge_tax'        => $request->charge_tax,
                 'in_stock'          => $request->in_stock,

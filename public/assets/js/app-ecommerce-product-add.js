@@ -90,6 +90,7 @@
     formData.append('description', quill.root.innerHTML);
     formData.append('category_id', $('#category-org').val());
     formData.append('status', $('#status-org').val());
+    formData.append('purchase_price',$('#ecommerce-product-purchase_price').val());
     formData.append('base_price', $('#ecommerce-product-price').val());
     formData.append('discounted_price', $('#ecommerce-product-discount-price').val());
     formData.append('charge_tax', $('#price-charge-tax').is(':checked') ? 1 : 0);
@@ -169,6 +170,7 @@
     formData.append('description', quill.root.innerHTML);
     formData.append('category_id', $('#category-org').val());
     formData.append('status', $('#status-org').val());
+    formData.append('purchase_price',$('#ecommerce-product-purchase_price').val());
     formData.append('base_price', $('#ecommerce-product-price').val());
     formData.append('discounted_price', $('#ecommerce-product-discount-price').val());
     formData.append('charge_tax', $('#price-charge-tax').is(':checked') ? 1 : 0);

@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Admin;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Orders;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\BillingAddress;
+use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
 
 class OrdersController extends Controller
@@ -49,10 +52,10 @@ class OrdersController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->limit(100);
     
-            Log::info("Default today range applied", [
-                'start_date' => $start->toDateTimeString(),
-                'end_date' => $end->toDateTimeString()
-            ]);
+            //Log::info("Default today range applied", [
+            //    'start_date' => $start->toDateTimeString(),
+            //    'end_date' => $end->toDateTimeString()
+            //]);
         }
     
         $orders = $query->get();
@@ -78,5 +81,181 @@ class OrdersController extends Controller
         $cartItems = array_values($cart);
         return response()->json(['info'=>$cartItems]);
     }
+    public function showOrderReportPage(Request $request){
 
+        $users = BillingAddress::orderBy('first_name', 'asc')->get();
+        $categories = Category::orderBy('title', 'asc')->get();
+        $products_items = Product::orderBy('name', 'asc')->get();
+
+        $start = $request->start;
+        $end = $request->end;
+        $userId = $request->user_id;
+        $categoryId = $request->category_id;
+        $filterProductId = $request->product_id;
+
+        $ordersQuery = Orders::where('payment_status', 'paid');
+
+        if ($userId) {
+            $ordersQuery->where('billing_id', $userId);
+        }
+
+        if ($start && $end) {
+            $ordersQuery->whereBetween('created_at', [$start . ' 00:00:00', $end . ' 23:59:59']);
+        } else {
+            $ordersQuery->whereDate('created_at', now());
+        }
+
+        $orders = $ordersQuery->orderBy('created_at', 'desc')->get();
+
+        $dailyProductStats = [];
+
+        foreach ($orders as $order) {
+            $orderDate = Carbon::parse($order->created_at)->format('Y-m-d');
+            $cart = json_decode($order->cart, true);
+
+            if (is_array($cart)) {
+                foreach ($cart as $item) {
+                    if (isset($item['id'], $item['quantity'], $item['price'])) {
+                        $cartProductId = $item['id'];
+                        $quantity = (int) $item['quantity'];
+                        $salePrice = (float) $item['price'];
+
+                        if ($filterProductId && $cartProductId != $filterProductId) {
+                            continue;
+                        }
+
+                        $product = Product::with('category')->find($cartProductId);
+
+                        if (!$product || $product->purchase_price === null) {
+                            continue;
+                        }
+
+                        if ($categoryId && $product->category_id != $categoryId) {
+                            continue;
+                        }
+
+                        $purchasePrice = (float) $product->purchase_price;
+                        $profit = ($salePrice - $purchasePrice) * $quantity;
+
+                        if (!isset($dailyProductStats[$orderDate])) {
+                            $dailyProductStats[$orderDate] = [];
+                        }
+                        if (!isset($dailyProductStats[$orderDate][$cartProductId])) {
+                            $dailyProductStats[$orderDate][$cartProductId] = [
+                                'quantity' => 0,
+                                'profit' => 0,
+                                'product' => $product
+                            ];
+                        }
+
+                        $dailyProductStats[$orderDate][$cartProductId]['quantity'] += $quantity;
+                        $dailyProductStats[$orderDate][$cartProductId]['profit'] += $profit;
+                    }
+                }
+            }
+        }
+        $tableData = [];
+        foreach ($dailyProductStats as $date => $products) {
+            foreach ($products as $productId => $stats) {
+                $product = $stats['product'];
+
+                $tableData[] = [
+                    'Date' => $date,
+                    'Product' => $product->name,
+                    'Category' => $product->category->title ?? 'Unknown Category',
+                    'Total' => $stats['quantity'],
+                    'Profit' => number_format($stats['profit'], 2),
+                ];
+            }
+        }
+       //dd($tableData);
+        return view('Admin.Reports.orders-report',compact('users','categories','products_items','tableData'));
+    }
+    // public function showOrdersReport(Request $request){
+    //     $start = $request->start;
+    //     $end = $request->end;
+    //     $userId = $request->user_id;
+    //     $categoryId = $request->category_id;
+    //     $filterProductId = $request->product_id;
+
+    //     $ordersQuery = Orders::where('payment_status', 'paid');
+
+    //     if ($userId) {
+    //         $ordersQuery->where('billing_id', $userId);
+    //     }
+
+    //     if ($start && $end) {
+    //         $ordersQuery->whereBetween('created_at', [$start . ' 00:00:00', $end . ' 23:59:59']);
+    //     } else {
+    //         $ordersQuery->whereDate('created_at', now());
+    //     }
+
+    //     $orders = $ordersQuery->orderBy('created_at', 'desc')->get();
+
+    //     $dailyProductStats = [];
+
+    //     foreach ($orders as $order) {
+    //         $orderDate = Carbon::parse($order->created_at)->format('Y-m-d');
+    //         $cart = json_decode($order->cart, true);
+
+    //         if (is_array($cart)) {
+    //             foreach ($cart as $item) {
+    //                 if (isset($item['id'], $item['quantity'], $item['price'])) {
+    //                     $cartProductId = $item['id'];
+    //                     $quantity = (int) $item['quantity'];
+    //                     $salePrice = (float) $item['price'];
+
+    //                     if ($filterProductId && $cartProductId != $filterProductId) {
+    //                         continue;
+    //                     }
+
+    //                     $product = Product::with('category')->find($cartProductId);
+    //                     if (!$product || $product->purchase_price === null) {
+    //                         continue;
+    //                     }
+
+    //                     if ($categoryId && $product->category_id != $categoryId) {
+    //                         continue;
+    //                     }
+
+    //                     $purchasePrice = (float) $product->purchase_price;
+    //                     $profit = ($salePrice - $purchasePrice) * $quantity;
+
+    //                     if (!isset($dailyProductStats[$orderDate])) {
+    //                         $dailyProductStats[$orderDate] = [];
+    //                     }
+
+    //                     if (!isset($dailyProductStats[$orderDate][$cartProductId])) {
+    //                         $dailyProductStats[$orderDate][$cartProductId] = [
+    //                             'quantity' => 0,
+    //                             'profit' => 0,
+    //                             'product' => $product
+    //                         ];
+    //                     }
+
+    //                     $dailyProductStats[$orderDate][$cartProductId]['quantity'] += $quantity;
+    //                     $dailyProductStats[$orderDate][$cartProductId]['profit'] += $profit;
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     $tableData = [];
+
+    //     foreach ($dailyProductStats as $date => $products) {
+    //         foreach ($products as $productId => $stats) {
+    //             $product = $stats['product'];
+
+    //             $tableData[] = [
+    //                 'Date' => $date,
+    //                 'Product' => $product->name,
+    //                 'Category' => $product->category->title ?? 'Unknown Category',
+    //                 'Total' => $stats['quantity'],
+    //                 'Profit' => number_format($stats['profit'], 2),
+    //             ];
+    //         }
+    //     }
+
+    //     return response()->json($tableData);
+    // }
 }

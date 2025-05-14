@@ -36,7 +36,7 @@ class EcomShopController extends Controller
             "id"=>$product->id,
             "name" => $product->name,
             "quantity" => 1,
-            "price" => $product->base_price,
+            "price" => $product->price,
             "image" => $product->image
         ];
     }
@@ -83,7 +83,7 @@ class EcomShopController extends Controller
             "id"=>$product->id,
             "name" => $product->name,
             "quantity" => 1,
-            "price" => $product->base_price,
+            "price" => $product->price,
             "image" => $product->image
         ];
     }

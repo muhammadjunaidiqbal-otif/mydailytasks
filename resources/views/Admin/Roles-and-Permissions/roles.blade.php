@@ -92,7 +92,7 @@
             <div class="card">
               <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                  <h6 class="fw-normal mb-0 text-body">Total 1 users</h6>
+                  <h6 class="fw-normal mb-0 text-body">Total {{ $role->users_count }} users</h6>
                   <ul class="list-unstyled d-flex align-items-center avatar-group mb-0">
                     <li
                       data-bs-toggle="tooltip"

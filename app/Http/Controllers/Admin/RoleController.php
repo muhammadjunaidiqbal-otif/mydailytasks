@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class RoleController extends Controller
 {
     public function showRolesPage(){
-        $roles = Role::all();
+        $roles = Role::withCount('users')->get();
         $permissions = Permission::all();
         return view('Admin.Roles-and-Permissions.roles',compact('permissions','roles'));
     }

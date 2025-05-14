@@ -72,7 +72,7 @@ $(function () {
           }
         },
         { data: 'description' },
-        { data: 'base_price' },
+        { data: 'price' },
         { data: 'discounted_price' },
         { data: 'status' },
         { data: '' }
@@ -265,10 +265,20 @@ $(function () {
           searchable: false,
           orderable: false,
           render: function (data, type, full, meta) {
+            var editButton = '';
+            var deleteButton = '';
+            if (canEdit) {
+              editButton = '<a href="javascript:;" class="btn btn-sm btn-text-secondary rounded-pill btn-icon edit-btn" data-id="'+full.id+'"><i class="ti ti-pencil ti-md"></i></a>';
+            }
+            if(canDelete){
+              deleteButton = '<a href="javascript:;" class=" text-danger delete-record" data-id="'+full.id+'"><i class="ti ti-trash me-1"></i></a>'
+            }
             return (
              '<div class="d-inline-block">' +
-                '<a href="javascript:;" class=" text-danger delete-record" data-id="'+full.id+'"><i class="ti ti-trash me-1"></i></a>' +
-                '<a href="javascript:;" class="btn btn-sm btn-text-secondary rounded-pill btn-icon edit-btn" data-id="'+full.id+'"><i class="ti ti-pencil ti-md"></i></a>'
+                deleteButton
+                 +
+                editButton+
+                '</div>'
             );
           }
         }
@@ -432,8 +442,8 @@ $(function () {
           ]
         },
         {
-          text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Add Product</span>',
-          className: 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
+          text: canAdd ? '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Add Product</span>' : '',
+          className: canAdd ? 'add-new btn btn-primary ms-2 ms-sm-0 waves-effect waves-light':'',
           action: function () {
             window.location.href = addProductURL;
           }

@@ -78,7 +78,7 @@
                                 </div><!-- End .product-cat -->
                                 <h3 class="product-title"><a href="">{{$product->name}}</a></h3><!-- End .product-title -->
                                 <div class="product-price">
-                                    ${{$product->base_price}}
+                                    ${{$product->price}}
                                 </div><!-- End .product-price -->
                                 <div class="ratings-container">
                                     <div class="ratings">

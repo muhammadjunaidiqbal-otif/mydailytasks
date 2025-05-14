@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
@@ -103,6 +104,11 @@ Route::get('/roles/{id}/permissions', [RoleController::class, 'getPermissions'])
 Route::get('/role/edit/{id}',[RoleController::class,'edit'])->name('roles-edit');
 Route::put('/role/{id}/update',[RoleController::class,'update'])->name('roles-update');
 Route::delete('/role/{id}', [RoleController::class, 'destroy'])->name('roles-destroy');
+//Reports
+Route::get('/report/orders',[OrdersController::class,'showOrderReportPage'])->name('orders-report-page');
+//Route::get('/report/orders-ajax', [OrdersController::class, 'showOrdersReport'])->name('admin.orders.report.ajax');
+
+
 //EcomController
 //User-Dashboards Routes
 Route::get('/',[HomeController::class,'showHomePage'])->name('users-home-page');
@@ -167,3 +173,19 @@ Route::get('/test-page',function(){
 //RolesAndPartnerRoleControllers
 Route::resource('/roles',RoleController::class);
 Route::resource('/partners',PartnerRoleController::class);
+
+
+//Products Update 
+Route::match(['get', 'post'], '/add-purchase-price', function () {
+    $products = Product::all();
+
+    foreach ($products as $product) {
+        $product->purchase_price = rand(1000, 1100);
+        $product->save();
+    }
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Purchase prices updated successfully.'
+    ]);
+});

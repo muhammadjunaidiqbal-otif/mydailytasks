@@ -2,17 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\Permission\Models\Role as SpatieRole;
+use App\Models\MenuItems;
 
-class Role extends Model
+class Role extends SpatieRole
 {
-    use HasFactory;
-    protected $table = 'roles';
-    protected $fillable = ['name'];
-
-    public function users(){
-        return $this->hasMany(User::class);
+    public function menuItems()
+    {
+        return $this->belongsToMany(MenuItems::class, 'menu_item_role', 'role_id', 'menu_item_id');
     }
 
 }

@@ -37,10 +37,10 @@
             </div>
             <div class="d-flex align-content-center flex-wrap gap-4">
               <div class="d-flex gap-4">
-                <button class="btn btn-label-secondary">Discard</button>
+                <a class="btn btn-label-secondary" href="{{route('products-list')}}">Discard</a>
                 {{-- <button class="btn btn-label-primary">Save draft</button> --}}
               </div>
-              @can('write')
+              @can('product_add')
               <button type="button" class="btn btn-primary {{isset($products)? 'updateBtn':'publishBtn'}} ">{{isset($products)?"Update":"Publish"}}</button>
               @endcan
             </div>
@@ -507,15 +507,30 @@
                   <h5 class="card-title mb-0">Pricing</h5>
                 </div>
                 <div class="card-body">
+                  <!--Purchase Price -->
+                  <div class="mb-6">
+                    <label class="form-label" for="ecommerce-product-purchase_price">Purchase Price</label>
+                    <input
+                      type="number" 
+                      class="form-control"
+                      id="ecommerce-product-purchase_price"
+                      @if(isset($products))
+                      value="{{$products->purchase_price}}"
+                      @endif
+                      placeholder="Enter Purchase Price"
+                      aria-label="Product price"
+                      name="purchase_price"
+                       />
+                  </div>
                   <!-- Base Price -->
                   <div class="mb-6">
-                    <label class="form-label" for="ecommerce-product-price">Base Price</label>
+                    <label class="form-label" for="ecommerce-product-price">Price</label>
                     <input
                       type="number" 
                       class="form-control"
                       id="ecommerce-product-price"
                       @if(isset($products))
-                      value="{{$products->base_price}}"
+                      value="{{$products->price}}"
                       @endif
                       placeholder="Enter Basic Price"
                       aria-label="Product price"
@@ -615,5 +630,8 @@
           });
         }
       });
+    </script>
+    <script>
+      
     </script>
 @endsection
